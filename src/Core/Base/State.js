@@ -2,17 +2,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Node from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
-export function createState(displayName, nodeId) {
-    function State({ children, ...props }) {
-        const node = Node.useNode(nodeId);
-        let object = node.get(State);
+export function createState(displayName) {
+    function State({ children, nodeId, ...props }) {
+        const object = State.useDynamicState([], nodeId);
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
-        if (!object) {
-            object = createObject(props);
-            node.set(State, object);
-        }
         if (valueChanged) {
             changeRef.current++;
         }
@@ -26,13 +21,27 @@ export function createState(displayName, nodeId) {
         }, [changeRef.current]);
         return children;
     }
-    State.useState = (selector) => {
+    State.useDynamicState = (selector, nodeId) => {
+        const node = Node.useNode(nodeId, State);
+        const object = node && node.get(State);
+        if (!object) {
+            object = createObject(props);
+            node.set(State, object);
+        }
+        useStateFromObject(object, selector);
+        return object;
+    };
+    State.useState = (selector, nodeId) => {
         const node = Node.useNode(nodeId, State);
         const object = node && node.get(State);
         useStateFromObject(object, selector);
         return object;
     };
-    State.usePassiveState = () => State.useState([]);
+    State.usePassiveState = (nodeId) => {
+        const node = Node.useNode(nodeId, State);
+        const object = node && node.get(State);
+        return object;
+    }
     State.displayName = displayName;
     return State;
 }
@@ -58,13 +67,7 @@ export function isSelectorMatch(selector, key) {
     return true;
 }
 
-export function useStateFromObject(object, selector) {
-    const [, setCounter] = useState(0);
-    const handler = useCallback((_, key) => {
-        if (!selector || isSelectorMatch(selector, key)) {
-            setCounter(counter => counter + 1);
-        }
-    }, [selector]);
+export function useStateHandlerFromObject(object, handler) {
     useEffect(() => {
         if (!object) {
             return;
@@ -74,5 +77,16 @@ export function useStateFromObject(object, selector) {
             object.__unregister(handler);
         };
     }, [object, handler]);
+    return object;
+}
+
+export function useStateFromObject(object, selector) {
+    const [, setCounter] = useState(0);
+    const handler = useCallback((_method, _target, key) => {
+        if (!selector || isSelectorMatch(selector, key)) {
+            setCounter(counter => counter + 1);
+        }
+    }, [selector]);
+    useStateHandlerFromObject(object, handler);
     return object;
 };

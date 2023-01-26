@@ -8,8 +8,10 @@ export function objectHasChanged(a, b) {
 
 export function createObject(props) {
     const callbacks = [];
+    let counter = 0;
     const forward = (method, ...args) => {
         const result = Reflect[method](...args);
+        counter++;
         callbacks && callbacks.forEach(cb => cb(method, ...args));
         return result;
     }
@@ -26,8 +28,8 @@ export function createObject(props) {
             }
             return forward("deleteProperty", target, key);
         },
-        defineProperty: function (target, prop, descriptor) {
-            return forward("defineProperty", target, prop, descriptor);
+        defineProperty: function (target, key, descriptor) {
+            return forward("defineProperty", target, key, descriptor);
         }
     });
     Object.defineProperty(proxy, "__register", {
@@ -42,6 +44,11 @@ export function createObject(props) {
                 callbacks.splice(index, 1);
             }
         },
+        writable: false,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__counter", {
+        value: () => counter,
         writable: false,
         enumerable: false
     });
