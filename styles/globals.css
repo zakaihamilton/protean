@@ -1,7 +1,12 @@
 body {
     border: none;
     background-color: black;
-    margin: 0px;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
 }
 
 #__next {

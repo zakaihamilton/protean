@@ -48,8 +48,7 @@ export function createObject(props) {
         enumerable: false
     });
     Object.defineProperty(proxy, "__counter", {
-        value: () => counter,
-        writable: false,
+        get: () => counter,
         enumerable: false
     });
     return proxy;

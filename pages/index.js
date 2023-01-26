@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import Console from "src/App/Console"
+import Node from "src/Core/Base/Node"
 
 export default function Home() {
   return (
@@ -10,7 +12,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-
+      <Node>
+        <Console />
+      </Node>
     </>
   )
 }

@@ -4,8 +4,11 @@ import { createState } from "./State";
 export function createEvents(...args) {
     const State = createState(...args);
     State.useEvent = (type, callback, ...args) => {
-        const state = State.useState(...args);
+        const state = State.useState([], ...args);
         useEffect(() => {
+            if (!state) {
+                return;
+            }
             state[type] = callback;
             return () => {
                 delete state[type];
@@ -14,7 +17,7 @@ export function createEvents(...args) {
     };
     State.useEventsAsListeners = (target, nodeId) => {
         const state = State.useState(undefined, nodeId);
-        const entries = Object.entries(state);
+        const entries = state && Object.entries(state) || [];
         useEffect(() => {
             if (!target) {
                 return;

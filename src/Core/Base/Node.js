@@ -6,7 +6,7 @@ const Context = createContext(root);
 export default function Node({ id, children }) {
     const parentNode = Node.useNode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const node = useMemo(() => new Map(!!id && [["id", id]]), []);
+    const node = useMemo(() => new Map(id ? [["id", id]] : undefined), []);
 
     useMemo(() => {
         node.parent = parentNode;

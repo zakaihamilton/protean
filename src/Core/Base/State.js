@@ -22,10 +22,14 @@ export function createState(displayName) {
         return children;
     }
     State.useDynamicState = (selector, nodeId) => {
-        const node = Node.useNode(nodeId, State);
-        const object = node && node.get(State);
-        if (!object) {
-            object = createObject(props);
+        let node = Node.useNode(nodeId, State);
+        const lastNode = Node.useNode(nodeId);
+        if (!node) {
+            node = lastNode;
+        }
+        let object = node && node.get(State);
+        if (!object && node) {
+            object = createObject({});
             node.set(State, object);
         }
         useStateFromObject(object, selector);
