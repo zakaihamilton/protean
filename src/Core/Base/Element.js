@@ -12,6 +12,9 @@ export function useElement() {
 export function useElementConstructor(element, constructor) {
     const handle = element?.current;
     useEffect(() => {
+        if (!handle) {
+            return;
+        }
         if (constructor) {
             return constructor(handle);
         }
