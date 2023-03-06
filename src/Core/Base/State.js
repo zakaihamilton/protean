@@ -35,17 +35,16 @@ export function createState(displayName) {
         useStateFromObject(object, selector);
         return object;
     };
-    State.useState = (selector, nodeId) => {
-        const node = Node.useNode(nodeId, State);
-        const object = node && node.get(State);
-        useStateFromObject(object, selector);
-        return object;
-    };
     State.usePassiveState = (nodeId) => {
         const node = Node.useNode(nodeId, State);
         const object = node && node.get(State);
         return object;
-    }
+    };
+    State.useState = (selector, nodeId) => {
+        const object = usePassiveState(nodeId);
+        useStateFromObject(object, selector);
+        return object;
+    };
     State.displayName = displayName;
     return State;
 }
