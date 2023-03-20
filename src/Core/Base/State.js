@@ -41,7 +41,7 @@ export function createState(displayName) {
         return object;
     };
     State.useState = (selector, nodeId) => {
-        const object = usePassiveState(nodeId);
+        const object = State.usePassiveState(nodeId);
         useStateFromObject(object, selector);
         return object;
     };
