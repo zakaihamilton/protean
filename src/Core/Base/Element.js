@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function useElement() {
     const [node, setNode] = useState(null);
     const callback = useCallback(node => {
         setNode(node);
     }, []);
-    callback.current = node;
+    useMemo(() => {
+        callback.current = node;
+    }, [callback, node]);
     return callback;
 }
 
