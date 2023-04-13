@@ -33,9 +33,9 @@ export function createEvents(...args) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [target, state?.__counter]);
     };
-    State.useEventsAsFlow = (nodeId) => {
+    State.useEventsAsCallback = (nodeId) => {
         const state = state.useState([], nodeId);
-        const flow = useCallback((...args) => {
+        const run = useCallback((...args) => {
             const callbacks = Object.values(state);
             for (const callback of callbacks) {
                 if (typeof callback !== "function") {
@@ -47,7 +47,7 @@ export function createEvents(...args) {
                 }
             }
         }, [state]);
-        return flow;
+        return run;
     };
     return State;
 }
