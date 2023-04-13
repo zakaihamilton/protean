@@ -3,7 +3,7 @@ import Node from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
-    function State({ children, nodeId, ...props }) {
+    function State({ id, children, nodeId, ...props }) {
         const object = State.useDynamicState([], nodeId);
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
@@ -19,6 +19,14 @@ export function createState(displayName) {
             Object.assign(object, props);
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [changeRef.current]);
+
+        if (children) {
+            const wrapped = <Node id={id}>
+                {children}
+            </Node>;
+            children = wrapped;
+        }
+
         return children;
     }
     State.useDynamicState = (selector, nodeId) => {
