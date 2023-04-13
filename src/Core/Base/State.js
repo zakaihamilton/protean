@@ -64,16 +64,12 @@ export function isSelectorMatch(selector, key) {
                 return false;
             }
         }
-        else {
-            if (!selector[key]) {
-                return false;
-            }
-        }
-    }
-    else if (typeof selector === "function") {
-        if (!selector(key)) {
+        else if (!selector[key]) {
             return false;
         }
+    }
+    else if (typeof selector === "function" && !selector(key)) {
+        return false;
     }
     return true;
 }
