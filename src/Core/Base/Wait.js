@@ -33,11 +33,14 @@ export function createWait(displayName) {
                     state.complete = true;
                 }
             };
+            element.complete = false;
             element.promise = promise?.then(val => {
                 setItem(val, undefined);
             }).catch(err => {
                 setItem(undefined, err);
             });
+            state.complete = false;
+            state.status = [...state.status];
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, depends);
     };
