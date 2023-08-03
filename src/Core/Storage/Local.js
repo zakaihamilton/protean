@@ -2,7 +2,7 @@
  * StorageLocal - Component to manage folders and files using IndexedDB.
  */
 
-import { createObjectStore, createRecord, deleteRecord, getRecord, iterateRecords, openDatabase, updateRecord } from "../Util/IndexedDB";
+import { closeDatabase, createObjectStore, createRecord, deleteRecord, getRecord, iterateRecords, openDatabase, updateRecord } from "../Util/IndexedDB";
 import { getFolderPath, normalizePath } from "../Util/String";
 
 const storeOptions = {
@@ -31,23 +31,38 @@ export class StorageLocal {
     }
 
     /**
-     * Initializes the StorageLocal by opening the IndexedDB database and creating object stores if needed.
+     * open the IndexedDB database and creating object stores if needed.
      * @returns {Promise<void>} - A promise that resolves when the initialization is complete.
      */
-    async init() {
+    async open() {
         try {
-            this.db = await openDatabase(this.dbName, 1, async (db) => {
+            this.db = await openDatabase(this.dbName, 1, (db) => {
                 for (const key in this.storeNames) {
                     const storeName = this.storeNames[key];
                     const exists = db.objectStoreNames.contains(storeName);
                     if (!exists) {
-                        await createObjectStore(db, storeName, storeOptions[storeName]);
+                        try {
+                            createObjectStore(db, storeName, storeOptions[storeName]);
+                            console.log("Created object store", storeName);
+                        }
+                        catch (error) {
+                            console.error("Failed to create object store", storeName, error.message);
+                            throw error;
+                        }
                     }
                 }
             });
         } catch (error) {
             throw new Error("Failed to initialize StorageLocal: " + error.message);
         }
+    }
+
+    /**
+     * close the IndexedDB database.
+     */
+    close() {
+        closeDatabase(this.db);
+        this.db = null;
     }
 
     /**
@@ -105,7 +120,7 @@ export class StorageLocal {
         path = normalizePath(path);
         console.log("deleting folder", path);
 
-        const transaction = this.db.transaction(this.storeNames, "readwrite");
+        const transaction = this.db.transaction(Object.values(this.storeNames), "readwrite");
         const folderStore = transaction.objectStore(this.storeNames.folder);
         const fileStore = transaction.objectStore(this.storeNames.file);
         const dataStore = transaction.objectStore(this.storeNames.data);
@@ -156,10 +171,11 @@ export class StorageLocal {
 
         console.log("reading file", path);
 
+        const transaction = this.db.transaction([this.storeNames.file, this.storeNames.data], "readonly");
+        const filesStore = transaction.objectStore(this.storeNames.file);
+        const dateStore = transaction.objectStore(this.storeNames.data);
+
         try {
-            const transaction = this.db.transaction(this.storeNames.file, "readonly");
-            const filesStore = transaction.objectStore(this.storeNames.file);
-            const dateStore = transaction.objectStore(this.storeNames.data);
             const file = await getRecord(filesStore, path);
             const data = await getRecord(dateStore, file.data);
             return data;
@@ -184,7 +200,7 @@ export class StorageLocal {
         path = normalizePath(path);
         const folder = getFolderPath(path);
         console.log("creating file", path, "folder", folder);
-        const transaction = this.db.transaction(this.storeNames.file, "readwrite");
+        const transaction = this.db.transaction([this.storeNames.file, this.storeNames.data], "readwrite");
         const filesStore = transaction.objectStore(this.storeNames.file);
         const dataStore = transaction.objectStore(this.storeNames.data);
 
@@ -208,12 +224,14 @@ export class StorageLocal {
                 file.data = data;
             }
             if (createFile) {
-                await updateRecord(filesStore, file);
-                console.log("file created successfully", fileId);
+                console.log("creating file", file, path);
+                await createRecord(filesStore, file, path);
+                console.log("file created successfully", path);
             }
             else {
+                console.log("updating file", file, path);
                 await updateRecord(filesStore, file, path);
-                console.log("file updated successfully", fileId);
+                console.log("file updated successfully", path);
             }
         }
         catch (err) {
@@ -284,7 +302,7 @@ export class StorageLocal {
         } else {
             file.path = toPath;
             await createRecord(fileStore, file, toPath);
-            await deleteRecord(fromPath);
+            await deleteRecord(fileStore, fromPath);
             console.log("file moved successfully", fromPath, "to", toPath);
         }
     }
@@ -315,30 +333,38 @@ export class StorageLocal {
             }
 
             const toFolder = await getRecord(folderStore, toPath);
-            if (!toFolder) {
-                throw new Error("Destination folder not found: " + toPath);
+            if (toFolder) {
+                throw new Error("Destination folder already exists: " + toPath);
             }
+        }
+        catch (err) {
+            console.error("error moving folder", fromPath, "to", toPath, err);
+            throw err;
+        }
 
+        try {
             const foldersToMove = await iterateRecords(folderStore, (folder) => {
                 if (folder.path.startsWith(fromPath)) {
-                    folder.path = folder.path.replace(fromPath, toPath);
                     return folder;
                 }
             });
 
             const filesToMove = await iterateRecords(fileStore, (file) => {
                 if (file.path.startsWith(fromPath)) {
-                    file.path = file.path.replace(fromPath, toPath);
                     return file;
                 }
             });
 
             for (const folder of foldersToMove) {
-                await updateRecord(folderStore, folder);
+                await deleteRecord(folderStore, folder.path);
+                folder.path = folder.path.replace(fromPath, toPath);
+                await createRecord(folderStore, folder, folder.path);
             }
 
             for (const file of filesToMove) {
-                await updateRecord(fileStore, file);
+                await deleteRecord(fileStore, file.path);
+                file.path = file.path.replace(fromPath, toPath);
+                await createRecord(fileStore, file, file.path);
             }
 
             console.log("folder moved successfully from", fromPath, "to", toPath);
@@ -361,16 +387,29 @@ export class StorageLocal {
 
         fromPath = normalizePath(fromPath);
         toPath = normalizePath(toPath);
+        const folder = getFolderPath(toPath);
         console.log("copying file", fromPath, "to", toPath);
-        const transaction = this.db.transaction(this.storeNames.file, "readwrite");
+        const transaction = this.db.transaction(Object.keys(this.storeNames), "readwrite");
         const fileStore = transaction.objectStore(this.storeNames.file);
         const dataStore = transaction.objectStore(this.storeNames.data);
+        const foldersStore = transaction.objectStore(this.storeNames.folder);
+
+        const fileToCopy = await getRecord(folderStore, fromPath);
+        if (!fileToCopy) {
+            throw new Error("File not found: " + fromPath);
+        }
+
+        const targetFolderExists = await getRecord(foldersStore, folder);
+        if (!targetFolderExists) {
+            throw new Error("Destination folder does not exist: " + folder);
+        }
 
         let data = null, size = null;
         try {
             const file = await getRecord(fileStore, fromPath);
             size = file.size;
-            data = await getRecord(dataStore, file.data);
+            const content = await getRecord(dataStore, file.data);
+            data = await createRecord(dataStore, content);
         }
         catch (err) {
             console.error("error copying file", fromPath, err);
@@ -385,8 +424,7 @@ export class StorageLocal {
 
         try {
             await createRecord(fileStore, file, toPath);
-            await deleteRecord(fromPath);
-            console.log("file moved successfully", fromPath, "to", toPath);
+            console.log("file copied successfully", fromPath, "to", toPath);
         }
         catch (err) {
             console.error("error copying file", fromPath, err);
@@ -409,9 +447,10 @@ export class StorageLocal {
         toPath = normalizePath(toPath);
         console.log("copying folder from", fromPath, "to", toPath);
 
-        const transaction = this.db.transaction([this.storeNames.folder, this.storeNames.file], "readwrite");
+        const transaction = this.db.transaction(Object.values(this.storeNames), "readwrite");
         const folderStore = transaction.objectStore(this.storeNames.folder);
         const fileStore = transaction.objectStore(this.storeNames.file);
+        const dataStore = transaction.objectStore(this.storeNames.data);
 
         const folderToCopy = await getRecord(folderStore, fromPath);
         if (!folderToCopy) {
@@ -438,16 +477,16 @@ export class StorageLocal {
         });
 
         try {
-            await createRecord(folderStore, { path: toPath }, toPath);
-
             for (const folder of foldersToCopy) {
+                folder.path = folder.path.replace(fromPath, toPath);
                 await createRecord(folderStore, folder, folder.path);
             }
 
             for (const file of filesToCopy) {
-                const fromData = await getRecord(fileStore, file.data);
-                const toData = await createRecord(dataStore, fromData);
-                await createRecord(fileStore, { ...file, data: toData }, file.path);
+                const content = await getRecord(dataStore, file.data);
+                file.data = await createRecord(dataStore, content);
+                file.path = file.path.replace(fromPath, toPath);
+                await createRecord(fileStore, file, file.path);
             }
 
             console.log("folder copied successfully from", fromPath, "to", toPath);
@@ -470,20 +509,32 @@ export class StorageLocal {
         path = normalizePath(path);
         console.log("listing files in folder", path);
 
-        const transaction = this.db.transaction(this.storeNames.file, "readwrite");
+        const transaction = this.db.transaction([this.storeNames.file, this.storeNames.folder], "readwrite");
         const fileStore = transaction.objectStore(this.storeNames.file);
         const folderStore = transaction.objectStore(this.storeNames.folder);
-        const folder = getFolderPath(path);
 
-        const exists = await getRecord(folderStore, folder);
+        const exists = await getRecord(folderStore, path);
         if (!exists) {
             throw new Error("Folder not found", path);
         }
 
-        let files = null;
+        let files = null, folders = null;
         try {
             files = await iterateRecords(fileStore, (file) => {
-                const match = file.path === folder;
+                const match = file.path.startsWith(path);
+                if (match) {
+                    return file.path;
+                }
+            });
+        }
+        catch (err) {
+            console.error("error listing files in folder", path, err);
+            throw err;
+        }
+
+        try {
+            folders = await iterateRecords(folderStore, (folder) => {
+                const match = folder.path.startsWith(path);
                 if (match) {
                     return folder.path;
                 }
@@ -494,7 +545,7 @@ export class StorageLocal {
             throw err;
         }
 
-        return folders;
+        return [...folders, ...files];
     }
 }
 

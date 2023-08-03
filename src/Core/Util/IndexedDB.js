@@ -1,15 +1,13 @@
 // Function to create or open an IndexedDB database.
 export async function openDatabase(dbName, version, upgradeCallback) {
-    return new Promise((resolve, reject) => {
-        console.log("opening database", dbName, "version", version);
-        const request = indexedDB.open(dbName, version);
+    console.log("opening database", dbName, "version", version);
+    const request = indexedDB.open(dbName, version);
 
-        request.onupgradeneeded = async (event) => {
+    return new Promise((resolve, reject) => {
+        request.onupgradeneeded = (event) => {
             console.log("upgrade needed on database", dbName);
             const db = event.target.result;
-            await upgradeCallback(db);
-            console.log("upgrade completed for database", dbName);
-            resolve(db);
+            upgradeCallback(db);
         };
 
         request.onsuccess = (event) => {
@@ -22,41 +20,54 @@ export async function openDatabase(dbName, version, upgradeCallback) {
             console.error("error opening database", dbName, event.target.error);
             reject(event.target.error);
         };
+
+        request.onblocked = (event) => {
+            console.warn("Database open blocked, another connection is open with a higher version.");
+            reject(new Error("Database open blocked, another connection is open with a higher version."));
+        };
     });
 }
 
-//Function to delete indexedb database.
+// Function to close open IndexedDB database.
+export function closeDatabase(db) {
+    console.log("closing database");
+    db.close();
+}
+
+// Function to delete indexedb database.
 export async function deleteDatabase(dbName) {
+    console.log("deleting database", dbName);
+    const request = indexedDB.deleteDatabase(dbName);
+
     return new Promise((resolve, reject) => {
-        console.log("deleting database", dbName);
-        const request = indexedDB.deleteDatabase(dbName);
-        request.onsuccess = (event) => {
+        request.onsuccess = () => {
             console.log("database deleted successfully", dbName);
             resolve();
-        }
+        };
+
         request.onerror = (event) => {
             console.error("error deleting database", dbName, event.target.error);
             reject(event.target.error);
-        }
+        };
+
+        request.onblocked = (event) => {
+            console.warn("Database deletion blocked, another connection is open.", dbName);
+            reject(new Error("Database deletion blocked, another connection is open."));
+        };
     });
 }
 
-// Function to create an object store within the database.
-export async function createObjectStore(db, objectStoreName, options) {
-    return new Promise((resolve, reject) => {
-        console.log("creating object store", objectStoreName);
-        const objectStore = db.createObjectStore(objectStoreName, options);
+//Function to create an object store within the database.
+export function createObjectStore(db, objectStoreName, options) {
+    if (db.objectStoreNames.contains(objectStoreName)) {
+        // Object store already exists, no need to create it again.
+        return db.transaction(objectStoreName).objectStore(objectStoreName);
+    }
 
-        objectStore.transaction.oncomplete = () => {
-            console.log("object store created successfully", objectStoreName);
-            resolve(objectStore);
-        };
+    console.log("Creating object store:", objectStoreName);
+    const objectStore = db.createObjectStore(objectStoreName, options);
 
-        objectStore.transaction.onerror = (event) => {
-            console.error("error creating object store", objectStoreName, event.target.error);
-            reject(event.target.error);
-        };
-    });
+    return objectStore;
 }
 
 //Function to create a record in an object store.
@@ -65,29 +76,29 @@ export async function createRecord(store, record, key) {
         const request = store.add(record, key);
         request.onsuccess = (event) => {
             const recordId = event.target.result;
-            console.log("record created successfully", recordId);
+            console.log("record created successfully", recordId, key);
             resolve(recordId);
         };
 
         request.onerror = (event) => {
-            console.error("error creating record", event.target.error);
+            console.error("error creating record", key, event.target.error);
             reject(event.target.error);
         };
     });
 }
 
 //Function to update a record in an object store.
-export async function updateRecord(store, record) {
+export async function updateRecord(store, record, key) {
     return new Promise((resolve, reject) => {
-        const request = store.put(record);
+        const request = store.put(record, key);
         request.onsuccess = (event) => {
             const recordId = event.target.result;
-            console.log("record created successfully", recordId);
+            console.log("record created successfully", key, recordId);
             resolve(recordId);
         };
 
         request.onerror = (event) => {
-            console.error("error updating record", event.target.error);
+            console.error("error updating record", key, event.target.error);
             reject(event.target.error);
         };
     });
@@ -95,6 +106,9 @@ export async function updateRecord(store, record) {
 
 //Function to get record in an object store.
 export async function getRecord(store, recordId) {
+    if (!recordId) {
+        throw "recordId is required";
+    }
     return new Promise((resolve, reject) => {
         const request = store.get(recordId);
         request.onsuccess = (event) => {
@@ -111,6 +125,9 @@ export async function getRecord(store, recordId) {
 
 //Function to delete record in an object store.
 export async function deleteRecord(store, recordId) {
+    if (!recordId) {
+        throw "recordId is required";
+    }
     return new Promise((resolve, reject) => {
         const request = store.delete(recordId);
         request.onsuccess = (event) => {

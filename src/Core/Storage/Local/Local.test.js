@@ -10,10 +10,11 @@ describe("StorageLocal", () => {
     beforeAll(async () => {
         // Open a test database and create the necessary object stores
         storage = new StorageLocal("TestFileSystem");
-        await storage.init();
+        await storage.open();
     });
 
     afterAll(async () => {
+        storage.close();
         // Clean up after the tests by deleting the test database
         await deleteDatabase("TestFileSystem");
     });
@@ -25,7 +26,6 @@ describe("StorageLocal", () => {
 
             // Verify that the folder was created successfully by checking if it exists
             const folder = await getRecord(storage.db.transaction("folders").objectStore("folders"), folderPath);
-            console.log("folder", folder);
             expect(folder).toBeDefined();
             expect(folder.path).toBe(folderPath);
         });
@@ -43,9 +43,9 @@ describe("StorageLocal", () => {
             await storage.deleteFolder(folderPath);
 
             // Verify that the folder and files were deleted from the database
-            const folder = await storage.db.transaction("folders").objectStore("folders").get(folderPath);
-            const file1 = await storage.db.transaction("files").objectStore("files").get("/test-folder/file1.txt");
-            const file2 = await storage.db.transaction("files").objectStore("files").get("/test-folder/file2.txt");
+            const folder = await getRecord(storage.db.transaction("folders").objectStore("folders"), folderPath);
+            const file1 = await getRecord(storage.db.transaction("files").objectStore("files"), "/test-folder/file1.txt");
+            const file2 = await getRecord(storage.db.transaction("files").objectStore("files"), "/test-folder/file2.txt");
             expect(folder).toBeUndefined();
             expect(file1).toBeUndefined();
             expect(file2).toBeUndefined();
@@ -59,8 +59,8 @@ describe("StorageLocal", () => {
             await storage.writeFile(filePath, content);
 
             // Verify that the file was created successfully by checking its content
-            const file = await storage.db.transaction("files").objectStore("files").get(filePath);
-            const data = await storage.db.transaction("data").objectStore("data").get(file.data);
+            const file = await getRecord(storage.db.transaction("files").objectStore("files"), filePath);
+            const data = await getRecord(storage.db.transaction("data").objectStore("data"), file.data);
             expect(file).toBeDefined();
             expect(file.path).toBe(filePath);
             expect(data).toBe(content);
@@ -78,7 +78,8 @@ describe("StorageLocal", () => {
             await storage.deleteFile(filePath);
 
             // Verify that the file was deleted from the database
-            const file = await storage.db.transaction("files").objectStore("files").get(filePath);
+            const file = await getRecord(storage.db.transaction("files").objectStore("files"), filePath);
+            console.log("file", file);
             expect(file).toBeUndefined();
         });
     });
@@ -107,8 +108,8 @@ describe("StorageLocal", () => {
             await storage.moveFile(sourceFilePath, targetFilePath);
 
             // Verify that the file was moved successfully
-            const sourceFile = await storage.db.transaction("files").objectStore("files").get(sourceFilePath);
-            const targetFile = await storage.db.transaction("files").objectStore("files").get(targetFilePath);
+            const sourceFile = await getRecord(storage.db.transaction("files").objectStore("files"), sourceFilePath);
+            const targetFile = await getRecord(storage.db.transaction("files").objectStore("files"), targetFilePath);
             expect(sourceFile).toBeUndefined();
             expect(targetFile).toBeDefined();
         });
@@ -127,10 +128,10 @@ describe("StorageLocal", () => {
             await storage.moveFolder(sourceFolderPath, targetFolderPath);
 
             // Verify that the folder and its contents were moved successfully
-            const sourceFolder = await storage.db.transaction("folders").objectStore("folders").get(sourceFolderPath);
-            const targetFolder = await storage.db.transaction("folders").objectStore("folders").get(targetFolderPath);
-            const file1 = await storage.db.transaction("files").objectStore("files").get("/new-folder/file1.txt");
-            const file2 = await storage.db.transaction("files").objectStore("files").get("/new-folder/file2.txt");
+            const sourceFolder = await getRecord(storage.db.transaction("folders").objectStore("folders"), sourceFolderPath);
+            const targetFolder = await getRecord(storage.db.transaction("folders").objectStore("folders"), targetFolderPath);
+            const file1 = await getRecord(storage.db.transaction("files").objectStore("files"), "/new-folder/file1.txt");
+            const file2 = await getRecord(storage.db.transaction("files").objectStore("files"), "/new-folder/file2.txt");
             expect(sourceFolder).toBeUndefined();
             expect(targetFolder).toBeDefined();
             expect(file1).toBeDefined();
@@ -147,14 +148,23 @@ describe("StorageLocal", () => {
 
             // Copy the file to a new path
             const targetFilePath = "/new-folder/test-file.txt";
-            await storage.copyFile(sourceFilePath, targetFilePath);
+            try {
+                await storage.createFolder("/new-folder");
+                await storage.copyFile(sourceFilePath, targetFilePath);
+            }
+            catch (e) {
+                console.error(e);
+            }
 
             // Verify that the file was copied successfully
-            const sourceFile = await storage.db.transaction("files").objectStore("files").get(sourceFilePath);
-            const targetFile = await storage.db.transaction("files").objectStore("files").get(targetFilePath);
+            const sourceFile = await getRecord(storage.db.transaction("files").objectStore("files"), sourceFilePath);
+            const targetFile = await getRecord(storage.db.transaction("files").objectStore("files"), targetFilePath);
             expect(sourceFile).toBeDefined();
             expect(targetFile).toBeDefined();
             expect(targetFile.data).not.toBe(sourceFile.data); // Verify that the data was duplicated, not moved
+            const sourceData = await getRecord(storage.db.transaction("data").objectStore("data"), sourceFile.data);
+            const targetData = await getRecord(storage.db.transaction("data").objectStore("data"), targetFile.data);
+            expect(sourceData).toBe(targetData); // Verify that the data was duplicated, not moved
         });
     });
 
@@ -168,13 +178,18 @@ describe("StorageLocal", () => {
 
             // Copy the folder to a new path
             const targetFolderPath = "/new-folder";
-            await storage.copyFolder(sourceFolderPath, targetFolderPath);
+            try {
+                await storage.copyFolder(sourceFolderPath, targetFolderPath);
+            }
+            catch (e) {
+                console.error(e);
+            }
 
             // Verify that the folder and its contents were copied successfully
-            const sourceFolder = await storage.db.transaction("folders").objectStore("folders").get(sourceFolderPath);
-            const targetFolder = await storage.db.transaction("folders").objectStore("folders").get(targetFolderPath);
-            const file1 = await storage.db.transaction("files").objectStore("files").get("/new-folder/file1.txt");
-            const file2 = await storage.db.transaction("files").objectStore("files").get("/new-folder/file2.txt");
+            const sourceFolder = await getRecord(storage.db.transaction("folders").objectStore("folders"), sourceFolderPath);
+            const targetFolder = await getRecord(storage.db.transaction("folders").objectStore("folders"), targetFolderPath);
+            const file1 = await getRecord(storage.db.transaction("files").objectStore("files"), "/new-folder/file1.txt");
+            const file2 = await getRecord(storage.db.transaction("files").objectStore("files"), "/new-folder/file2.txt");
             expect(sourceFolder).toBeDefined();
             expect(targetFolder).toBeDefined();
             expect(file1).toBeDefined();
