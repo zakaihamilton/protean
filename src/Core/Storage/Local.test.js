@@ -1,8 +1,8 @@
 import "fake-indexeddb/auto";
 import '@testing-library/jest-dom';
 // Import the StorageLocal class and other required functions for testing
-import StorageLocal from "../Local";
-import { deleteDatabase, getRecord } from "../../Util/IndexedDB";
+import StorageLocal from "./Local";
+import { deleteDatabase, getRecord } from "../Util/IndexedDB";
 
 describe("StorageLocal", () => {
     let storage;
