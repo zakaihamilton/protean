@@ -7,13 +7,13 @@ import { deleteDatabase, getRecord } from "../../Util/IndexedDB";
 describe("StorageLocal", () => {
     let storage;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         // Open a test database and create the necessary object stores
         storage = new StorageLocal("TestFileSystem");
         await storage.open();
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         storage.close();
         // Clean up after the tests by deleting the test database
         await deleteDatabase("TestFileSystem");
@@ -154,6 +154,7 @@ describe("StorageLocal", () => {
             }
             catch (e) {
                 console.error(e);
+                throw e;
             }
 
             // Verify that the file was copied successfully
@@ -183,6 +184,7 @@ describe("StorageLocal", () => {
             }
             catch (e) {
                 console.error(e);
+                throw e;
             }
 
             // Verify that the folder and its contents were copied successfully

@@ -388,46 +388,50 @@ export class StorageLocal {
         fromPath = normalizePath(fromPath);
         toPath = normalizePath(toPath);
         const folder = getFolderPath(toPath);
-        console.log("copying file", fromPath, "to", toPath);
-        const transaction = this.db.transaction(Object.keys(this.storeNames), "readwrite");
-        const fileStore = transaction.objectStore(this.storeNames.file);
-        const dataStore = transaction.objectStore(this.storeNames.data);
-        const foldersStore = transaction.objectStore(this.storeNames.folder);
+        console.log("Copying file", fromPath, "to", toPath);
 
-        const fileToCopy = await getRecord(folderStore, fromPath);
-        if (!fileToCopy) {
-            throw new Error("File not found: " + fromPath);
-        }
+        const transaction = this.db.transaction([
+            this.storeNames.folder,
+            this.storeNames.file,
+            this.storeNames.data
+        ], "readwrite");
 
-        const targetFolderExists = await getRecord(foldersStore, folder);
-        if (!targetFolderExists) {
-            throw new Error("Destination folder does not exist: " + folder);
-        }
-
-        let data = null, size = null;
         try {
+            const [foldersStore, fileStore, dataStore] = [
+                transaction.objectStore(this.storeNames.folder),
+                transaction.objectStore(this.storeNames.file),
+                transaction.objectStore(this.storeNames.data)
+            ];
+
+            const fileToCopy = await getRecord(fileStore, fromPath);
+            if (!fileToCopy) {
+                throw new Error("File not found: " + fromPath);
+            }
+
+            const fileExists = await getRecord(fileStore, toPath);
+            if (fileExists) {
+                throw new Error("File already exists: " + toPath);
+            }
+
+            const targetFolderExists = await getRecord(foldersStore, folder);
+            if (!targetFolderExists) {
+                throw new Error("Destination folder does not exist: " + folder);
+            }
+
             const file = await getRecord(fileStore, fromPath);
-            size = file.size;
             const content = await getRecord(dataStore, file.data);
-            data = await createRecord(dataStore, content);
-        }
-        catch (err) {
-            console.error("error copying file", fromPath, err);
-            throw err;
-        }
+            const copiedContent = await createRecord(dataStore, content);
 
-        const file = {
-            path: toPath,
-            size,
-            data
-        };
+            const newFile = {
+                path: toPath,
+                size: file.size,
+                data: copiedContent
+            };
 
-        try {
-            await createRecord(fileStore, file, toPath);
-            console.log("file copied successfully", fromPath, "to", toPath);
-        }
-        catch (err) {
-            console.error("error copying file", fromPath, err);
+            await createRecord(fileStore, newFile, toPath);
+            console.log("File copied successfully", fromPath, "to", toPath);
+        } catch (err) {
+            console.error("Error copying file", fromPath, err);
             throw err;
         }
     }
@@ -447,7 +451,11 @@ export class StorageLocal {
         toPath = normalizePath(toPath);
         console.log("copying folder from", fromPath, "to", toPath);
 
-        const transaction = this.db.transaction(Object.values(this.storeNames), "readwrite");
+        const transaction = this.db.transaction([
+            this.storeNames.folder,
+            this.storeNames.file,
+            this.storeNames.data
+        ], "readwrite");
         const folderStore = transaction.objectStore(this.storeNames.folder);
         const fileStore = transaction.objectStore(this.storeNames.file);
         const dataStore = transaction.objectStore(this.storeNames.data);

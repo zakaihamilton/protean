@@ -13,7 +13,7 @@ export function getFolderPath(filePath) {
         return null;
     }
 
-    const folderPath = filePath.substring(0, lastSlashIndex + 1);
+    const folderPath = filePath.substring(0, lastSlashIndex);
     return folderPath;
 }
 
