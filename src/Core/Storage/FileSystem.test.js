@@ -60,31 +60,17 @@ describe.only('FileSystemStorage', () => {
     });
 
     it('should read a file', async () => {
-        const filePath = 'file:///myFile';
-        const dataPath = 'data:///myFile';
         const content = 'Hello, world!';
-        listStorage.get = jest.fn().mockImplementation(async (path) => {
-            if (path === filePath) {
-                return { path: '/myFile' };
-            } else if (path === dataPath) {
-                return content;
-            }
-        });
 
+        await fileSystemStorage.writeFile('/myFile', content);
         const result = await fileSystemStorage.readFile('/myFile');
 
         expect(result).toBe(content);
     });
 
     it('should write a file', async () => {
-        const filePath = 'file:///myFile';
         const dataPath = 'data:///myFile';
         const content = 'New content';
-        listStorage.get = jest.fn().mockImplementation(async (path) => {
-            if (path === filePath) {
-                return { path: '/myFile' };
-            }
-        });
         listStorage.set = jest.fn();
 
         await fileSystemStorage.writeFile('/myFile', content);
