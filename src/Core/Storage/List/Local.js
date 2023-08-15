@@ -37,7 +37,7 @@ export default class ListStorageLocal extends ListStorage {
         if (!key) {
             throw new Error("Key cannot be null");
         }
-        if(typeof value === "object") {
+        if (typeof value === "object") {
             value = JSON.stringify(value);
         }
         localStorage.setItem(key, value);

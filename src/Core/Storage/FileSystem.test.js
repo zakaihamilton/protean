@@ -1,13 +1,23 @@
 import FileSystemStorage from './FileSystem';
 import "fake-indexeddb/auto";
-import Db from "./List/Db";
+import ListStorageDb from "./List/Db";
+import ListStorageLocal from "./List/Local";
+import ListStorageMemory from "./List/Memory";
 
-describe.only('FileSystemStorage', () => {
+const implementations = [
+    ListStorageDb,
+    ListStorageLocal,
+    ListStorageMemory
+].map(implementation => ([
+    implementation.name, implementation
+]));
+
+describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => {
     let listStorage;
     let fileSystemStorage;
 
     beforeEach(async () => {
-        listStorage = new Db();
+        listStorage = new implementation();
         fileSystemStorage = new FileSystemStorage(listStorage);
         await fileSystemStorage.open();
     });
