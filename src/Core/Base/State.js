@@ -4,7 +4,7 @@ import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ id, children, nodeId, ...props }) {
-        const object = State.useDynamicState([], nodeId);
+        const object = State.useDynamicState([], nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
@@ -29,7 +29,7 @@ export function createState(displayName) {
 
         return children;
     }
-    State.useDynamicState = (selector, nodeId) => {
+    State.useDynamicState = (selector, nodeId, props) => {
         let node = Node.useNode(nodeId, State);
         const lastNode = Node.useNode(nodeId);
         if (!node) {
@@ -37,7 +37,7 @@ export function createState(displayName) {
         }
         let object = node && node.get(State);
         if (!object && node) {
-            object = createObject({});
+            object = createObject(props || {});
             node.set(State, object);
         }
         useStateFromObject(object, selector);
@@ -97,3 +97,21 @@ export function useStateFromObject(object, selector) {
     useStateHandlerFromObject(object, handler);
     return object;
 };
+
+export function withState(Component, State) {
+    if (!Component) {
+        throw new Error("Component is required");
+    }
+    if (!State) {
+        Component.State = State = createState(Component.displayName || Component.name || "");
+    }
+    const Wrapped = ({ children, ...props }) => {
+        return <>
+            <State {...props} />
+            <Component>
+                {children}
+            </Component>
+        </>;
+    }
+    return Wrapped;
+}
