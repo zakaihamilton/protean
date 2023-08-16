@@ -1,38 +1,13 @@
-import React, { createContext, useContext, useMemo, useEffect } from "react";
+import React, { createContext, useContext, useRef } from "react";
 
-const root = new Map([["id", "root"]]);
+const root = { id: "root", parent: null, items: [] };
 const Context = createContext(root);
 
 export default function Node({ id, children }) {
-    const parentNode = Node.useNode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const node = useMemo(() => new Map(id ? [["id", id]] : undefined), []);
+    const parent = Node.useNode();
+    const nodeRef = useRef({ id, parent, items: [] });
 
-    useMemo(() => {
-        node.parent = parentNode;
-        node.children = [];
-        if (!parentNode.children) {
-            parentNode.children = [];
-        }
-        parentNode.children.push(node);
-    }, [node, parentNode]);
-
-    useEffect(() => {
-        return () => {
-            node.parent.children = node.parent.children.filter(el => el !== node);
-        };
-    }, [node]);
-
-    useMemo(() => {
-        if (id) {
-            node.set("id", id);
-        }
-        else {
-            node.delete("id");
-        }
-    }, [node, id]);
-
-    return <Context.Provider value={node}>
+    return <Context.Provider value={nodeRef?.current}>
         {children}
     </Context.Provider>;
 }
@@ -40,14 +15,33 @@ export default function Node({ id, children }) {
 Node.useNode = (nodeId, propId) => {
     let node = useContext(Context);
     if (nodeId) {
-        while (node && node.get("id") !== nodeId) {
+        while (node && nodeGetId(node) !== nodeId) {
             node = node.parent;
         }
     }
     if (propId) {
-        while (node && typeof node.get(propId) === "undefined") {
+        while (node && typeof nodeGetProperty(node, propId) === "undefined") {
             node = node.parent;
         }
     }
     return node;
 };
+
+export function nodeGetProperty(node, propId) {
+    const item = node?.items?.find(i => i.id === propId);
+    return item?.value;
+}
+
+export function nodeSetProperty(node, id, value) {
+    const item = node?.items?.find(i => i.id === id);
+    if (item) {
+        item.value = value;
+    }
+    else if (node) {
+        node.items.push({ id, name: id?.displayName, value });
+    }
+}
+
+export function nodeGetId(node) {
+    return node && node.id;
+}

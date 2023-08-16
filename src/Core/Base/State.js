@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import Node from "./Node";
+import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
-    function State({ id, children, nodeId, ...props }) {
+    function State({ id, nodeId, ...props }) {
         const object = State.useDynamicState([], nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
@@ -20,14 +20,7 @@ export function createState(displayName) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [changeRef.current]);
 
-        if (children) {
-            const wrapped = <Node id={id}>
-                {children}
-            </Node>;
-            children = wrapped;
-        }
-
-        return children;
+        return null;
     }
     State.useDynamicState = (selector, nodeId, props) => {
         let node = Node.useNode(nodeId, State);
@@ -35,17 +28,17 @@ export function createState(displayName) {
         if (!node) {
             node = lastNode;
         }
-        let object = node && node.get(State);
+        let object = nodeGetProperty(node, State);
         if (!object && node) {
             object = createObject(props || {});
-            node.set(State, object);
+            nodeSetProperty(node, State, object);
         }
         useStateFromObject(object, selector);
         return object;
     };
     State.usePassiveState = (nodeId) => {
         const node = Node.useNode(nodeId, State);
-        const object = node && node.get(State);
+        const object = nodeGetProperty(node, State);
         return object;
     };
     State.useState = (selector, nodeId) => {
@@ -53,7 +46,7 @@ export function createState(displayName) {
         useStateFromObject(object, selector);
         return object;
     };
-    State.displayName = displayName;
+    State.displayName = displayName + ".State";
     return State;
 }
 
@@ -99,19 +92,21 @@ export function useStateFromObject(object, selector) {
 };
 
 export function withState(Component, State) {
+    const displayName = Component.displayName || Component.name || "";
     if (!Component) {
         throw new Error("Component is required");
     }
     if (!State) {
-        Component.State = State = createState(Component.displayName || Component.name || "");
+        Component.State = State = createState(displayName);
     }
-    const Wrapped = ({ children, ...props }) => {
-        return <>
+    function Wrapped({ children, ...props }) {
+        return <Node id={displayName}>
             <State {...props} />
             <Component>
                 {children}
             </Component>
-        </>;
+        </Node>;
     }
+    Object.setPrototypeOf(Wrapped, Component);
     return Wrapped;
 }

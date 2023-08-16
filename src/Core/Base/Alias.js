@@ -1,9 +1,9 @@
-import Node from "./Node";
+import Node, { nodeGetId } from "./Node";
 
 export function createAlias(...args) {
     function Alias() {
         const node = Node.useNode();
-        const nodeId = node.get("id");
+        const nodeId = nodeGetId(node);
         return <Alias.State nodeId={nodeId} />;
     }
     Alias.State = createState(...args);
