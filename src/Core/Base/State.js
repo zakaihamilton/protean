@@ -99,7 +99,7 @@ export function withState(Component, State) {
     if (!State) {
         Component.State = State = createState(displayName);
     }
-    function Wrapped({ children, ...props }) {
+    function WrappedState({ children, ...props }) {
         return <Node id={displayName}>
             <State {...props} />
             <Component>
@@ -107,6 +107,6 @@ export function withState(Component, State) {
             </Component>
         </Node>;
     }
-    Object.setPrototypeOf(Wrapped, Component);
-    return Wrapped;
+    Object.setPrototypeOf(WrappedState, Component);
+    return WrappedState;
 }
