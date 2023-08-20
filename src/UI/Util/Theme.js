@@ -1,4 +1,4 @@
-import Node from "src/Core/Base/Node";
+import { useCallback } from "react";
 import { withState } from "src/Core/Base/State";
 
 function Theme({ children }) {
@@ -16,18 +16,30 @@ export function extendTheme(Component, name, ThemedComponent) {
     if (!Component.themes) {
         throw new Error("Component is not themed");
     }
-    Component.themes[name] = ThemedComponent;
+    if (!name) {
+        throw new Error("name is required");
+    }
+    const list = Array.isArray(name) ? name : [name];
+    for (const name of list) {
+        Component.themes[name] = ThemedComponent;
+    }
 }
 
 export function withTheme(Component) {
-    const displayName = Component.displayName || Component.name || "";
     if (!Component) {
         throw new Error("Component is required");
     }
     Component.themes = {};
     function WrappedTheme({ children, ...props }) {
         const theme = Theme.State.useState();
-        const ThemedComponent = Component.themes[theme?.name] || Component;
+        const findThemedComponent = useCallback(() => {
+            const list = Array.isArray(theme?.name) ? theme.name : [theme?.name];
+            const name = list.find(name => {
+                return Component.themes[name];
+            });
+            return Component.themes[name];
+        }, [theme.name]);
+        const ThemedComponent = findThemedComponent() || Component;
         return <ThemedComponent {...props}>
             {children}
         </ThemedComponent>;
