@@ -4,6 +4,8 @@
     padding-left: 15px;
     padding-right: 15px;
     user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .root.drag {
