@@ -1,0 +1,28 @@
+.root {
+    width: 15px;
+    height: 15px;
+    background-color: lightgray;
+    border: 1px solid transparent;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    align-self: flex-end;
+    user-select: none;
+    margin: 3px;
+    border-radius: 3px;
+}
+
+.root:hover {
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.root:hover:active {
+    background-color: white;
+}
+
+.root.active {
+    background-color: darkgray;
+}

@@ -1,0 +1,14 @@
+.root {
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.root.movable {
+    position: absolute;
+}
+
+.root.collapse {
+    flex: 0;
+}

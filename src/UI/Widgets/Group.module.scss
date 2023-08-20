@@ -1,0 +1,8 @@
+.root {
+    display: flex;
+    margin: 15px;
+}
+
+.root.vertical {
+    flex-direction: column;
+}
