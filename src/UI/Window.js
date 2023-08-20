@@ -6,9 +6,9 @@ import Content from "./Window/Content";
 import Title from "./Window/Title";
 import Drag from "./Util/Drag";
 import Region from "./Util/Region";
+import Resize from "./Window/Resize";
 
 function Window({ children }) {
-    const state = Window.State.useState();
     const region = Region.useState();
     const style = { ...region };
     const ref = useRef(null);
@@ -20,6 +20,7 @@ function Window({ children }) {
                 <Content>
                     {children}
                 </Content>
+                <Resize />
             </div>
         </>
     )

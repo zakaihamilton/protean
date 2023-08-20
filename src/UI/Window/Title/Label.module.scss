@@ -6,10 +6,6 @@
     user-select: none;
 }
 
-.root:hover:active {
-    background-color: green;
-}
-
 .root.drag {
     cursor: move;
 }
