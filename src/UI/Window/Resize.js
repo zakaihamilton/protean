@@ -7,7 +7,9 @@ function Resize() {
     const ref = useResizeDrag();
     const drag = Drag.useState();
     return (
-        <div ref={ref} className={joinClassNames(styles.root, drag.resizing && styles.drag)} />
+        <div ref={ref} className={joinClassNames(styles.root, drag.resizing && styles.drag)}>
+            <div className={styles.glyph} />
+        </div>
     )
 }
 

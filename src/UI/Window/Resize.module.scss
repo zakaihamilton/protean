@@ -1,26 +1,15 @@
 .root {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
     position: absolute;
     bottom: 0px;
     right: 0px;
-    width: 24px;
-    height: 0;
-    padding-top: 24px;
-    overflow: hidden;
-    margin: 3px;
-    opacity: 0.1;
+    width: 32px;
+    height: 32px;
     user-select: none;
     cursor: nwse-resize;
-}
-
-.root:after {
-    content: "";
-    display: block;
-    width: 0;
-    height: 0;
-    margin-top: -500px;
-
-    border-top: 500px solid transparent;
-    border-right: 500px solid black;
+    opacity: 0.1;
 }
 
 .root:hover {
@@ -29,4 +18,23 @@
 
 .root.drag {
     opacity: 1;
+}
+
+.glyph {
+    width: 12px;
+    height: 0;
+    padding-top: 12px;
+    overflow: hidden;
+    margin: 3px;
+}
+
+.glyph:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    margin-top: -500px;
+
+    border-top: 500px solid transparent;
+    border-right: 500px solid black;
 }

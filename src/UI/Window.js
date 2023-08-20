@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { withState } from "../Core/Base/State";
 import { joinClassNames } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
@@ -12,9 +12,10 @@ function Window({ children }) {
     const region = Region.useState();
     const style = { ...region };
     const ref = useRef(null);
+    const min = useMemo(() => ({ width: 150, height: 150 }), []);
     return (
         <>
-            <Drag source={ref?.current} region={region} />
+            <Drag source={ref?.current} region={region} min={min} />
             <div ref={ref} className={joinClassNames(styles.root)} style={style}>
                 <Title />
                 <Content>

@@ -60,8 +60,8 @@ export function useResizeDrag() {
         y: e.clientY - state.region.height,
     }), []);
     const moverCb = useCallback((e, state) => {
-        state.region.width = e.clientX - state.offset.x;
-        state.region.height = e.clientY - state.offset.y;
+        state.region.width = Math.max(e.clientX - state.offset.x, state.min?.width || 0);
+        state.region.height = Math.max(e.clientY - state.offset.y, state.min?.height || 0);
     }, []);
     return useDrag(initialCb, moverCb, "resizing");
 }
