@@ -1,0 +1,15 @@
+.root {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    user-select: none;
+}
+
+.root:hover:active {
+    background-color: green;
+}
+
+.root.drag {
+    cursor: move;
+}
