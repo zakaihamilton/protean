@@ -6,6 +6,11 @@
     user-select: none;
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.root:hover {
+    background-color: lightgray;
 }
 
 .root.drag {

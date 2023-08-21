@@ -7,16 +7,17 @@ import Title from "./Window/Title";
 import Drag from "./Util/Drag";
 import Region from "./Util/Region";
 import Resize from "./Window/Resize";
+import { Snap, useSnap } from "./Window/Snap";
 
 function Window({ children }) {
     const region = Region.useState();
-    const style = { ...region };
-    const ref = useRef(null);
+    const style = useSnap();
     const min = useMemo(() => ({ width: 150, height: 150 }), []);
     return (
         <>
-            <Drag source={ref?.current} region={region} min={min} />
-            <div ref={ref} className={joinClassNames(styles.root)} style={style}>
+            <Drag region={region} min={min} />
+            <Snap />
+            <div className={joinClassNames(styles.root)} style={style}>
                 <Title />
                 <Content>
                     {children}
