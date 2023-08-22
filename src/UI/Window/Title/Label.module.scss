@@ -1,12 +1,17 @@
 .root {
     display: flex;
     align-items: center;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 32px;
+    padding-right: 32px;
     user-select: none;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    border-radius: 0px 0px 3px 3px;
+    transition: background-color 0.2s;
+    height: 30px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
 }
 
 .root:hover {
@@ -14,7 +19,8 @@
 }
 
 .root.focus {
-    background-color: lightgray;
+    background-color: darkblue;
+    color: white;
 }
 
 .root.drag {
