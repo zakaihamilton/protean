@@ -11,19 +11,12 @@ function dockInBorderRegion(rect, threshold, point) {
     const leftBorder = rect.left + threshold;
     const rightBorder = rect.left + rect.width - threshold;
     const topBorder = rect.top + threshold;
-    const bottomBorder = rect.top + rect.height - threshold;
 
-    if (
-        point.x >= rect.left && point.x <= leftBorder && point.y >= topBorder && point.y <= bottomBorder
-    ) {
+    if (point.x <= leftBorder) {
         return "left";
-    } else if (
-        point.x <= rect.left + rect.width && point.x >= rightBorder && point.y >= topBorder && point.y <= bottomBorder
-    ) {
+    } else if (point.x >= rightBorder) {
         return "right";
-    } else if (
-        point.y >= rect.top && point.y <= topBorder && point.x >= leftBorder && point.x <= rightBorder
-    ) {
+    } else if (point.y <= topBorder) {
         return "top";
     }
 
@@ -34,7 +27,7 @@ export function Dock() {
     const region = Region.useState();
     const window = Window.State.useState();
     const displayRegion = useWindowRegion();
-    const dockingThreshold = 100;
+    const dockingThreshold = 32;
     const drag = Drag.useState();
 
     useEffect(() => {
