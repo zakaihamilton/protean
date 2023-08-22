@@ -24,7 +24,7 @@ export default function Home() {
         <Windows>
           <Node>
             <Region left={100} top={100} width={500} height={500} />
-            <Window label="My Window">
+            <Window label="My Window" accentColor="red">
               <Group>
                 <Button label="Button" border={true} />
               </Group>
@@ -35,7 +35,7 @@ export default function Home() {
           </Node>
           <Node>
             <Region left={100} top={100} width={500} height={500} />
-            <Window label="My Window">
+            <Window label="My Window" accentColor="green">
               <Group>
                 <Button label="Button" border={true} />
               </Group>
