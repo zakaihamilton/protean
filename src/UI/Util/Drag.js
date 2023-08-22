@@ -11,10 +11,10 @@ const useDrag = (initialCb, moverCb, prop) => {
     }, []);
     const handleMouseDown = useCallback((e) => {
         state.target = handle;
-        state.offset = initialCb(e, state);
         state[prop] = true;
+        initialCb(e, state);
     }, [state, handle, initialCb, prop]);
-    const handleMouseUp = useCallback(() => {
+    const handleMouseUp = useCallback((e) => {
         state.target = null;
         state.offset = null;
         state[prop] = false;
@@ -43,23 +43,40 @@ const useDrag = (initialCb, moverCb, prop) => {
 };
 
 export function useMoveDrag() {
-    const initialCb = useCallback((e, state) => ({
-        x: e.clientX - state.region.left,
-        y: e.clientY - state.region.top,
-    }), []);
+    const initialCb = useCallback((e, state) => {
+        if (!state.region) {
+            return;
+        }
+        state.offset = {
+            x: e.clientX - state.region.left - state?.target?.offsetLeft,
+            y: e.clientY - state.region.top - state?.target?.offsetTop
+        };
+    }, []);
     const moverCb = useCallback((e, state) => {
-        state.region.left = e.clientX - state.offset.x;
-        state.region.top = e.clientY - state.offset.y;
+        if (!state.region) {
+            return;
+        }
+        state.region.left = e.clientX - state.offset.x - state?.target?.offsetLeft;
+        state.region.top = e.clientY - state.offset.y - state?.target?.offsetTop;
+        state.touch = { x: e.clientX, y: e.clientY };
     }, []);
     return useDrag(initialCb, moverCb, "moving");
 }
 
 export function useResizeDrag() {
-    const initialCb = useCallback((e, state) => ({
-        x: e.clientX - state.region.width,
-        y: e.clientY - state.region.height,
-    }), []);
+    const initialCb = useCallback((e, state) => {
+        if (!state.region) {
+            return;
+        }
+        state.offset = {
+            x: e.clientX - state.region.width,
+            y: e.clientY - state.region.height
+        };
+    }, []);
     const moverCb = useCallback((e, state) => {
+        if (!state.region) {
+            return;
+        }
         state.region.width = Math.max(e.clientX - state.offset.x, state.min?.width || 0);
         state.region.height = Math.max(e.clientY - state.offset.y, state.min?.height || 0);
     }, []);

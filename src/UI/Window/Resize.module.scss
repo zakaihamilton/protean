@@ -20,6 +20,10 @@
     opacity: 1;
 }
 
+.root.dock {
+    display: none;
+}
+
 .glyph {
     width: 12px;
     height: 0;
