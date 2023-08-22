@@ -9,6 +9,7 @@ import Group from "src/UI/Widgets/Group"
 import "src/Theme/Glow"
 import Window from "src/UI/Window"
 import Region from "src/UI/Util/Region"
+import Windows from "src/UI/Windows"
 
 export default function Home() {
   return (
@@ -20,25 +21,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Theme name="glow">
-        <Node>
-          <Region left={100} top={100} width={500} height={500} />
-          <Window label="My Window">
-            <Group>
-              <Button label="Button" border={true} />
-            </Group>
-          </Window>
-          <Screen name="second">
-            <Collapse />
-          </Screen>
-        </Node>
-        <Node>
-          <Region left={100} top={100} width={500} height={500} />
-          <Window label="My Window">
-            <Group>
-              <Button label="Button" border={true} />
-            </Group>
-          </Window>
-        </Node>
+        <Windows>
+          <Node>
+            <Region left={100} top={100} width={500} height={500} />
+            <Window label="My Window">
+              <Group>
+                <Button label="Button" border={true} />
+              </Group>
+            </Window>
+            <Screen name="second">
+              <Collapse />
+            </Screen>
+          </Node>
+          <Node>
+            <Region left={100} top={100} width={500} height={500} />
+            <Window label="My Window">
+              <Group>
+                <Button label="Button" border={true} />
+              </Group>
+            </Window>
+          </Node>
+        </Windows>
       </Theme>
     </>
   )

@@ -4,20 +4,21 @@ import Window from "../Window";
 import { useWindowRegion } from "src/Core/Base/Window";
 import Drag from "../Util/Drag";
 
-function dockInBorderRegion(rect, threshold, point) {
+function dockInBorderRegion(rect, point) {
     if (!point || !rect) {
         return null;
     }
-    const leftBorder = rect.left + threshold;
-    const rightBorder = rect.left + rect.width - threshold;
-    const topBorder = rect.top + threshold;
+    const snapThreshold = rect.width / 3;
+    const leftBorder = rect.left + snapThreshold;
+    const rightBorder = rect.left + rect.width - snapThreshold;
+    const topBorder = rect.top + 32;
 
-    if (point.y <= topBorder) {
-        return "top";
-    } else if (point.x <= leftBorder) {
+    if (point.x <= leftBorder && point.y <= topBorder) {
         return "left";
-    } else if (point.x >= rightBorder) {
+    } else if (point.x >= rightBorder && point.y <= topBorder) {
         return "right";
+    } else if (point.y <= topBorder && point.x >= rect.left + snapThreshold && point.x <= rect.left + rect.width - snapThreshold) {
+        return "top";
     }
 
     return null;
@@ -27,11 +28,10 @@ export function Dock() {
     const region = Region.useState();
     const window = Window.State.useState();
     const displayRegion = useWindowRegion();
-    const dockingThreshold = 32;
     const drag = Drag.useState();
 
     useEffect(() => {
-        window.dock = dockInBorderRegion(displayRegion, dockingThreshold, drag?.touch);
+        window.dock = dockInBorderRegion(displayRegion, drag?.touch);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [region?.__counter, drag?.moving, window?.dock]);
 

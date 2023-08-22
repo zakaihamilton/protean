@@ -9,8 +9,8 @@ function Label() {
     const ref = useMoveDrag();
     const drag = Drag.useState();
     return (
-        <div ref={ref} className={joinClassNames(styles.root, drag.moving && styles.drag)}>
-            {window.label}
+        <div ref={ref} className={joinClassNames(styles.root, drag.moving && styles.drag, window.focus && styles.focus)}>
+            {window?.label}
         </div>
     )
 }
