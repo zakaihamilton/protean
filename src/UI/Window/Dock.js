@@ -12,12 +12,12 @@ function dockInBorderRegion(rect, threshold, point) {
     const rightBorder = rect.left + rect.width - threshold;
     const topBorder = rect.top + threshold;
 
-    if (point.x <= leftBorder) {
+    if (point.y <= topBorder) {
+        return "top";
+    } else if (point.x <= leftBorder) {
         return "left";
     } else if (point.x >= rightBorder) {
         return "right";
-    } else if (point.y <= topBorder) {
-        return "top";
     }
 
     return null;

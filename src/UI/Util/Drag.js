@@ -47,17 +47,20 @@ export function useMoveDrag() {
         if (!state.region) {
             return;
         }
+        const targetRegion = state?.target?.getBoundingClientRect();
         state.offset = {
-            x: e.clientX - state.region.left - state?.target?.offsetLeft,
-            y: e.clientY - state.region.top - state?.target?.offsetTop
+            x: e.clientX - targetRegion.left,
+            y: e.clientY - targetRegion.top
         };
     }, []);
     const moverCb = useCallback((e, state) => {
         if (!state.region) {
             return;
         }
-        state.region.left = e.clientX - state.offset.x - state?.target?.offsetLeft;
-        state.region.top = e.clientY - state.offset.y - state?.target?.offsetTop;
+        const parentRegion = state?.target?.parentElement?.getBoundingClientRect();
+        const targetRegion = state?.target?.getBoundingClientRect();
+        state.region.left = e.clientX - state.offset.x - (targetRegion.left - parentRegion.left);
+        state.region.top = e.clientY - state.offset.y - (targetRegion.top - parentRegion.top);
         state.touch = { x: e.clientX, y: e.clientY };
     }, []);
     return useDrag(initialCb, moverCb, "moving");
