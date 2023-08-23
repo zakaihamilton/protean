@@ -50,9 +50,9 @@ export function useDock() {
             height = "100%";
         }
         else if (window?.dock) {
-            left = window.dock === "left" ? 0 : "50%";
+            left = window.dock === "left" ? "0%" : "50%";
             top = 0;
-            width = "50%";
+            width = "49.8%";
             height = "100%";
         }
         return { left, top, width, height };

@@ -26,7 +26,7 @@ function Window({ children }) {
         <>
             <Drag region={region} min={min} />
             <Dock />
-            <div ref={ref} className={joinClassNames(styles.root)} style={style}>
+            <div ref={ref} className={joinClassNames(styles.root, window.focus && styles.focus)} style={style}>
                 <Title />
                 <Content>
                     {children}
