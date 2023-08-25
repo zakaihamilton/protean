@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import Region from "../Util/Region";
 import Window from "../Window";
 import { useWindowRegion } from "src/Core/Base/Window";
 import Drag from "../Util/Drag";
@@ -25,7 +24,7 @@ function dockInBorderRegion(rect, point) {
 }
 
 export function Dock() {
-    const region = Region.useState();
+    const region = Window.Region.useState();
     const window = Window.State.useState();
     const displayRegion = useWindowRegion();
     const drag = Drag.useState();
@@ -39,7 +38,7 @@ export function Dock() {
 }
 
 export function useDock() {
-    const region = Region.useState();
+    const region = Window.Region.useState();
     const window = Window.State.useState();
     const style = useMemo(() => {
         let { left, top, width, height } = region;

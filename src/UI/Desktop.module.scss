@@ -5,3 +5,10 @@
     width: 100vw;
     height: 100vh;
 }
+
+.windows {
+    display: flex;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}

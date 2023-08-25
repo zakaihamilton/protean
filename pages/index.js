@@ -1,14 +1,11 @@
 import Head from 'next/head'
 import Node from "src/Core/Base/Node"
-import Screen from "src/UI/Screen"
-import Collapse from "src/UI/Screen/Collapse"
 import Theme from "src/UI/Util/Theme"
 import Button from "src/UI/Widgets/Button"
 import Group from "src/UI/Widgets/Group"
 
 import "src/Theme/Glow"
 import Window from "src/UI/Window"
-import Region from "src/UI/Util/Region"
 import Windows from "src/UI/Windows"
 import Desktop from "src/UI/Desktop"
 
@@ -23,26 +20,24 @@ export default function Home() {
       </Head>
       <Theme name="glow">
         <Windows>
-          <Desktop />
-          <Node>
-            <Region left={100} top={100} width={500} height={500} />
-            <Window label="One" accentColor="red">
-              <Group>
-                <Button label="Button" border={true} />
-              </Group>
-            </Window>
-            <Screen name="second">
-              <Collapse />
-            </Screen>
-          </Node>
-          <Node>
-            <Region left={100} top={100} width={500} height={500} />
-            <Window label="Two" accentColor="green">
-              <Group>
-                <Button label="Button" border={true} />
-              </Group>
-            </Window>
-          </Node>
+          <Desktop>
+            <Node>
+              <Window.Region left={100} top={100} width={500} height={500} />
+              <Window label="One" accentColor="red">
+                <Group>
+                  <Button label="Button" border={true} />
+                </Group>
+              </Window>
+            </Node>
+            <Node>
+              <Window.Region left={100} top={100} width={500} height={500} />
+              <Window label="Two" accentColor="green">
+                <Group>
+                  <Button label="Button" border={true} />
+                </Group>
+              </Window>
+            </Node>
+          </Desktop>
         </Windows>
       </Theme>
     </>

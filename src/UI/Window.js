@@ -1,17 +1,16 @@
 import { useMemo, useRef } from "react";
-import { withState } from "../Core/Base/State";
+import { createState, withState } from "../Core/Base/State";
 import { joinClassNames } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
 import Title from "./Window/Title";
 import Drag from "./Util/Drag";
-import Region from "./Util/Region";
 import Resize from "./Window/Resize";
 import { Dock, useDock } from "./Window/Dock";
 import { useWindowsItem } from "./Windows";
 
 function Window({ children }) {
-    const region = Region.useState();
+    const region = Window.Region.useState();
     const dockStyle = useDock();
     const window = Window.State.useState();
     const min = useMemo(() => ({
@@ -44,5 +43,7 @@ function Window({ children }) {
         </>
     )
 }
+
+Window.Region = createState("Window.Region");
 
 export default withState(Window);
