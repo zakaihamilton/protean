@@ -1,0 +1,38 @@
+.root {
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 3px;
+    margin: 3px;
+    outline: 1px solid var(--accent-color);
+    background-color: lightgray;
+    min-width: 100px;
+    max-width: 200px;
+    border-top: 1px solid darkgray;
+    border-left: 1px solid darkgray;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    user-select: none;
+    height: 26px;
+}
+
+.root.focus {
+    outline: 2px solid var(--accent-color);
+    background-color: white;
+}
+
+.root:active {
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+}
+
+.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+}

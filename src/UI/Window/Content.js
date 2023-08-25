@@ -1,5 +1,6 @@
 import { joinClassNames } from "src/Core/Util/Styles";
 import styles from "./Content.module.scss";
+import { withTheme } from "../Util/Theme";
 
 function Content({ children }) {
     return (
@@ -9,4 +10,4 @@ function Content({ children }) {
     );
 }
 
-export default Content;
+export default withTheme(Content);

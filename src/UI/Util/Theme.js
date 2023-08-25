@@ -9,7 +9,7 @@ function Theme({ children }) {
     return children;
 }
 
-export function extendTheme(Component, name, ThemedComponent) {
+export function replaceTheme(Component, name, ThemedComponent) {
     if (!Component) {
         throw new Error("Component is required");
     }

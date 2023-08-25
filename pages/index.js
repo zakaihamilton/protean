@@ -10,6 +10,7 @@ import "src/Theme/Glow"
 import Window from "src/UI/Window"
 import Region from "src/UI/Util/Region"
 import Windows from "src/UI/Windows"
+import Desktop from "src/UI/Desktop"
 
 export default function Home() {
   return (
@@ -22,9 +23,10 @@ export default function Home() {
       </Head>
       <Theme name="glow">
         <Windows>
+          <Desktop />
           <Node>
             <Region left={100} top={100} width={500} height={500} />
-            <Window label="My Window" accentColor="red">
+            <Window label="One" accentColor="red">
               <Group>
                 <Button label="Button" border={true} />
               </Group>
@@ -35,7 +37,7 @@ export default function Home() {
           </Node>
           <Node>
             <Region left={100} top={100} width={500} height={500} />
-            <Window label="My Window" accentColor="green">
+            <Window label="Two" accentColor="green">
               <Group>
                 <Button label="Button" border={true} />
               </Group>

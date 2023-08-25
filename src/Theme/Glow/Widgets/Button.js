@@ -1,4 +1,4 @@
-import { extendTheme } from "src/UI/Util/Theme";
+import { replaceTheme } from "src/UI/Util/Theme";
 import styles from "./Button.module.scss";
 import Button from "src/UI/Widgets/Button"
 import { joinClassNames } from "src/Core/Util/Styles";
@@ -13,4 +13,4 @@ function GlowButton({ border, label, children, ...props }) {
     </div>;
 }
 
-extendTheme(Button, "glow", GlowButton);
+replaceTheme(Button, "glow", GlowButton);

@@ -13,10 +13,18 @@ import { useWindowsItem } from "./Windows";
 function Window({ children }) {
     const region = Region.useState();
     const dockStyle = useDock();
-    const min = useMemo(() => ({ width: 150, height: 150 }), []);
     const window = Window.State.useState();
+    const min = useMemo(() => ({
+        width: window?.min?.width || 150,
+        height: window?.min?.height || 150
+    }), [window?.min]);
     const ref = useRef();
     useWindowsItem(window, ref);
+
+    const className = joinClassNames(
+        styles.root,
+        window?.minimize && styles.minimize,
+        window?.focus && styles.focus);
 
     const style = useMemo(() => {
         return { ...dockStyle, zIndex: window.index };
@@ -26,7 +34,7 @@ function Window({ children }) {
         <>
             <Drag region={region} min={min} />
             <Dock />
-            <div ref={ref} className={joinClassNames(styles.root, window.focus && styles.focus)} style={style}>
+            <div ref={ref} className={className} style={style}>
                 <Title />
                 <Content>
                     {children}
