@@ -1,12 +1,12 @@
 .root {
-    display: flex;
     align-items: center;
     border-top: 1px solid black;
     background-color: lightgray;
     height: 32px;
     z-index: 9999;
+    display:none;
 }
 
 .root.visible {
-    display:none;
+    display: flex;
 }
