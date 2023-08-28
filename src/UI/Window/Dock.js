@@ -42,7 +42,7 @@ export function useDock() {
     const window = Window.State.useState();
     const style = useMemo(() => {
         let { left, top, width, height } = region;
-        if (window?.dock === "top") {
+        if (window?.dock === "top" || window.fullscreen) {
             left = 0;
             top = 0;
             width = "100%";
@@ -56,6 +56,6 @@ export function useDock() {
         }
         return { left, top, width, height };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [region?.__counter, window?.dock]);
+    }, [region?.__counter, window?.dock, window?.fullscreen]);
     return style;
 }

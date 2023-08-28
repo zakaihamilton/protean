@@ -8,6 +8,7 @@ import Drag from "./Util/Drag";
 import Resize from "./Window/Resize";
 import { Dock, useDock } from "./Window/Dock";
 import { useWindowsItem } from "./Windows";
+import Fullscreen from "./Window/Fullscreen";
 
 function Window({ children }) {
     const region = Window.Region.useState();
@@ -23,6 +24,7 @@ function Window({ children }) {
     const className = joinClassNames(
         styles.root,
         window?.minimize && styles.minimize,
+        window?.fullscreen && styles.fullscreen,
         window?.focus && styles.focus);
 
     const style = useMemo(() => {
@@ -35,6 +37,7 @@ function Window({ children }) {
             <Dock />
             <div ref={ref} className={className} style={style}>
                 <Title />
+                <Fullscreen />
                 <Content>
                     {children}
                 </Content>

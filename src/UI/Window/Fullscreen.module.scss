@@ -1,0 +1,18 @@
+.root {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    margin: 3px;
+    transition: border 0.5s;
+    z-index:10;
+}
+
+.root:hover {
+    border: 1px solid darkgray;
+}
+
+.root:hover:active {
+    border: 1px solid black;
+}
