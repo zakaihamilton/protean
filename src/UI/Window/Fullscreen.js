@@ -6,7 +6,7 @@ export default function Fullscreen() {
     const window = Window.State.useState();
 
     const onClick = useCallback(() => {
-        window.fullscreen = true;
+        window.fullscreen = !window.fullscreen;
     }, [window]);
 
     return <div className={styles.root} onClick={onClick} />;
