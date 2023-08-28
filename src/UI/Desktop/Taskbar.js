@@ -1,3 +1,4 @@
+import React, {useMemo} from "react";
 import { withTheme } from "../Util/Theme";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
