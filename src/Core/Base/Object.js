@@ -10,11 +10,18 @@ export function objectHasChanged(a, b) {
 
 export function createObject(props) {
     const callbacks = [];
+    const monitor = [];
     let counter = 0;
     const forward = (method, ...args) => {
         const result = Reflect[method](...args);
         counter++;
         callbacks && callbacks.forEach(cb => cb(method, ...args));
+        monitor && monitor.forEach(item => {
+            const [_target, key, value] = args;
+            if (key === item.key && item.cb) {
+                item.cb(key, value);
+            }
+        });
         return result;
     }
     const proxy = new Proxy({ ...props }, {
@@ -40,10 +47,25 @@ export function createObject(props) {
         enumerable: false
     });
     Object.defineProperty(proxy, "__unregister", {
-        value: () => cb => {
+        value: cb => {
             const index = callbacks.indexOf(cb);
             if (index !== -1) {
                 callbacks.splice(index, 1);
+            }
+        },
+        writable: false,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__monitor", {
+        value: (key, cb) => monitor.push({ key, cb }),
+        writable: false,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__unmonitor", {
+        value: (key, cb) => {
+            const index = monitor.findIndex(item => item.key === key && item.cb === cb);
+            if (index !== -1) {
+                monitor.splice(index, 1);
             }
         },
         writable: false,

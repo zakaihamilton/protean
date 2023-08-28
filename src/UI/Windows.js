@@ -8,17 +8,6 @@ function Windows({ children }) {
 export function useWindowsItem(window, ref) {
     const windows = Windows.State.useState();
 
-    const moveFocusTo = useCallback((target) => {
-        if (!target) {
-            target = windows.focus[windows.focus.length - 1];
-        }
-        windows.focus = [...windows.focus.filter(item => item !== target), target].filter(Boolean);
-        windows.focus.forEach((item, index) => {
-            item.focus = item === target;
-            item.index = index;
-        });
-    }, [windows]);
-
     useEffect(() => {
         if (!windows.list) {
             windows.list = [];
@@ -27,34 +16,47 @@ export function useWindowsItem(window, ref) {
             windows.focus = [];
         }
         windows.list.push(window);
-        moveFocusTo(window);
+        window.focus = true;
         return () => {
             windows.list = windows.list.filter(item => item !== window);
             windows.focus = windows.focus.filter(item => item !== window);
-            moveFocusTo(null);
+            window.focus = false;
         }
-    }, [window, windows, moveFocusTo]);
+    }, [window, windows]);
 
     useEffect(() => {
         const target = ref?.current;
         if (!target || !window) {
             return;
         }
-        window.setFocus = () => {
-            window.minimize = false;
-            moveFocusTo(window);
+        const focus = (val) => {
+            if (val) {
+                window.minimize = false;
+                windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
+            }
+            else {
+                target = windows.focus[windows.focus.length - 1];
+                windows.focus = [...windows.focus.filter(item => item !== target), target].filter(Boolean);
+            }
+            windows.focus.forEach((item, index) => {
+                item.index = index;
+            });
         };
-        window.setMinimize = () => {
-            window.minimize = true;
-            window.focus = false;
-            windows.focus = windows.focus.filter(item => item !== window);
-            moveFocusTo(null);
-        }
+        const minimize = (val) => {
+            window.focus = !val;
+            if (val) {
+                windows.focus = windows.focus.filter(item => item !== window);
+            }
+        };
+        window.__monitor("focus", focus);
+        window.__monitor("minimize", minimize);
         const handleMouseDown = () => {
-            window.setFocus();
+            window.focus = true;
         };
         target.addEventListener("mousedown", handleMouseDown);
         return () => {
+            window.__unmonitor("focus", focus);
+            window.__unmonitor("minimize", minimize);
             target.removeEventListener("mousedown", handleMouseDown);
         }
     }, [moveFocusTo, ref, window, windows]);

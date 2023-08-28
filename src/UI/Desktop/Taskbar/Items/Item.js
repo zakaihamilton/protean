@@ -11,10 +11,10 @@ function Item({ item }) {
     }, []);
     const onClick = useCallback(() => {
         if (item?.focus) {
-            item.setMinimize();
+            item.minimize = true;
         }
         else {
-            item?.setFocus();
+            item.focus = true;
         }
     }, [item]);
     return <div id={id} onClick={onClick} className={joinClassNames(styles.root, focus && styles.focus)} style={style}>
