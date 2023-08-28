@@ -35,8 +35,8 @@ export function useWindowsItem(window, ref) {
                 windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
             }
             else {
-                target = windows.focus[windows.focus.length - 1];
-                windows.focus = [...windows.focus.filter(item => item !== target), target].filter(Boolean);
+                const last = windows.focus[windows.focus.length - 1];
+                windows.focus = [...windows.focus.filter(item => item !== last), last].filter(Boolean);
             }
             windows.focus.forEach((item, index) => {
                 item.index = index;
@@ -59,7 +59,7 @@ export function useWindowsItem(window, ref) {
             window.__unmonitor("minimize", minimize);
             target.removeEventListener("mousedown", handleMouseDown);
         }
-    }, [moveFocusTo, ref, window, windows]);
+    }, [ref, window, windows]);
 }
 
 export default withState(Windows);

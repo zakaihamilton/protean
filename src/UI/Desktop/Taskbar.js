@@ -21,7 +21,7 @@ function Taskbar() {
                 state.visible = true;
             }
         }
-    }, []);
+    }, [state]);
 
     useMonitor(list, monitor);
 
