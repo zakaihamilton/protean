@@ -11,6 +11,7 @@ function Desktop({ children }) {
     return <div className={styles.root}>
         <Node>
             <Background />
+            <Taskbar.State visible={true} />
             <Desktop.Region target={ref?.current} />
             <div ref={ref} className={styles.windows}>
                 {children}
