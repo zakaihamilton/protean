@@ -58,11 +58,20 @@ export function createObject(props) {
 
 export function useMonitor(objects, handler) {
     useEffect(() => {
-        for(const object of objects) {
+        if (!objects || !handler) {
+            return;
+        }
+        for (const object of objects) {
+            if (!object) {
+                continue;
+            }
             object.__register(handler);
         }
         return () => {
-            for(const object of objects) {
+            for (const object of objects) {
+                if (!object) {
+                    continue;
+                }
                 object.__unregister(handler);
             }
         };
