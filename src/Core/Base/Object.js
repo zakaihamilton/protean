@@ -87,14 +87,14 @@ export function useMonitor(objects, handler) {
             if (!object) {
                 continue;
             }
-            object.__register(handler);
+            object.__monitor(handler);
         }
         return () => {
             for (const object of objects) {
                 if (!object) {
                     continue;
                 }
-                object.__unregister(handler);
+                object.__unmonitor(handler);
             }
         };
     }, [objects, handler]);
