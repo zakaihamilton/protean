@@ -5,6 +5,7 @@ import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";
 import { joinClassNames } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
+import { useMonitor } from "src/Core/Base/Object";
 
 function Taskbar() {
     const windows = Windows.State.useState();

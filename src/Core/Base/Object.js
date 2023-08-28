@@ -53,3 +53,16 @@ export function createObject(props) {
     });
     return proxy;
 }
+
+export function useMonitor(objects, handler) {
+    useEffect(() => {
+        for(const object of objects) {
+            object.__register(handler);
+        }
+        return () => {
+            for(const object of objects) {
+                object.__unregister(handler);
+            }
+        };
+    }, [objects, handler]);
+}
