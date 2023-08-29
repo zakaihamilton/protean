@@ -5,7 +5,7 @@ import Item from "./Items/Item";
 import { useMemo } from "react";
 
 function Items() {
-    const windows = Windows.State.useState();
+    const windows = Windows.State.useState("list");
     const list = windows.list;
 
     console.log("list", list, "windows", windows, "focus", windows.focus);
