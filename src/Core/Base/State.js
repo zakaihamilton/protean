@@ -88,7 +88,7 @@ export function useStateFromObject(object, selector) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_method, _target, key) => {
         if (key === "list") {
-            console.log("method", _method, "target", _target, "key", key);
+            console.log("method", _method, "target", _target, "key", key, "selector", selector);
         }
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
