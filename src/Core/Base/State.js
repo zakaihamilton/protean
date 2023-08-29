@@ -75,9 +75,9 @@ export function useStateHandlerFromObject(object, handler) {
         if (!object || !handler) {
             return;
         }
-        object.__register(handler);
+        object.__monitor(null, handler);
         return () => {
-            object.__unregister(handler);
+            object.__unmonitor(null, handler);
         };
     }, [object, handler]);
     return object;
@@ -85,7 +85,7 @@ export function useStateHandlerFromObject(object, handler) {
 
 export function useStateFromObject(object, selector) {
     const [, setCounter] = useState(0);
-    const handler = useCallback((_method, _target, key) => {
+    const handler = useCallback((_value, key) => {
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
