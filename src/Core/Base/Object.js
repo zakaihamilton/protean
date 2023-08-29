@@ -16,12 +16,9 @@ export function createObject(props) {
         const result = Reflect[method](...args);
         counter++;
         callbacks && callbacks.forEach(cb => cb(method, ...args));
-        console.log("monitor", monitor, "method", method, "args", args);;
         monitor && monitor.forEach(item => {
             const [_target, key, value] = args;
-            console.log("key", key, "itemKey", item.key, "value", value);
             if (key === item.key && item.cb) {
-                console.log("found monitor callback", key, value);
                 item.cb(value, key);
             }
         });
@@ -61,7 +58,6 @@ export function createObject(props) {
     });
     Object.defineProperty(proxy, "__monitor", {
         value: (key, cb) => {
-            console.log("monitor", key, cb);
             monitor.push({ key, cb })
         },
         writable: false,
@@ -69,7 +65,6 @@ export function createObject(props) {
     });
     Object.defineProperty(proxy, "__unmonitor", {
         value: (key, cb) => {
-            console.log("unmonitor", key, cb);
             const index = monitor.findIndex(item => item.key === key && item.cb === cb);
             if (index !== -1) {
                 monitor.splice(index, 1);
@@ -85,7 +80,7 @@ export function createObject(props) {
     return proxy;
 }
 
-export function useMonitor(objects, handler) {
+export function useMonitor(objects, key, handler) {
     useEffect(() => {
         if (!objects || !handler) {
             return;
@@ -94,15 +89,15 @@ export function useMonitor(objects, handler) {
             if (!object) {
                 continue;
             }
-            object.__monitor(handler);
+            object.__monitor(key, handler);
         }
         return () => {
             for (const object of objects) {
                 if (!object) {
                     continue;
                 }
-                object.__unmonitor(handler);
+                object.__unmonitor(key, handler);
             }
         };
-    }, [objects, handler]);
+    }, [objects, key, handler]);
 }

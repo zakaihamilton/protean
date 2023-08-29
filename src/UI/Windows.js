@@ -33,14 +33,12 @@ export function useWindowsItem(window, ref) {
         const updateFocus = () => {
             const available = windows.focus.filter(item => !item.minimize);
             const focused = available[available.length - 1];
-            console.log("updateFocus", focused, "available", available);
             windows.focus.forEach((item, index) => {
                 item.focus = item === focused ? true : false;
                 item.index = index;
             });
         };
         const focus = (val) => {
-            console.log("focus", val);
             if(window.minimize) {
                 return;
             }
@@ -50,7 +48,6 @@ export function useWindowsItem(window, ref) {
             updateFocus();
         };
         const minimize = (val) => {
-            console.log("minimize", val);
             if(val) {
                 window.focus = false;
             }
@@ -59,7 +56,6 @@ export function useWindowsItem(window, ref) {
         window.__monitor("minimize", minimize);
         updateFocus();
         const handleMouseDown = () => {
-            console.log("handleMouseDown", window);
             window.focus = true;
         };
         target.addEventListener("mousedown", handleMouseDown);

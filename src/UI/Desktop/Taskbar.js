@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback} from "react";
+import React, { useMemo, useCallback } from "react";
 import { withTheme } from "../Util/Theme";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
@@ -12,18 +12,11 @@ function Taskbar() {
     const list = windows.list;
     const state = Taskbar.State.useState();
 
-    const monitor = useCallback((_method, target, key, value) => {
-        if(key === "fullscreen") {
-            if(value) {
-                state.visible = false;
-            }
-            else {
-                state.visible = true;
-            }
-        }
+    const monitor = useCallback(value => {
+        state.visible = !value;
     }, [state]);
 
-    useMonitor(list, monitor);
+    useMonitor(list, "fullscreen", monitor);
 
     return <div className={joinClassNames(styles.root, state?.visible && styles.visible)}>
         <Items />
