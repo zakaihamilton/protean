@@ -29,6 +29,13 @@ export function useWindowsItem(window, ref) {
         if (!target || !window) {
             return;
         }
+        const updateFocus = () => {
+            const focused = windows.focus[windows.focus.length - 1];
+            windows.focus.forEach((item, index) => {
+                item.focus = window === focused;
+                item.index = index;
+            });
+        };
         const focus = (val) => {
             console.log("focus", val);
             if (val) {
@@ -39,11 +46,7 @@ export function useWindowsItem(window, ref) {
                 const last = windows.focus[windows.focus.length - 1];
                 windows.focus = [...windows.focus.filter(item => item !== last), last].filter(Boolean);
             }
-            const focused = windows.focus[windows.focus.length - 1];
-            windows.focus.forEach((item, index) => {
-                item.focus = window === focused;
-                item.index = index;
-            });
+            updateFocus();
         };
         const minimize = (val) => {
             console.log("minimize", val);
@@ -54,6 +57,7 @@ export function useWindowsItem(window, ref) {
         };
         window.__monitor("focus", focus);
         window.__monitor("minimize", minimize);
+        updateFocus();
         const handleMouseDown = () => {
             console.log("handleMouseDown", window);
             window.focus = true;
