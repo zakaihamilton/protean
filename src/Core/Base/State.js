@@ -69,7 +69,7 @@ export function isSelectorMatch(selector, key) {
 
 export function useStateHandlerFromObject(object, handler) {
     useEffect(() => {
-        if (!object) {
+        if (!object || !handler) {
             return;
         }
         object.__register(handler);
@@ -83,6 +83,7 @@ export function useStateHandlerFromObject(object, handler) {
 export function useStateFromObject(object, selector) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_method, _target, key) => {
+        console.log("key", key, "target", _target, "object", object, "selector", selector);
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
