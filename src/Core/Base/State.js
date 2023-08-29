@@ -88,7 +88,6 @@ export function useStateFromObject(object, selector) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_method, _target, key) => {
         if (!selector || isSelectorMatch(selector, key)) {
-            console.log("useStateFromObject updated counter", object, "selector", selector, "key", key, "value", object[key]);
             setCounter(counter => counter + 1);
         }
     }, [selector]);
