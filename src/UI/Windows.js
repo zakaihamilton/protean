@@ -32,8 +32,9 @@ export function useWindowsItem(window, ref) {
         }
         const updateFocus = () => {
             const focused = windows.focus[windows.focus.length - 1];
+            console.log("updateFocus", focused, "windows.focus", windows.focus);
             windows.focus.forEach((item, index) => {
-                item.focus = window === focused;
+                item.focus = item === focused;
                 item.index = index;
             });
         };
