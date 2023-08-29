@@ -8,6 +8,8 @@ function Items() {
     const windows = Windows.State.useState();
     const list = windows.list;
 
+    console.log("list", list, "windows", windows);
+
     const items = useMemo(() => {
         console.log("list changed", list);
         return list?.map((item, index) => {
