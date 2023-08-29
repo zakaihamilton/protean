@@ -15,8 +15,8 @@ export function useWindowsItem(window, ref) {
         if (!windows.focus) {
             windows.focus = [];
         }
-        windows.list.push(window);
-        windows.focus.push(window);
+        windows.list = [...windows.list, window];
+        windows.focus = [...windows.focus, window];
         window.focus = true;
         return () => {
             windows.list = windows.list.filter(item => item !== window);
@@ -39,7 +39,7 @@ export function useWindowsItem(window, ref) {
             });
         };
         const focus = (val) => {
-            if(window.minimize) {
+            if (window.minimize) {
                 return;
             }
             if (val) {
@@ -48,7 +48,7 @@ export function useWindowsItem(window, ref) {
             updateFocus();
         };
         const minimize = (val) => {
-            if(val) {
+            if (val) {
                 window.focus = false;
             }
         };

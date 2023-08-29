@@ -8,8 +8,14 @@ function Resize() {
     const ref = useResizeDrag();
     const drag = Drag.useState();
     const window = Window.State.useState();
+    const className = joinClassNames(
+        styles.root,
+        drag.resizing && styles.drag,
+        window.dock && styles.dock,
+        window.fullscreen && styles.fullscreen
+    );
     return (
-        <div ref={ref} className={joinClassNames(styles.root, drag.resizing && styles.drag, window.dock && styles.dock)}>
+        <div ref={ref} className={className}>
             <div className={styles.glyph} />
         </div>
     )
