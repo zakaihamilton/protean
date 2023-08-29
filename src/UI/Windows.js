@@ -6,7 +6,7 @@ function Windows({ children }) {
 }
 
 export function useWindowsItem(window, ref) {
-    const windows = Windows.State.useState([]);
+    const windows = Windows.State.useState(null);
 
     useEffect(() => {
         if (!windows.list) {

@@ -8,7 +8,7 @@ export function createWait(displayName) {
         return state?.complete;
     };
     Wait.useAsync = (promise, depends, id) => {
-        const state = Wait.useState([]);
+        const state = Wait.useState(null);
         const element = useMemo(() => {
             return [{ id: undefined, complete: false, error: undefined, value: undefined }];
         }, []);

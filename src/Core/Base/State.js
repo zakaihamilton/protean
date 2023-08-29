@@ -4,7 +4,7 @@ import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ id, nodeId, ...props }) {
-        const object = State.useDynamicState([], nodeId, { ...props });
+        const object = State.useDynamicState(null, nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
@@ -97,7 +97,7 @@ export function useStateFromObject(object, selector) {
     if (typeof selector === "string") {
         console.log("found string selector", selector);
     }
-    useStateHandlerFromObject(object, handler);
+    useStateHandlerFromObject(object, selector !== null && handler);
     return object;
 };
 

@@ -4,7 +4,7 @@ import { createState } from "./State";
 export function createEvents(...args) {
     const State = createState(...args);
     State.useEvent = (type, callback, ...args) => {
-        const state = State.useState([], ...args);
+        const state = State.useState(null, ...args);
         useEffect(() => {
             if (!state) {
                 return;
@@ -34,7 +34,7 @@ export function createEvents(...args) {
         }, [target, state?.__counter]);
     };
     State.useEventsAsCallback = (nodeId) => {
-        const state = state.useState([], nodeId);
+        const state = state.useState(null, nodeId);
         const run = useCallback((...args) => {
             const callbacks = Object.values(state);
             for (const callback of callbacks) {
