@@ -88,6 +88,7 @@ export function useStateFromObject(object, selector) {
     const handler = useCallback((_value, key) => {
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
+            setCounter(counter => counter + 1);
         }
     }, [selector]);
     useStateHandlerFromObject(object, selector !== null && handler);

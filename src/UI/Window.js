@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { createState, withState } from "../Core/Base/State";
 import { joinClassNames } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
@@ -9,6 +9,7 @@ import Resize from "./Window/Resize";
 import { Dock, useDock } from "./Window/Dock";
 import { useWindowsItem } from "./Windows";
 import Fullscreen from "./Window/Fullscreen";
+import { useElement } from "src/Core/Base/Element";
 
 function Window({ children }) {
     const region = Window.Region.useState();
@@ -18,8 +19,8 @@ function Window({ children }) {
         width: window?.min?.width || 150,
         height: window?.min?.height || 150
     }), [window?.min]);
-    const ref = useRef();
-    useWindowsItem(window, ref);
+    const ref = useElement();
+    useWindowsItem(window, ref?.current);
 
     const className = joinClassNames(
         styles.root,

@@ -1,14 +1,17 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { withState } from "src/Core/Base/State";
 
 function Windows({ children }) {
     return children;
 }
 
-export function useWindowsItem(window, ref) {
-    const windows = Windows.State.useState(null);
+export function useWindowsItem(window, target) {
+    const windows = Windows.State.useState();
 
     useEffect(() => {
+        if (!window || !target) {
+            return;
+        }
         if (!windows.list) {
             windows.list = [];
         }
@@ -17,26 +20,15 @@ export function useWindowsItem(window, ref) {
         }
         windows.list = [...windows.list, window];
         windows.focus = [...windows.focus, window];
-        window.focus = true;
-        return () => {
-            windows.list = windows.list.filter(item => item !== window);
-            windows.focus = windows.focus.filter(item => item !== window);
-            window.focus = false;
-        }
-    }, [window, windows]);
-
-    useEffect(() => {
-        const target = ref?.current;
-        if (!target || !window) {
-            return;
-        }
         const updateFocus = () => {
             const available = windows.focus.filter(item => !item.minimize);
             const focused = available[available.length - 1];
             windows.focus.forEach((item, index) => {
-                item.focus = item === focused ? true : false;
+                const isFocused = !!(item === focused);
+                item.focus = isFocused;
                 item.index = index;
             });
+            windows.focus = [...windows.focus.filter(item => item !== focused), focused];
         };
         const focus = (val) => {
             if (window.minimize) {
@@ -64,8 +56,11 @@ export function useWindowsItem(window, ref) {
             window.__unmonitor("focus", focus);
             window.__unmonitor("minimize", minimize);
             target.removeEventListener("mousedown", handleMouseDown);
+            windows.list = windows.list.filter(item => item !== window);
+            windows.focus = windows.focus.filter(item => item !== window);
+            updateFocus();
         }
-    }, [ref, window, windows]);
+    }, [target, window, windows]);
 }
 
 export default withState(Windows);
