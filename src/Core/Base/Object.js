@@ -16,7 +16,7 @@ export function createObject(props) {
         counter++;
         monitor && monitor.forEach(item => {
             const [_target, key, value] = args;
-            if (key === item.key && item.cb) {
+            if ((!item.key || key === item.key) && item.cb) {
                 item.cb(value, key);
             }
         });
