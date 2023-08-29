@@ -9,6 +9,7 @@ function Items() {
     const list = windows.list;
 
     const items = useMemo(() => {
+        console.log("list changed", list);
         return list?.map((item, index) => {
             return <Item key={item?.id || index} item={item} />;
         });
