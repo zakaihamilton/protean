@@ -30,7 +30,7 @@ export default function Home() {
               </Window>
             </Node>
             <Node>
-              <Window.Region left={100} top={100} width={500} height={500} />
+              <Window.Region left={250} top={200} width={500} height={500} />
               <Window label="Two" accentColor="green">
                 <Group>
                   <Button label="Button" border={true} />
