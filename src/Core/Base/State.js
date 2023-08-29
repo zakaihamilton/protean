@@ -91,6 +91,9 @@ export function useStateFromObject(object, selector) {
             setCounter(counter => counter + 1);
         }
     }, [selector]);
+    if(typeof selector === "string") {
+        console.log("found string selector", selector);
+    }
     useStateHandlerFromObject(object, handler);
     return object;
 };
