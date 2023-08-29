@@ -22,7 +22,7 @@ export function createObject(props) {
             console.log("key", key, "itemKey", item.key, "value", value);
             if (key === item.key && item.cb) {
                 console.log("found monitor callback", key, value);
-                item.cb(key, value);
+                item.cb(value, key);
             }
         });
         return result;
