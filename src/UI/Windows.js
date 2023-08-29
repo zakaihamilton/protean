@@ -33,6 +33,7 @@ export function useWindowsItem(window, ref) {
         const updateFocus = () => {
             const available = windows.focus.filter(item => !item.minimize);
             const focused = available[available.length - 1];
+            console.log("available", available, "focused", focused, "focusList", windows.focus);
             windows.focus.forEach((item, index) => {
                 item.focus = item === focused ? true : false;
                 item.index = index;
@@ -51,6 +52,7 @@ export function useWindowsItem(window, ref) {
             if (val) {
                 window.focus = false;
             }
+            updateFocus();
         };
         window.__monitor("focus", focus);
         window.__monitor("minimize", minimize);
