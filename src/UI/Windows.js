@@ -31,30 +31,28 @@ export function useWindowsItem(window, ref) {
             return;
         }
         const updateFocus = () => {
-            const focused = windows.focus[windows.focus.length - 1];
-            console.log("updateFocus", focused, "windows.focus", windows.focus);
+            const available = window.focus.filter(item => !item.minimize);
+            const focused = available[available.length - 1];
+            console.log("updateFocus", focused, "available", available);
             windows.focus.forEach((item, index) => {
-                item.focus = item === focused;
+                item.focus = item === focused ? true : false;
                 item.index = index;
             });
         };
         const focus = (val) => {
             console.log("focus", val);
-            if (val) {
-                window.minimize = false;
-                windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
+            if(window.minimize) {
+                return;
             }
-            else {
-                const last = windows.focus[windows.focus.length - 1];
-                windows.focus = [...windows.focus.filter(item => item !== last), last].filter(Boolean);
+            if (val) {
+                windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
             }
             updateFocus();
         };
         const minimize = (val) => {
             console.log("minimize", val);
-            window.focus = !val;
-            if (val) {
-                windows.focus = windows.focus.filter(item => item !== window);
+            if(val) {
+                window.focus = false;
             }
         };
         window.__monitor("focus", focus);

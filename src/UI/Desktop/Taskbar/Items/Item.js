@@ -14,6 +14,7 @@ function Item({ item }) {
             item.minimize = true;
         }
         else {
+            item.minimize = false;
             item.focus = true;
         }
     }, [item]);
