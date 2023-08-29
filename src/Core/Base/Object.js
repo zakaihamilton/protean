@@ -18,7 +18,9 @@ export function createObject(props) {
         callbacks && callbacks.forEach(cb => cb(method, ...args));
         monitor && monitor.forEach(item => {
             const [_target, key, value] = args;
+            console.log("key", key, "itemKey", item.key, "value", value);
             if (key === item.key && item.cb) {
+                console.log("found monitor callback", key, value);
                 item.cb(key, value);
             }
         });

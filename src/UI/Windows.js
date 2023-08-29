@@ -30,6 +30,7 @@ export function useWindowsItem(window, ref) {
             return;
         }
         const focus = (val) => {
+            console.log("focus", val);
             if (val) {
                 window.minimize = false;
                 windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
@@ -43,6 +44,7 @@ export function useWindowsItem(window, ref) {
             });
         };
         const minimize = (val) => {
+            console.log("minimize", val);
             window.focus = !val;
             if (val) {
                 windows.focus = windows.focus.filter(item => item !== window);
