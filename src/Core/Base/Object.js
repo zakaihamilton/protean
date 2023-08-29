@@ -16,6 +16,7 @@ export function createObject(props) {
         const result = Reflect[method](...args);
         counter++;
         callbacks && callbacks.forEach(cb => cb(method, ...args));
+        console.log("monitor", monitor, "method", method, "args", args);;
         monitor && monitor.forEach(item => {
             const [_target, key, value] = args;
             console.log("key", key, "itemKey", item.key, "value", value);
