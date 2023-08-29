@@ -91,6 +91,7 @@ export function useStateFromObject(object, selector) {
             console.log("useStateFromObject: method", _method, "target", _target, "key", key, "selector", selector);
         }
         if (!selector || isSelectorMatch(selector, key)) {
+            console.log("useStateFromObject updated counter", object);
             setCounter(counter => counter + 1);
         }
     }, [selector]);
