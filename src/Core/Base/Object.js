@@ -14,12 +14,12 @@ export function createObject(props) {
     const forward = (method, ...args) => {
         const result = Reflect[method](...args);
         counter++;
-        monitor && monitor.forEach(item => {
+        for (const item of monitor) {
             const [_target, key, value] = args;
             if ((!item.key || key === item.key) && item.cb) {
                 item.cb(value, key);
             }
-        });
+        }
         return result;
     }
     const proxy = new Proxy({ ...props }, {
