@@ -62,7 +62,7 @@ export function isSelectorMatch(selector, key) {
         }
     }
     else if (typeof selector === "string") {
-        console.log("selector", selector, "key", key);
+        console.log("isSelectorMatch: selector", selector, "key", key);
         return selector === key;
     }
     else if (typeof selector === "function" && !selector(key)) {
@@ -88,15 +88,12 @@ export function useStateFromObject(object, selector) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_method, _target, key) => {
         if (key === "list") {
-            console.log("method", _method, "target", _target, "key", key, "selector", selector);
+            console.log("useStateFromObject: method", _method, "target", _target, "key", key, "selector", selector);
         }
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
     }, [selector]);
-    if (typeof selector === "string") {
-        console.log("found string selector", selector);
-    }
     useStateHandlerFromObject(object, selector !== null && handler);
     return object;
 };
