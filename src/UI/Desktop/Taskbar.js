@@ -8,11 +8,12 @@ import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Object";
 
 function Taskbar() {
-    const windows = Windows.State.useState();
+    const windows = Windows.State.useState("list");
     const list = windows.list;
     const state = Taskbar.State.useState();
 
     const monitor = useCallback(value => {
+        console.log("fullscreen", value);
         state.visible = !value;
     }, [state]);
 
