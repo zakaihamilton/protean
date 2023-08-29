@@ -62,7 +62,6 @@ export function isSelectorMatch(selector, key) {
         }
     }
     else if (typeof selector === "string") {
-        console.log("isSelectorMatch: selector", selector, "key", key);
         return selector === key;
     }
     else if (typeof selector === "function" && !selector(key)) {
