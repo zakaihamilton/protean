@@ -9,17 +9,17 @@ const useDrag = (initialCb, moverCb, prop) => {
     const ref = useCallback((ref) => {
         setHandle(ref);
     }, []);
-    const handleMouseDown = useCallback((e) => {
+    const handlePointerDown = useCallback((e) => {
         state.target = handle;
         state[prop] = true;
         initialCb(e, state);
     }, [state, handle, initialCb, prop]);
-    const handleMouseUp = useCallback((e) => {
+    const handlePointerUp = useCallback((e) => {
         state.target = null;
         state.offset = null;
         state[prop] = false;
     }, [state, prop]);
-    const handleMouseMove = useCallback((e) => {
+    const handlePointerMove = useCallback((e) => {
         if (state.target && state[prop]) {
             moverCb(e, state);
         }
@@ -29,15 +29,15 @@ const useDrag = (initialCb, moverCb, prop) => {
         if (!handle) {
             return;
         }
-        handle.addEventListener("mousedown", handleMouseDown);
-        window.document.addEventListener("mouseup", handleMouseUp);
-        window.document.addEventListener("mousemove", handleMouseMove);
+        handle.addEventListener("pointerdown", handlePointerDown);
+        window.document.addEventListener("pointerup", handlePointerUp);
+        window.document.addEventListener("pointermove", handlePointerMove);
         return () => {
-            handle.removeEventListener("mousedown", handleMouseDown);
-            window.document.removeEventListener("mouseup", handleMouseUp);
-            window.document.removeEventListener("mousemove", handleMouseMove);
+            handle.removeEventListener("pointerdown", handlePointerDown);
+            window.document.removeEventListener("pointerup", handlePointerUp);
+            window.document.removeEventListener("pointermove", handlePointerMove);
         };
-    }, [handle, handleMouseDown, handleMouseMove, handleMouseUp]);
+    }, [handle, handlePointerDown, handlePointerMove, handlePointerUp]);
 
     return ref;
 };
