@@ -59,12 +59,16 @@ export function createObject(props) {
         enumerable: false
     });
     Object.defineProperty(proxy, "__monitor", {
-        value: (key, cb) => monitor.push({ key, cb }),
+        value: (key, cb) => {
+            console.log("monitor", key, cb);
+            monitor.push({ key, cb })
+        },
         writable: false,
         enumerable: false
     });
     Object.defineProperty(proxy, "__unmonitor", {
         value: (key, cb) => {
+            console.log("unmonitor", key, cb);
             const index = monitor.findIndex(item => item.key === key && item.cb === cb);
             if (index !== -1) {
                 monitor.splice(index, 1);
