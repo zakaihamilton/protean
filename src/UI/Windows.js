@@ -16,6 +16,7 @@ export function useWindowsItem(window, ref) {
             windows.focus = [];
         }
         windows.list.push(window);
+        windows.focus.push(window);
         window.focus = true;
         return () => {
             windows.list = windows.list.filter(item => item !== window);
