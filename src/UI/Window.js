@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { createState, withState } from "../Core/Base/State";
+import { createState, withState } from "src/Core/Base/State";
 import { joinClassNames } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";

@@ -1,4 +1,5 @@
 import Node, { nodeGetId } from "./Node";
+import { createState } from "src/Core/Base/State";
 
 export function createAlias(...args) {
     function Alias() {

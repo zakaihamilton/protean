@@ -95,14 +95,12 @@ export function useStateFromObject(object, selector) {
     return object;
 };
 
-export function withState(Component, State) {
-    const displayName = Component.displayName || Component.name || "";
+export function withState(Component) {
     if (!Component) {
         throw new Error("Component is required");
     }
-    if (!State) {
-        Component.State = State = createState(displayName);
-    }
+    const displayName = Component.displayName || Component.name || "";
+    const State = Component.State = createState(displayName + ".State");
     function WrappedState({ children, ...props }) {
         return <Node id={displayName}>
             <State {...props} />
