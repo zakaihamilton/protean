@@ -34,9 +34,9 @@ export function withRender(Component) {
     }
     const displayName = Component.displayName || Component.name || "";
     const State = Component.Render = createState(displayName + ".Render");
-    function WrappedRender({ children, enterTimeout=0, exitTimeout=1000, visible, ...props }) {
+    function WrappedRender({ children, visible, enterTimeout=0, exitTimeout=1000, ...props }) {
         return <Node id={displayName}>
-            <State visible={visible} />
+            <State visible={visible} enterTimeout={enterTimeout} exitTimeout={exitTimeout} />
             <Render>
                 <Component>
                     {children}
