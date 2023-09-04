@@ -33,7 +33,7 @@ export function withRender(Component) {
         throw new Error("Component is required");
     }
     const displayName = Component.displayName || Component.name || "";
-    const State = Component.State = createState(displayName + ".Render");
+    const State = Component.Render = createState(displayName + ".Render");
     function WrappedRender({ children, enterTimeout=0, exitTimeout=1000, visible, ...props }) {
         return <Node id={displayName}>
             <State visible={visible} />
