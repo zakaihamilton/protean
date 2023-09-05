@@ -84,3 +84,14 @@ export function useMonitor(objects, key, handler) {
         };
     }, [objects, key, handler]);
 }
+
+export function filterObjectByKeys(obj, keysToFilter) {
+    const filtered = {}, leftover = {};
+
+    for (const key in obj) {
+        const target = keysToFilter.includes(key) ? filtered : leftover;
+        target[key] = obj[key];
+    }
+
+    return [filtered, leftover];
+}

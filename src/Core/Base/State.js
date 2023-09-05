@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
-import { objectHasChanged, createObject } from "./Object";
+import { objectHasChanged, createObject, filterObjectByKeys } from "./Object";
 
 export function createState(displayName) {
     function State({ id, nodeId, ...props }) {
@@ -111,4 +111,28 @@ export function withState(Component) {
     }
     Object.setPrototypeOf(WrappedState, Component);
     return WrappedState;
+}
+
+export function withExtension(Component, Extension, propKeys=[]) {
+    if (!Component) {
+        throw new Error("Component is required");
+    }
+    if (!Extension) {
+        throw new Error("Extension is required");
+    }
+    const displayName = Component.displayName || Component.name || "";
+    const State = Component.State = createState(displayName + ".State");
+    function WrappedExtension({ children, ...props }) {
+        const [extensionProps, componentProps] = filterObjectByKeys(props, propKeys);
+        return <Node id={displayName}>
+            <State {...extensionProps} />
+            <Extension>
+                <Component {...componentProps}>
+                    {children}
+                </Component>
+            </Extension>
+        </Node>;
+    }
+    Object.setPrototypeOf(WrappedExtension, Component);
+    return WrappedExtension;
 }
