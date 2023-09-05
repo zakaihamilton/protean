@@ -42,7 +42,7 @@ export function withRender(Component) {
         return <Node id={displayName}>
             <State visible={visible} enterTimeout={enterTimeout} exitTimeout={exitTimeout} />
             <Render>
-                <Component>
+                <Component {...props}>
                     {children}
                 </Component>
             </Render>
