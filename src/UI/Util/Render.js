@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { createState, withExtension } from "src/Core/Base/State";
-import Node from "src/Core/Base/Node";
 
 function Render({ children }) {
     const render = Render.State.useState();
