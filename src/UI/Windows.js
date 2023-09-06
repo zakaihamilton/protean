@@ -28,7 +28,7 @@ export function useWindowsItem(window, target) {
                 item.focus = isFocused;
                 item.index = index;
             });
-            windows.focus = [...windows.focus.filter(item => item !== focused), focused];
+            windows.focus = [...windows.focus.filter(item => item !== focused), focused].filter(Boolean);
         };
         const focus = (val) => {
             if (window.minimize) {
