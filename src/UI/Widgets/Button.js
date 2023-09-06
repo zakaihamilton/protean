@@ -1,7 +1,7 @@
 import React from "react";
 import { joinClassNames } from "src/Core/Util/Styles";
 import styles from "./Button.module.scss";
-import { withTheme } from "../Util/Theme";
+import { withTheme } from "../../Core/UI/Theme";
 
 function Button({ border, label, children, ...props }) {
     const className = joinClassNames(styles.root, border && styles.border);

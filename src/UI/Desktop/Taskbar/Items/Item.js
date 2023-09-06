@@ -1,4 +1,4 @@
-import { withTheme } from "src/UI/Util/Theme";
+import { withTheme } from "src/Core/UI/Theme";
 import styles from "./Item.module.scss";
 import { joinClassNames } from "src/Core/Util/Styles";
 import { useCallback, useMemo } from "react";

@@ -1,8 +1,8 @@
-import { withTheme } from "./Util/Theme";
+import { withTheme } from "../Core/UI/Theme";
 import Background from "./Desktop/Background";
 import Taskbar from "./Desktop/Taskbar";
 import styles from "./Desktop.module.scss";
-import { createRegion } from "./Util/Region";
+import { createRegion } from "../Core/UI/Region";
 import { useElement } from "src/Core/Base/Element";
 
 function Desktop({ children }) {

@@ -1,4 +1,4 @@
-import { replaceTheme } from "src/UI/Util/Theme";
+import { replaceTheme } from "src/Core/UI/Theme";
 import styles from "./Button.module.scss";
 import Button from "src/UI/Widgets/Button"
 import { joinClassNames } from "src/Core/Util/Styles";

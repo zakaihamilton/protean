@@ -1,7 +1,7 @@
 import { joinClassNames } from "src/Core/Util/Styles";
 import styles from "./Resize.module.scss";
-import { withTheme } from "src/UI/Util/Theme";
-import Drag, { useResizeDrag } from "src/UI/Util/Drag";
+import { withTheme } from "src/Core/UI/Theme";
+import Drag, { useResizeDrag } from "src/Core/UI/Drag";
 import Window from "../Window";
 
 function Resize() {

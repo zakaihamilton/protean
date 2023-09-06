@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from "react";
-import { withTheme } from "../Util/Theme";
+import { withTheme } from "../../Core/UI/Theme";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";

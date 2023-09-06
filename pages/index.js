@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Node from "src/Core/Base/Node"
-import Theme from "src/UI/Util/Theme"
+import Theme from "src/Core/UI/Theme"
 import Button from "src/UI/Widgets/Button"
 import Group from "src/UI/Widgets/Group"
 

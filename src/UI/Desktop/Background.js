@@ -1,4 +1,4 @@
-import { withTheme } from "../Util/Theme";
+import { withTheme } from "../../Core/UI/Theme";
 import styles from "./Background.module.scss";
 
 function Background() {

@@ -1,6 +1,6 @@
 import { joinClassNames } from "src/Core/Util/Styles";
 import styles from "./Content.module.scss";
-import { withTheme } from "../Util/Theme";
+import { withTheme } from "../../Core/UI/Theme";
 
 function Content({ children }) {
     return (

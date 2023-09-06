@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { createState, withExtension } from "src/Core/Base/State";
+import { useEffect, useRef } from "react";
+import { withExtension } from "src/Core/Base/State";
 
 function Render({ children }) {
     const render = Render.State.useState();

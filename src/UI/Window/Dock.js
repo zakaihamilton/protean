@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Window from "../Window";
 import { useWindowRegion } from "src/Core/Base/Window";
-import Drag from "../Util/Drag";
+import Drag from "../../Core/UI/Drag";
 
 function dockInBorderRegion(rect, point) {
     if (!point || !rect) {

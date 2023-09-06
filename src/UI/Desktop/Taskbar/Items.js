@@ -1,4 +1,4 @@
-import { withTheme } from "src/UI/Util/Theme"
+import { withTheme } from "src/Core/UI/Theme"
 import Windows from "src/UI/Windows";
 import styles from "./Items.module.scss";
 import Item from "./Items/Item";

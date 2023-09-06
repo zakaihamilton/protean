@@ -1,6 +1,6 @@
 import { joinClassNames } from "src/Core/Util/Styles";
 import styles from "./Title.module.scss";
-import { withTheme } from "../Util/Theme";
+import { withTheme } from "../../Core/UI/Theme";
 import Label from "./Title/Label";
 import Window from "../Window";
 

@@ -4,7 +4,7 @@ import { joinClassNames } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
 import Title from "./Window/Title";
-import Drag from "./Util/Drag";
+import Drag from "../Core/UI/Drag";
 import Resize from "./Window/Resize";
 import { Dock, useDock } from "./Window/Dock";
 import { useWindowsItem } from "./Windows";
