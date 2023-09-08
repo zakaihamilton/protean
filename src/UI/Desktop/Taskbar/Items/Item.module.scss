@@ -4,18 +4,20 @@
     border: 1px solid black;
     padding-left: 6px;
     padding-right: 6px;
-    border-radius: 3px;
-    margin: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+    height: 24px;
     outline: 1px solid var(--accent-color);
     background-color: lightgray;
     min-width: 100px;
     max-width: 200px;
-    border-top: 1px solid darkgray;
-    border-left: 1px solid darkgray;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
+    border: 2px inset #fff;
+    border-right-color: black;
+    border-bottom-color: black;
+    background: lightgray;
+    color: black;
     user-select: none;
-    height: 26px;
+    border-radius: 3px;
 }
 
 .root.focus {
@@ -23,11 +25,14 @@
     background-color: white;
 }
 
-.root:active {
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid darkgray;
-    border-bottom: 1px solid darkgray;
+.root.focus:active {
+    border: 2px inset #fff;
+    background: lightgray;
+}
+
+.root:not(.focus):active {
+    border: 2px inset white;
+    background: lightgray;
 }
 
 .label {
