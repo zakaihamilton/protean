@@ -1,10 +1,10 @@
 .root {
-    align-items: center;
+    align-items: stretch;
     border-top: 1px solid black;
     background-color: lightgray;
-    height: 32px;
+    height: 48px;
     z-index: 9999;
-    display:none;
+    display: none;
 }
 
 .root.visible {

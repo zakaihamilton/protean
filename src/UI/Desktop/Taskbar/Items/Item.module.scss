@@ -1,12 +1,10 @@
 .root {
     display: flex;
     align-items: center;
-    border: 1px solid black;
+    border: 2px solid black;
+    margin: 3px;
     padding-left: 6px;
     padding-right: 6px;
-    margin-left: 3px;
-    margin-right: 3px;
-    height: 24px;
     outline: 1px solid var(--accent-color);
     background-color: lightgray;
     min-width: 100px;
@@ -17,7 +15,14 @@
     background: lightgray;
     color: black;
     user-select: none;
-    border-radius: 3px;
+    border-radius: 6px;
+}
+
+.root.minimize {
+    outline: 1px solid transparent;
+    border: 2px inset lightgray;
+    border: 2px solid lightgray;
+    color: black;
 }
 
 .root.focus {

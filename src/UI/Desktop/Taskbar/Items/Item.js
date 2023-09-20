@@ -5,7 +5,7 @@ import { useCallback, useMemo } from "react";
 import { useStateFromObject } from "src/Core/Base/State";
 
 function Item({ item }) {
-    const { id, label, focus } = useStateFromObject(item);
+    const { id, label, focus, minimize } = useStateFromObject(item);
     const style = useMemo(() => {
         return {};
     }, []);
@@ -18,7 +18,7 @@ function Item({ item }) {
             item.focus = true;
         }
     }, [item]);
-    const className = joinClassNames(styles.root, focus && styles.focus);
+    const className = joinClassNames(styles.root, focus && styles.focus, minimize && styles.minimize);
     return <div id={id} onClick={onClick} className={className} style={style}>
         <div className={styles.label}>
             {label}

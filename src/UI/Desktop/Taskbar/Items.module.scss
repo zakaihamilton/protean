@@ -1,11 +1,11 @@
 .root {
     display: flex;
-    align-items: center;
+    align-items: stretch;
 }
 
 .items {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     flex: 1;
     margin-left: 10px;
 }
