@@ -27,7 +27,8 @@ function Window({ children }) {
         window?.minimize && styles.minimize,
         window?.fullscreen && styles.fullscreen,
         window?.focus && styles.focus,
-        window?.fixed && styles.fixed
+        window?.fixed && styles.fixed,
+        window?.center && styles.center
     );
 
     const style = useMemo(() => {

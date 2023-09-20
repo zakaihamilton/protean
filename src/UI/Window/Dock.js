@@ -54,8 +54,12 @@ export function useDock() {
             width = "49.8%";
             height = "100%";
         }
+        else if (window?.center) {
+            left = "50%";
+            top = "50%";
+        }
         return { left, top, width, height };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [region?.__counter, window?.dock, window?.fullscreen]);
+    }, [region?.__counter, window?.dock, window?.fullscreen, window?.center]);
     return style;
 }

@@ -14,8 +14,14 @@ function Label() {
             "--accent-color": window.accentColor || "darkblue"
         }
     }, [window.accentColor]);
+    const className = joinClassNames(
+        styles.root,
+        drag.moving && styles.drag,
+        window.focus && styles.focus,
+        window.center && styles.disabled
+    );
     return (
-        <div ref={ref} className={joinClassNames(styles.root, drag.moving && styles.drag, window.focus && styles.focus)} style={style}>
+        <div ref={ref} className={className} style={style}>
             {window?.label}
         </div>
     )

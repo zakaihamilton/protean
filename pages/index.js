@@ -22,8 +22,8 @@ export default function Home() {
         <Windows>
           <Desktop>
             <Node>
-              <Window.Region left={100} top={100} width={500} height={500} />
-              <Window label="One" accentColor="red">
+              <Window.Region width={500} height={500} />
+              <Window label="One" fixed center accentColor="red">
                 <Group>
                   <Button label="Button" border={true} />
                 </Group>

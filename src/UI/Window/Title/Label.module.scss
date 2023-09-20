@@ -24,6 +24,6 @@
     color: white;
 }
 
-.root.drag {
+.root:not(.disabled) {
     cursor: move;
 }
