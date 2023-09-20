@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { withExtension } from "src/Core/Base/State";
+import { withExtension } from "src/Core/Base/Extension";
 
 function Render({ children }) {
     const render = Render.State.useState();
