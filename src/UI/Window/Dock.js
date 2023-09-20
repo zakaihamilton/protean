@@ -30,7 +30,7 @@ export function Dock() {
     const drag = Drag.useState();
 
     useEffect(() => {
-        window.dock = dockInBorderRegion(displayRegion, drag?.touch);
+        window.dock = !window?.fixed && dockInBorderRegion(displayRegion, drag?.touch);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [region?.__counter, drag?.moving, window?.dock]);
 

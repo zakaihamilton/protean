@@ -12,7 +12,8 @@ function Resize() {
         styles.root,
         drag.resizing && styles.drag,
         window.dock && styles.dock,
-        window.fullscreen && styles.fullscreen
+        window.fullscreen && styles.fullscreen,
+        window.fixed && styles.fixed
     );
     return (
         <div ref={ref} className={className}>

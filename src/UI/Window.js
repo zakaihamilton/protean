@@ -26,7 +26,9 @@ function Window({ children }) {
         styles.root,
         window?.minimize && styles.minimize,
         window?.fullscreen && styles.fullscreen,
-        window?.focus && styles.focus);
+        window?.focus && styles.focus,
+        window?.fixed && styles.fixed
+    );
 
     const style = useMemo(() => {
         return { ...dockStyle, zIndex: window.index };
