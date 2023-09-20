@@ -18,7 +18,8 @@ function Item({ item }) {
             item.focus = true;
         }
     }, [item]);
-    return <div id={id} onClick={onClick} className={joinClassNames(styles.root, focus && styles.focus)} style={style}>
+    const className = joinClassNames(styles.root, focus && styles.focus);
+    return <div id={id} onClick={onClick} className={className} style={style}>
         <div className={styles.label}>
             {label}
         </div>
