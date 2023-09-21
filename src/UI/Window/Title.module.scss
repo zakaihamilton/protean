@@ -10,3 +10,13 @@
 .root.fullscreen {
     display: none;
 }
+
+.separator {
+    flex: 1;
+}
+
+.actions {
+    display: flex;
+    position: absolute;
+    right: 0px;
+}

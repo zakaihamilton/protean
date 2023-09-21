@@ -19,3 +19,11 @@ html {
     flex-direction: column;
     gap: 1px;
 }
+
+*,
+*::after,
+*::before {
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-app-region: no-drag;
+}

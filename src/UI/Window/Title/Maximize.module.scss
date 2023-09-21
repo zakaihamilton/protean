@@ -1,0 +1,28 @@
+.root {
+    border: 2px solid black;
+    border-radius: 3px;
+    margin: 5px;
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+}
+
+.root:not(.focus) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.root.center,
+.root.dock {
+    display: none;
+}
+
+.root:hover {
+    opacity: 0.5;
+}
+
+.root:hover:active {
+    opacity: 1;
+}

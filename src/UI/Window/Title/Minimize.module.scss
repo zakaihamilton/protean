@@ -1,0 +1,22 @@
+.root {
+    border-bottom: 2px solid black;
+    margin: 5px;
+    z-index: 10;
+    width: 20px;
+    height: 20px;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+}
+
+.root:not(.focus) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.root:hover {
+    opacity: 0.5;
+}
+
+.root:hover:active {
+    opacity: 1;
+}
