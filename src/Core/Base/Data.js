@@ -19,7 +19,7 @@ export function createData(displayName) {
                 console.error(text, ...args);
             }
             state.loading = false;
-        }, [error]);
+        }, [state, error]);
 
         const retrieve = useCallback(async (params) => {
             state.loading = true;
@@ -65,7 +65,7 @@ export function createData(displayName) {
                 state.result = result;
             }
             state.loading = false;
-        }, [handleError]);
+        }, [handleError, mapping, prepare, state]);
 
         useEffect(() => {
             retrieve({ ...state });
