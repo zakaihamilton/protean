@@ -63,28 +63,6 @@ export function createObject(props) {
     return proxy;
 }
 
-export function useMonitor(objects, key, handler) {
-    useEffect(() => {
-        if (!objects || !handler) {
-            return;
-        }
-        for (const object of objects) {
-            if (!object) {
-                continue;
-            }
-            object.__monitor(key, handler);
-        }
-        return () => {
-            for (const object of objects) {
-                if (!object) {
-                    continue;
-                }
-                object.__unmonitor(key, handler);
-            }
-        };
-    }, [objects, key, handler]);
-}
-
 export function filterObjectByKeys(obj, keysToFilter) {
     const filtered = {}, leftover = {};
 

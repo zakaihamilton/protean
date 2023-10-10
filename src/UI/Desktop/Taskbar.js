@@ -4,7 +4,7 @@ import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";
 import { joinClassNames } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
-import { useMonitor } from "src/Core/Base/Object";
+import { useMonitor } from "src/Core/Base/Monitor";
 import { withTheme } from "src/Core/UI/Theme";
 
 function Taskbar() {
