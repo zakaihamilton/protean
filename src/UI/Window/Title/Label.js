@@ -18,7 +18,7 @@ function Label() {
         styles.root,
         drag.moving && styles.drag,
         window.focus && styles.focus,
-        window.center && styles.disabled
+        (window.center || window.maximize) && styles.disabled
     );
     return (
         <div ref={ref} className={className} style={style}>
