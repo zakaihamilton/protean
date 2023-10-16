@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
-import { objectHasChanged, createObject, filterObjectByKeys } from "./Object";
+import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ id, nodeId, ...props }) {

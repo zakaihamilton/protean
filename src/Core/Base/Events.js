@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { createState } from "./State";
 
 export function createEvents(...args) {
@@ -15,7 +15,7 @@ export function createEvents(...args) {
             };
         }, [type, callback, state]);
     };
-    State.useEventsAsListeners = (target, nodeId) => {
+    State.useListeners = (target, nodeId) => {
         const state = State.useState(undefined, nodeId);
         const entries = state && Object.entries(state) || [];
         useEffect(() => {
@@ -32,22 +32,6 @@ export function createEvents(...args) {
             };
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [target, state?.__counter]);
-    };
-    State.useEventsAsCallback = (nodeId) => {
-        const state = state.useState(null, nodeId);
-        const run = useCallback((...args) => {
-            const callbacks = Object.values(state);
-            for (const callback of callbacks) {
-                if (typeof callback !== "function") {
-                    continue;
-                }
-                const result = callbacks(...args);
-                if (result) {
-                    return result;
-                }
-            }
-        }, [state]);
-        return run;
     };
     return State;
 }
