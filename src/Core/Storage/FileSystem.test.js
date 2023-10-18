@@ -63,6 +63,7 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
                 return { path: '/myFolder' };
             }
         });
+
         listStorage.delete = jest.fn();
 
         await fileSystemStorage.deleteFolder('/myFolder');
@@ -80,28 +81,31 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
     });
 
     it('should write a file', async () => {
-        const dataPath = 'data:///myFile';
+        const filePath = 'file:///myFile';
         const content = 'New content';
         listStorage.set = jest.fn();
 
         await fileSystemStorage.writeFile('/myFile', content);
 
-        expect(listStorage.set).toHaveBeenCalledWith(dataPath, content);
+        expect(listStorage.set).toHaveBeenCalledWith(filePath, content);
     });
 
     it('should delete a file', async () => {
         const filePath = 'file:///myFile';
-        const dataPath = 'data:///myFile';
         listStorage.get = jest.fn().mockImplementation(async (path) => {
             if (path === filePath) {
                 return { path: '/myFile' };
+            }
+        });
+        listStorage.exists = jest.fn().mockImplementation(async (path) => {
+            if (path === filePath) {
+                return true;
             }
         });
         listStorage.delete = jest.fn();
 
         await fileSystemStorage.deleteFile('/myFile');
 
-        expect(listStorage.delete).toHaveBeenCalledWith(dataPath);
         expect(listStorage.delete).toHaveBeenCalledWith(filePath);
     });
 
@@ -109,9 +113,12 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
         const content = 'File content';
         listStorage.get = jest.fn().mockImplementation(async (path) => {
             if (path === 'file:///fromFile') {
-                return { path: '/fromFile' };
-            } else if (path === 'data:///fromFile') {
                 return content;
+            }
+        });
+        listStorage.exists = jest.fn().mockImplementation(async (path) => {
+            if (path === 'file:///fromFile') {
+                return true;
             }
         });
         listStorage.set = jest.fn();
@@ -119,8 +126,7 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
 
         await fileSystemStorage.moveFile('/fromFile', '/toFile');
 
-        expect(listStorage.set).toHaveBeenCalledWith('data:///toFile', content);
-        expect(listStorage.delete).toHaveBeenCalledWith('data:///fromFile');
+        expect(listStorage.set).toHaveBeenCalledWith('file:///toFile', content);
         expect(listStorage.delete).toHaveBeenCalledWith('file:///fromFile');
     });
 
@@ -128,8 +134,6 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
         const content = 'File content';
         listStorage.get = jest.fn().mockImplementation(async (path) => {
             if (path === 'file:///fromFile') {
-                return { path: '/fromFile' };
-            } else if (path === 'data:///fromFile') {
                 return content;
             }
         });
@@ -137,7 +141,7 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
 
         await fileSystemStorage.copyFile('/fromFile', '/toFile');
 
-        expect(listStorage.set).toHaveBeenCalledWith('data:///toFile', content);
+        expect(listStorage.set).toHaveBeenCalledWith('file:///toFile', content);
     });
 
     it('should check if a folder exists', async () => {

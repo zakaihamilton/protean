@@ -130,6 +130,17 @@ export default class ListStorageDb extends ListStorage {
         });
     }
 
+    /**
+     * Checks if the key exists
+     */
+    async exists(key) {
+        if (!key) {
+            throw new Error("key cannot be null");
+        }
+        const result = (await this.keys()).includes(key);
+        return result;
+    }
+
     /**  
       * Deletes a key from the storage.
       * @param {string} key - the key to delete

@@ -37,6 +37,17 @@ export default class ListStorageMemory extends ListStorage {
         this.list[key] = value;
     }
 
+    /**
+     * Checks if the key exists
+     */
+    async exists(key) {
+        if (!key) {
+            throw new Error("key cannot be null");
+        }
+        const result = Object.keys(this.list).includes(key);
+        return result;
+    }
+
     /**  
      * Deletes a key from the storage.
      * @param {string} key - the key to delete

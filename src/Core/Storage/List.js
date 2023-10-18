@@ -47,6 +47,13 @@ export default class ListStorage {
 
     }
 
+    /**
+     * Checks if the key exists
+     */
+    async exists(key) {
+
+    }
+
     /**  
      * Deletes a key from the storage.
      * @param {string} key - the key to delete

@@ -19,10 +19,6 @@ export default class FileSystemStorage {
         return "file://" + path;
     }
 
-    #getDataPath(path) {
-        return "data://" + path;
-    }
-
     /**
      * Opens the storage list asynchronously.
      *
@@ -102,12 +98,7 @@ export default class FileSystemStorage {
         }
         path = normalizePath(path);
         const filePath = this.#getFilePath(path);
-        const fileItem = await this.listStorage.get(filePath);
-        if (!fileItem) {
-            throw new Error("File does not exist: " + path);
-        }
-        const dataPath = this.#getDataPath(path);
-        return await this.listStorage.get(dataPath);
+        return await this.listStorage.get(filePath);
     }
 
     /**
@@ -123,12 +114,7 @@ export default class FileSystemStorage {
         }
         path = normalizePath(path);
         const filePath = this.#getFilePath(path);
-        let fileItem = await this.listStorage.get(filePath);
-        if (!fileItem) {
-            fileItem = await this.listStorage.set(filePath, { path });
-        }
-        const dataPath = this.#getDataPath(path);
-        return await this.listStorage.set(dataPath, content);
+        return await this.listStorage.set(filePath, content);
     }
 
     /**
@@ -143,12 +129,10 @@ export default class FileSystemStorage {
         }
         path = normalizePath(path);
         const filePath = this.#getFilePath(path);
-        const fileItem = await this.listStorage.get(filePath);
-        if (!fileItem) {
+        const exists = await this.listStorage.exists(filePath);
+        if (!exists) {
             throw new Error("File does not exist: " + path);
         }
-        const dataPath = this.#getDataPath(path);
-        await this.listStorage.delete(dataPath);
         await this.listStorage.delete(filePath);
     }
 

@@ -43,6 +43,17 @@ export default class ListStorageLocal extends ListStorage {
         localStorage.setItem(key, value);
     }
 
+    /**
+     * Checks if the key exists
+     */
+    async exists(key) {
+        if (!key) {
+            throw new Error("key cannot be null");
+        }
+        const result = Object.keys(localStorage).includes(key);
+        return result;
+    }
+
     /**  
       * Deletes a key from the storage.
       * @param {string} key - the key to delete
