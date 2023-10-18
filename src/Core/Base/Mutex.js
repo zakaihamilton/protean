@@ -1,23 +1,5 @@
-/**
- * @file Mutex.js
- * @description
- * This module provides functions for managing mutex locks using Promises. It allows you to acquire and release
- * mutex locks associated with unique IDs and check if a mutex is currently locked.
- */
-
-/**
- * A dictionary to store mutex locks.
- * @type {Object}
- */
 const locks = {};
 
-/**
- * Get a mutex lock associated with the specified ID.
- * If the lock does not exist, it is created.
- * @param {Object} options - The options object.
- * @param {string} options.id - The unique identifier for the mutex lock.
- * @returns {Object} - The mutex lock object.
- */
 export function getMutex({ id }) {
     try {
         var lock = locks[id];
@@ -44,12 +26,6 @@ export function getMutex({ id }) {
     }
 }
 
-/**
- * Check if a mutex lock associated with the specified ID is currently locked.
- * @param {Object} options - The options object.
- * @param {string} options.id - The unique identifier for the mutex lock.
- * @returns {boolean} - True if the lock is currently held, otherwise false.
- */
 export function isMutexLocked({ id }) {
     try {
         var lock = getMutex({ id });
@@ -62,12 +38,6 @@ export function isMutexLocked({ id }) {
     }
 }
 
-/**
- * Acquire a lock on the mutex associated with the specified ID.
- * @param {Object} options - The options object.
- * @param {string} options.id - The unique identifier for the mutex lock.
- * @returns {Promise} - A promise that resolves when the lock is released.
- */
 export function lockMutex({ id }) {
     try {
         var lock = getMutex({ id });
