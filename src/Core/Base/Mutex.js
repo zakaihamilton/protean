@@ -15,13 +15,11 @@ export function getMutex({ id }) {
                     unlock();
                 }
             }).catch(err => {
-                // Handle error when acquiring lock
                 console.error('Error acquiring lock:', err);
             });
         }
         return lock;
     } catch (err) {
-        // Handle unexpected errors here
         console.error('Unexpected error in getMutex:', err);
     }
 }
@@ -33,7 +31,6 @@ export function isMutexLocked({ id }) {
             return lock._locks > 0;
         }
     } catch (err) {
-        // Handle unexpected errors here
         console.error('Unexpected error in isMutexLocked:', err);
     }
 }
@@ -53,7 +50,6 @@ export function lockMutex({ id }) {
             return willUnlock;
         }
     } catch (err) {
-        // Handle unexpected errors here
         console.error('Unexpected error in lockMutex:', err);
     }
 }
