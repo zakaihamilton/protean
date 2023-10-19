@@ -8,8 +8,10 @@ import "src/Theme/Glow"
 import Window from "src/UI/Window"
 import Windows from "src/UI/Windows"
 import Desktop from "src/UI/Desktop"
+import useConfig from "src/Core/Base/Config"
 
 export default function Home() {
+  const config = useConfig();
   return (
     <>
       <Head>
@@ -25,7 +27,7 @@ export default function Home() {
               <Window.Region width={500} height={500} />
               <Window label="One" fixed center accentColor="red">
                 <Group>
-                  <Button label="Button" border={true} />
+                  <Button label={config.version} border={true} />
                 </Group>
               </Window>
             </Node>
