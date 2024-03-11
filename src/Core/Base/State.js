@@ -102,12 +102,12 @@ export function withState(Component) {
     const displayName = Component.displayName || Component.name || "";
     const State = Component.State = createState(displayName + ".State");
     function WrappedState({ children, ...props }) {
-        return <Node id={displayName}>
+        return <>
             <State {...props} />
             <Component>
                 {children}
             </Component>
-        </Node>;
+        </>;
     }
     Object.setPrototypeOf(WrappedState, Component);
     return WrappedState;

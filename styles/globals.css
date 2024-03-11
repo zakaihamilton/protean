@@ -10,6 +10,7 @@ html {
     margin: 0;
     padding: 0;
     touch-action: none;
+    overflow: hidden;
 }
 
 #__next {
