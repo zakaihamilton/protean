@@ -46,7 +46,7 @@ export function createState(displayName) {
         useStateFromObject(object, selector);
         return object;
     };
-    State.displayName = displayName + ".State";
+    State.displayName = displayName;
     return State;
 }
 
