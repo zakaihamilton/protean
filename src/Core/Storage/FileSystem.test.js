@@ -1,14 +1,19 @@
 import "fake-indexeddb/auto";
+import 'dotenv/config';
+
+global.structuredClone = (val) => JSON.parse(JSON.stringify(val))
 
 import FileSystemStorage from './FileSystem';
 import ListStorageDb from "./List/Db";
 import ListStorageLocal from "./List/Local";
 import ListStorageMemory from "./List/Memory";
+import ListStorageRedis from "./List/Redis";
 
 const implementations = [
     ListStorageDb,
     ListStorageLocal,
-    ListStorageMemory
+    ListStorageMemory,
+    ListStorageRedis
 ].map(implementation => ([
     implementation.name, implementation
 ]));
@@ -24,8 +29,8 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
     });
 
     afterEach(async () => {
-        await fileSystemStorage.close();
         await listStorage.reset();
+        await fileSystemStorage.close();
         jest.clearAllMocks();
     });
 

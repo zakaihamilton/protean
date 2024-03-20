@@ -210,12 +210,14 @@ export default class ListStorageDb extends ListStorage {
      * @return {Promise<void>} A promise that resolves when the storage is cleared
      */
     async reset() {
+        await this.close();
         const request = indexedDB.deleteDatabase(this.dbName);
 
-        return new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             request.onsuccess = resolve;
             request.onerror = (event) => reject(event.target.error);
             request.onblocked = () => reject(new Error("Database deletion blocked, another connection is open."));
         });
+        await this.open();
     }
 }

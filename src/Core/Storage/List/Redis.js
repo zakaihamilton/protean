@@ -3,21 +3,40 @@
 import ListStorage from "../List";
 import Redis from "ioredis"
 
-let client = null
-if (process.env.REDIS_URL) {
-    client = new Redis(process.env.REDIS_URL);
-}
-else {
-    throw new Error("REDIS_URL environment variable is not set");
-}
-
-export default class ListStorageMemory extends ListStorage {
+export default class ListStorageRedis extends ListStorage {
     constructor() {
         super();
     }
 
     static isSupported() {
         return true;
+    }
+
+    /**
+     * Opens the storage.
+     *
+     * @return {Promise<void>} A promise that resolves when the storage is opened.
+     */
+    async open() {
+        if (this.client) {
+            throw new Error("Storage already opened");
+        }
+        if (!process.env.REDIS_URL) {
+            throw new Error("REDIS_URL environment variable is not set");
+        }
+        this.client = new Redis(process.env.REDIS_URL);
+    }
+
+    /**
+     * Closes the storage.
+     *
+     * @return {Promise<void>} A promise that resolves when the storage is closed.
+     */
+    async close() {
+        if (this.client) {
+            await this.client.quit();
+            this.client = null;
+        }
     }
 
     /**
@@ -30,7 +49,7 @@ export default class ListStorageMemory extends ListStorage {
         if (!key) {
             throw new Error("key cannot be null");
         }
-        return client.get(key);
+        return this.client.get(key);
     }
 
     /**
@@ -44,7 +63,7 @@ export default class ListStorageMemory extends ListStorage {
         if (!key) {
             throw new Error("key cannot be null");
         }
-        client.set(key, value);
+        this.client.set(key, value);
     }
 
     /**
@@ -54,7 +73,7 @@ export default class ListStorageMemory extends ListStorage {
         if (!key) {
             throw new Error("key cannot be null");
         }
-        const result = client.exists(key);
+        const result = this.client.exists(key);
         return result;
     }
 
@@ -67,7 +86,7 @@ export default class ListStorageMemory extends ListStorage {
         if (!key) {
             throw new Error("key cannot be null");
         }
-        client.del(key);
+        this.client.del(key);
     }
 
     /**
@@ -76,7 +95,7 @@ export default class ListStorageMemory extends ListStorage {
      * @return {Promise<type>} A promise that resolves with the list of keys
      */
     async keys() {
-        return await client.keys('*');
+        return await this.client.keys('*');
     }
 
     /**
@@ -84,6 +103,6 @@ export default class ListStorageMemory extends ListStorage {
      * @return {Promise<void>} A promise that resolves when the storage is cleared
      */
     async reset() {
-        await client.flushall();
+        await this.client.flushall();
     }
 }
