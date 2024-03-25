@@ -255,13 +255,13 @@ export default class FileSystemStorage {
         const keys = await this.listStorage.keys();
         const listing = [];
         for (const key of keys) {
-            if (key.startsWith("file://")) {
-                continue;
-            }
-            if (key.startsWith("folder://")) {
+            if (!key.startsWith("file://")) {
                 continue;
             }
             const item = await this.listStorage.get(key);
+            if (!item) {
+                continue;
+            }
             if (item.path.startsWith(folderPath)) {
                 listing.push(item);
             }

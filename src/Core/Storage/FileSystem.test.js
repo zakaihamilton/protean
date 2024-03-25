@@ -1,5 +1,4 @@
 import "fake-indexeddb/auto";
-import 'dotenv/config';
 
 global.structuredClone = (val) => JSON.parse(JSON.stringify(val))
 
@@ -26,13 +25,13 @@ describe.each(implementations)('FileSystemStorage - %s', (_, implementation) => 
         listStorage = new implementation();
         fileSystemStorage = new FileSystemStorage(listStorage);
         await fileSystemStorage.open();
-    });
+    }, 10000);
 
     afterEach(async () => {
         await listStorage.reset();
         await fileSystemStorage.close();
         jest.clearAllMocks();
-    });
+    }, 10000);
 
     it('should create a folder', async () => {
         const folderPath = 'folder:///myFolder';
