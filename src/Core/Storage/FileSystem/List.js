@@ -1,7 +1,9 @@
-import { normalizePath } from "../Util/String";
+import { pathFileName, pathFolder, pathNormalize } from "src/Core/Util/Path";
+import FileStorage from "../File";
 
-export default class FileSystemStorage {
+export default class FileStorageList extends FileStorage {
     constructor(listStorage) {
+        super();
         if (!listStorage) {
             throw new Error("No storage provided");
         }
@@ -17,6 +19,11 @@ export default class FileSystemStorage {
 
     #getFilePath(path) {
         return "file://" + path;
+    }
+
+    /** Check if the storage is supported */
+    static isSupported() {
+        return true;
     }
 
     /**
@@ -47,7 +54,7 @@ export default class FileSystemStorage {
         if (!path) {
             throw new Error("path is null");
         }
-        path = normalizePath(path);
+        path = pathNormalize(path);
         const folderPath = this.#getFolderPath(path);
         /* check if the folder already exists */
         const folderItem = await this.listStorage.get(folderPath);
@@ -67,7 +74,7 @@ export default class FileSystemStorage {
         if (!path) {
             throw new Error("path is null");
         }
-        path = normalizePath(path);
+        path = pathNormalize(path);
         const listing = await this.listFolder(path);
         for (const item of listing) {
             try {
@@ -87,77 +94,6 @@ export default class FileSystemStorage {
     }
 
     /**
-     * Reads the content of a file.
-     *
-     * @param {String} path - The path of the file to be read.
-     * @return {Promise} A Promise that resolves to the content of the file.
-     */
-    async readFile(path) {
-        if (!path) {
-            throw new Error("path is null");
-        }
-        path = normalizePath(path);
-        const filePath = this.#getFilePath(path);
-        return await this.listStorage.get(filePath);
-    }
-
-    /**
-     * Creates or updates a file.
-     *
-     * @param {string} path - The path of the file.
-     * @param {string} content - The content to be written to the file.
-     * @return {Promise} - A promise that resolves when the file is successfully created or updated.
-     */
-    async writeFile(path, content) {
-        if (!path) {
-            throw new Error("path is null");
-        }
-        path = normalizePath(path);
-        const filePath = this.#getFilePath(path);
-        return await this.listStorage.set(filePath, content);
-    }
-
-    /**
-     * Deletes a file.
-     *
-     * @param {string} path - The path of the file to be deleted.
-     * @return {Promise} A promise that resolves when the file is successfully deleted.
-     */
-    async deleteFile(path) {
-        if (!path) {
-            throw new Error("path is null");
-        }
-        path = normalizePath(path);
-        const filePath = this.#getFilePath(path);
-        const exists = await this.listStorage.exists(filePath);
-        if (!exists) {
-            throw new Error("File does not exist: " + path);
-        }
-        await this.listStorage.delete(filePath);
-    }
-
-    /**
-     * Moves a file to a different location.
-     *
-     * @param {type} fromPath - the current path of the file
-     * @param {type} toPath - the new path where the file should be moved
-     * @return {type} description of return value
-     */
-    async moveFile(fromPath, toPath) {
-        if (!fromPath) {
-            throw new Error("fromPath is null");
-        }
-        if (!toPath) {
-            throw new Error("toPath is null");
-        }
-        fromPath = normalizePath(fromPath);
-        toPath = normalizePath(toPath);
-        const content = await this.readFile(fromPath);
-        await this.writeFile(toPath, content);
-        await this.deleteFile(fromPath);
-    }
-
-    /**
      * Moves a folder to a different location.
      *
      * @param {type} fromPath - the path of the folder to be moved
@@ -171,32 +107,10 @@ export default class FileSystemStorage {
         if (!toPath) {
             throw new Error("toPath is null");
         }
-        fromPath = normalizePath(fromPath);
-        toPath = normalizePath(toPath);
+        fromPath = pathNormalize(fromPath);
+        toPath = pathNormalize(toPath);
         await this.copyFolder(fromPath, toPath);
         await this.deleteFolder(fromPath);
-    }
-
-    /**
-     * Copies a file to a different location.
-     *
-     * @param {type} fromPath - the path of the file to be copied
-     * @param {type} toPath - the path of the destination location
-     * @return {type} - a description of the return value
-     */
-    async copyFile(fromPath, toPath) {
-        if (!fromPath) {
-            throw new Error("fromPath is null");
-        }
-        if (!toPath) {
-            throw new Error("toPath is null");
-        }
-        if (await this.fileExists(toPath)) {
-            throw new Error("File already exists: " + toPath);
-        }
-        fromPath = normalizePath(fromPath);
-        toPath = normalizePath(toPath);
-        await this.writeFile(toPath, await this.readFile(fromPath));
     }
 
     /**
@@ -213,8 +127,8 @@ export default class FileSystemStorage {
         if (!toPath) {
             throw new Error("toPath is null");
         }
-        fromPath = normalizePath(fromPath);
-        toPath = normalizePath(toPath);
+        fromPath = pathNormalize(fromPath);
+        toPath = pathNormalize(toPath);
         if (await this.folderExists(toPath)) {
             throw new Error("Folder already exists: " + toPath);
         }
@@ -246,7 +160,7 @@ export default class FileSystemStorage {
         if (!path) {
             throw new Error("path is null");
         }
-        path = normalizePath(path);
+        path = pathNormalize(path);
         const folderPath = this.#getFolderPath(path);
         const folderItem = await this.listStorage.get(folderPath);
         if (!folderItem) {
@@ -255,16 +169,14 @@ export default class FileSystemStorage {
         const keys = await this.listStorage.keys();
         const listing = [];
         for (const key of keys) {
-            if (!key.startsWith("file://")) {
+            const keyFolder = pathFolder(key);
+            const keyFile = pathFileName(key);
+            if (keyFolder !== folderPath) {
                 continue;
             }
-            const item = await this.listStorage.get(key);
-            if (!item) {
-                continue;
-            }
-            if (item.path.startsWith(folderPath)) {
-                listing.push(item);
-            }
+            const keyPath = [path, keyFile].join("/");
+            const type = key.startsWith("file://") ? "file" : "folder";
+            listing.push({ path: keyPath, type });
         }
 
         return listing;
@@ -278,10 +190,103 @@ export default class FileSystemStorage {
         if (!path) {
             throw new Error("path is null");
         }
-        path = normalizePath(path);
+        path = pathNormalize(path);
         const folderPath = this.#getFolderPath(path);
         const folderItem = await this.listStorage.get(folderPath);
         return !!folderItem;
+    }
+
+    /**
+     * Reads the content of a file.
+     *
+     * @param {String} path - The path of the file to be read.
+     * @return {Promise} A Promise that resolves to the content of the file.
+     */
+    async readFile(path) {
+        if (!path) {
+            throw new Error("path is null");
+        }
+        path = pathNormalize(path);
+        const filePath = this.#getFilePath(path);
+        return await this.listStorage.get(filePath);
+    }
+
+    /**
+     * Creates or updates a file.
+     *
+     * @param {string} path - The path of the file.
+     * @param {string} content - The content to be written to the file.
+     * @return {Promise} - A promise that resolves when the file is successfully created or updated.
+     */
+    async writeFile(path, content) {
+        if (!path) {
+            throw new Error("path is null");
+        }
+        path = pathNormalize(path);
+        const filePath = this.#getFilePath(path);
+        return await this.listStorage.set(filePath, content);
+    }
+
+    /**
+     * Deletes a file.
+     *
+     * @param {string} path - The path of the file to be deleted.
+     * @return {Promise} A promise that resolves when the file is successfully deleted.
+     */
+    async deleteFile(path) {
+        if (!path) {
+            throw new Error("path is null");
+        }
+        path = pathNormalize(path);
+        const filePath = this.#getFilePath(path);
+        const exists = await this.listStorage.exists(filePath);
+        if (!exists) {
+            throw new Error("File does not exist: " + path);
+        }
+        await this.listStorage.delete(filePath);
+    }
+
+    /**
+     * Moves a file to a different location.
+     *
+     * @param {type} fromPath - the current path of the file
+     * @param {type} toPath - the new path where the file should be moved
+     * @return {type} description of return value
+     */
+    async moveFile(fromPath, toPath) {
+        if (!fromPath) {
+            throw new Error("fromPath is null");
+        }
+        if (!toPath) {
+            throw new Error("toPath is null");
+        }
+        fromPath = pathNormalize(fromPath);
+        toPath = pathNormalize(toPath);
+        const content = await this.readFile(fromPath);
+        await this.writeFile(toPath, content);
+        await this.deleteFile(fromPath);
+    }
+
+    /**
+     * Copies a file to a different location.
+     *
+     * @param {type} fromPath - the path of the file to be copied
+     * @param {type} toPath - the path of the destination location
+     * @return {type} - a description of the return value
+     */
+    async copyFile(fromPath, toPath) {
+        if (!fromPath) {
+            throw new Error("fromPath is null");
+        }
+        if (!toPath) {
+            throw new Error("toPath is null");
+        }
+        if (await this.fileExists(toPath)) {
+            throw new Error("File already exists: " + toPath);
+        }
+        fromPath = pathNormalize(fromPath);
+        toPath = pathNormalize(toPath);
+        await this.writeFile(toPath, await this.readFile(fromPath));
     }
 
     /**
@@ -292,9 +297,17 @@ export default class FileSystemStorage {
         if (!path) {
             throw new Error("path is null");
         }
-        path = normalizePath(path);
+        path = pathNormalize(path);
         const filePath = this.#getFilePath(path);
         const fileItem = await this.listStorage.get(filePath);
         return !!fileItem;
+    }
+
+    /**
+     * Removes all folders and files from the storage.
+     * @return {Promise<void>} A promise that resolves when the storage is cleared
+     */
+    async reset() {
+        await this.listStorage.reset();
     }
 }

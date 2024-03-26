@@ -1,26 +1,29 @@
-export function testPermutations(components) {
+export function testPermutations(components, params = []) {
     if (components.length <= 1) {
         return null;
     }
 
     const permutations = [];
     const stack = [];
-    stack.push({ components: components.slice(), current: null });
+    stack.push({ remaining: components.slice(), current: null });
 
     while (stack.length) {
-        const { components, current } = stack.pop();
+        const { remaining, current } = stack.pop();
 
-        if (components.length === 0) {
+        if (remaining.length === 0) {
             const source = current[0], target = current[1];
-            permutations.push([source.name, target.name, [source, target]]);
+            const sourceIndex = components.findIndex(component => component.name === source.name), targetIndex = components.findIndex(component => component.name === target.name);
+            const sourceParams = params[sourceIndex], targetParams = params[targetIndex];
+            const permutation = [source.name, target.name, [source, target], [sourceParams, targetParams]];
+            permutations.push(permutation);
             continue;
         }
 
-        for (let i = 0; i < components.length; i++) {
-            const nextComponent = components[i];
-            const remainingComponents = components.slice(0, i).concat(components.slice(i + 1));
+        for (let i = 0; i < remaining.length; i++) {
+            const nextComponent = remaining[i];
+            const remainingComponents = remaining.slice(0, i).concat(remaining.slice(i + 1));
             const updatedCurrent = current ? [...current, nextComponent] : [nextComponent];
-            stack.push({ components: remainingComponents, current: updatedCurrent });
+            stack.push({ remaining: remainingComponents, current: updatedCurrent });
         }
     }
 
@@ -75,11 +78,11 @@ export function testCompare(values) {
     return values.every(value => deepCompare(value));
 }
 
-export function testInstance(components, ...params) {
+export function testInstance(components, params = []) {
     const instances = [];
     for (let i = 0; i < components.length; i++) {
         const component = components[i];
-        instances.push(new component(...params));
+        instances.push(new component(...(params[i] || [])));
     }
     return instances;
 }

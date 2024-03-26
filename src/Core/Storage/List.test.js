@@ -3,6 +3,7 @@ import "fake-indexeddb/auto";
 global.structuredClone = (val) => JSON.parse(JSON.stringify(val));
 
 import { testCompare, testInstance, testMethod, testPermutations, testResults } from "../Util/Test";
+
 import ListStorageDb from "./List/Db";
 import ListStorageLocal from "./List/Local";
 import ListStorageMemory from "./List/Memory";
