@@ -1,31 +1,24 @@
+function getComponentPermutations(components) {
+    const permutations = [];
+    for (let i = 0; i < components.length; i++) {
+        for (let j = i + 1; j < components.length; j++) {
+            permutations.push([components[i], components[j]]);
+        }
+    }
+    return permutations;
+}
+
 export function testPermutations(components, params = []) {
     if (components.length <= 1) {
         return null;
     }
 
-    const permutations = [];
-    const stack = [];
-    stack.push({ remaining: components.slice(), current: null });
-
-    while (stack.length) {
-        const { remaining, current } = stack.pop();
-
-        if (remaining.length === 0) {
-            const source = current[0], target = current[1];
-            const sourceIndex = components.findIndex(component => component.name === source.name), targetIndex = components.findIndex(component => component.name === target.name);
-            const sourceParams = params[sourceIndex], targetParams = params[targetIndex];
-            const permutation = [source.name, target.name, [source, target], [sourceParams, targetParams]];
-            permutations.push(permutation);
-            continue;
-        }
-
-        for (let i = 0; i < remaining.length; i++) {
-            const nextComponent = remaining[i];
-            const remainingComponents = remaining.slice(0, i).concat(remaining.slice(i + 1));
-            const updatedCurrent = current ? [...current, nextComponent] : [nextComponent];
-            stack.push({ remaining: remainingComponents, current: updatedCurrent });
-        }
-    }
+    const permutations = getComponentPermutations(components).map(([source, target]) => {
+        const sourceIndex = components.findIndex(component => component.name === source.name), targetIndex = components.findIndex(component => component.name === target.name);
+        const sourceParams = params[sourceIndex], targetParams = params[targetIndex];
+        const permutation = [source.name, target.name, [source, target], [sourceParams, targetParams]];
+        return permutation;
+    });
 
     return permutations;
 }

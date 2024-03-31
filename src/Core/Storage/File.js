@@ -9,7 +9,7 @@ export default class FileStorage {
     }
 
     /**
-     * Opens the storage list asynchronously.
+     * Opens the storage asynchronously.
      *
      */
     async open() {
@@ -17,7 +17,7 @@ export default class FileStorage {
     }
 
     /**
-     * Closes the connection to the list storage.
+     * Closes the connection to the storage.
      *
      * @param {} 
      * @return {} 

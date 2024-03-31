@@ -8,12 +8,14 @@ import ListStorageDb from "./List/Db";
 import ListStorageLocal from "./List/Local";
 import ListStorageMemory from "./List/Memory";
 import ListStorageRedis from "./List/Redis";
+import ListStorageS3 from "./List/S3";
 
 const implementations = [
     ListStorageDb,
     ListStorageLocal,
     ListStorageMemory,
-    ListStorageRedis
+    ListStorageRedis,
+    ListStorageS3
 ];
 
 const permutations = testPermutations(implementations);
