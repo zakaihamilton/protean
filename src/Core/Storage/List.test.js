@@ -9,13 +9,15 @@ import ListStorageLocal from "./List/Local";
 import ListStorageMemory from "./List/Memory";
 import ListStorageRedis from "./List/Redis";
 import ListStorageS3 from "./List/S3";
+import ListStorageMongo from "./List/Mongo";
 
 const implementations = [
+    ListStorageRedis,
+    ListStorageS3,
+    ListStorageMongo,
     ListStorageDb,
     ListStorageLocal,
-    ListStorageMemory,
-    ListStorageRedis,
-    ListStorageS3
+    ListStorageMemory
 ];
 
 const permutations = testPermutations(implementations);

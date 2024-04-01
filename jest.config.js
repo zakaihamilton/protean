@@ -7,6 +7,7 @@ const customJestConfig = {
     testMatch: ["<rootDir>/src/**/*.test.js"],
     testEnvironment: "jest-environment-jsdom",
     setupFiles: [
+        "./jest.polyfills.js",
         "dotenv/config"
     ],
     moduleNameMapper: {

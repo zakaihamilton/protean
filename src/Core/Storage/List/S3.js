@@ -211,8 +211,8 @@ export default class ListStorageS3 extends ListStorage {
                     },
                 });
                 let deleted = await this.client.send(deleteCommand);
-                count += deleted.Deleted.length;
-                if (deleted.Errors) {
+                count += deleted?.Deleted?.length;
+                if (deleted?.Errors) {
                     console.error(deleted.Errors.map((error) => console.log(`${error.Key} could not be deleted - ${error.Code}`)));
                 }
             }
