@@ -1,4 +1,4 @@
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 import styles from "./Resize.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import Drag, { useResizeDrag } from "src/Core/UI/Drag";
@@ -8,7 +8,7 @@ function Resize() {
     const ref = useResizeDrag();
     const drag = Drag.useState();
     const window = Window.State.useState();
-    const className = joinClassNames(
+    const classes = className(
         styles.root,
         drag.resizing && styles.drag,
         window.dock && styles.dock,
@@ -16,7 +16,7 @@ function Resize() {
         window.fixed && styles.fixed
     );
     return (
-        <div ref={ref} className={className}>
+        <div ref={ref} className={classes}>
             <div className={styles.glyph} />
         </div>
     )

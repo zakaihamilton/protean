@@ -4,7 +4,7 @@ import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ id, nodeId, ...props }) {
-        const object = State.useDynamicState(null, nodeId, { ...props });
+        const object = State.useState(null, nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
@@ -22,7 +22,7 @@ export function createState(displayName) {
 
         return null;
     }
-    State.useDynamicState = (selector, nodeId, props) => {
+    State.useState = (selector, nodeId, props) => {
         let node = Node.useNode(nodeId, State);
         const lastNode = Node.useNode(nodeId);
         if (!node) {
@@ -39,11 +39,6 @@ export function createState(displayName) {
     State.usePassiveState = (nodeId) => {
         const node = Node.useNode(nodeId, State);
         const object = nodeGetProperty(node, State);
-        return object;
-    };
-    State.useState = (selector, nodeId) => {
-        const object = State.usePassiveState(nodeId);
-        useStateFromObject(object, selector);
         return object;
     };
     State.displayName = displayName;

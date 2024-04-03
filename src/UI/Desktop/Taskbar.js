@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
 import { withTheme } from "src/Core/UI/Theme";
@@ -19,8 +19,8 @@ function Taskbar() {
 
     useMonitor(list, "fullscreen", monitor);
 
-    const className = joinClassNames(styles.root, state?.visible && styles.visible);
-    return <div className={className}>
+    const classes = className(styles.root, state?.visible && styles.visible);
+    return <div className={classes}>
         <Items />
     </div>;
 }

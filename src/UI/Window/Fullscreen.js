@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import styles from "./Fullscreen.module.scss";
 import Window from "../Window";
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 
 export default function Fullscreen() {
     const window = Window.State.useState();
@@ -10,6 +10,6 @@ export default function Fullscreen() {
         window.fullscreen = !window.fullscreen;
     }, [window]);
 
-    const className = joinClassNames(styles.root, window.fixed && styles.fixed);
-    return <div className={className} onClick={onClick} />;
+    const classes = className(styles.root, window.fixed && styles.fixed);
+    return <div className={classes} onClick={onClick} />;
 }

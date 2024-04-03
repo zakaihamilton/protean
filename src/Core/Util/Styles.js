@@ -1,3 +1,3 @@
-export function joinClassNames(...classes) {
+export function className(...classes) {
     return classes.filter(Boolean).join(" ");
 }

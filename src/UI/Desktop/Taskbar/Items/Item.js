@@ -1,6 +1,6 @@
 import { withTheme } from "src/Core/UI/Theme";
 import styles from "./Item.module.scss";
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 import { useCallback, useMemo } from "react";
 import { useStateFromObject } from "src/Core/Base/State";
 
@@ -18,8 +18,8 @@ function Item({ item }) {
             item.focus = true;
         }
     }, [item]);
-    const className = joinClassNames(styles.root, focus && styles.focus, minimize && styles.minimize);
-    return <div id={id} onClick={onClick} className={className} style={style}>
+    const classes = className(styles.root, focus && styles.focus, minimize && styles.minimize);
+    return <div id={id} onClick={onClick} className={classes} style={style}>
         <div className={styles.label}>
             {label}
         </div>

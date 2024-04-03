@@ -1,4 +1,4 @@
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 import styles from "./Title.module.scss";
 import { withTheme } from "../../Core/UI/Theme";
 import Label from "./Title/Label";
@@ -9,7 +9,7 @@ import Maximize from "./Title/Maximize";
 function Title({ children }) {
     const window = Window.State.useState();
     return (
-        <div className={joinClassNames(styles.root, window?.fullscreen && styles.fullscreen)}>
+        <div className={className(styles.root, window?.fullscreen && styles.fullscreen)}>
             <div className={styles.separator} />
             <Label />
             {children}

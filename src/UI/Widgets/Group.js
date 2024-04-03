@@ -1,9 +1,9 @@
-import { joinClassNames } from "src/Core/Util/Styles";
+import { className } from "src/Core/Util/Styles";
 import styles from "./Group.module.scss";
 
 export default function Group({ vertical, children }) {
-    const className = joinClassNames(styles.root, vertical && styles.vertical);
-    return <div className={className}>
+    const classes = className(styles.root, vertical && styles.vertical);
+    return <div className={classes}>
         {children}
     </div>;
 }

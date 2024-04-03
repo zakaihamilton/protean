@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { createState, withState } from "src/Core/Base/State";
-import { joinClassNames } from "../Core/Util/Styles";
+import { className } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
 import Title from "./Window/Title";
@@ -22,7 +22,7 @@ function Window({ children }) {
     const ref = useElement();
     useWindowsItem(window, ref?.current);
 
-    const className = joinClassNames(
+    const classes = className(
         styles.root,
         window?.minimize && styles.minimize,
         window?.fullscreen && styles.fullscreen,
@@ -39,7 +39,7 @@ function Window({ children }) {
         <>
             <Drag region={region} min={min} />
             <Dock />
-            <div ref={ref} className={className} style={style}>
+            <div ref={ref} className={classes} style={style}>
                 <Title />
                 <Fullscreen />
                 <Content>
