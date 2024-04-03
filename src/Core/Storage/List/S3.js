@@ -9,9 +9,9 @@ import {
     ListObjectsV2Command
 } from "@aws-sdk/client-s3";
 
-import ListStorage from "../List";
+import StorageList from "../List";
 
-export default class ListStorageS3 extends ListStorage {
+export default class StorageListS3 extends StorageList {
     constructor() {
         super();
     }

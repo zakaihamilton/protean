@@ -1,6 +1,6 @@
-import ListStorage from "../List";
+import StorageList from "../List";
 
-export default class ListStorageDb extends ListStorage {
+export default class StorageListDb extends StorageList {
     constructor() {
         super();
         this.dbName = "db";

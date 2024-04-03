@@ -1,9 +1,9 @@
 'use server'
 
-import ListStorage from "../List";
+import StorageList from "../List";
 import Redis from "ioredis"
 
-export default class ListStorageRedis extends ListStorage {
+export default class StorageListRedis extends StorageList {
     constructor() {
         super();
     }

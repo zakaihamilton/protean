@@ -1,6 +1,6 @@
-import ListStorage from "../List";
+import StorageList from "../List";
 
-export default class ListStorageLocal extends ListStorage {
+export default class StorageListLocal extends StorageList {
     constructor() {
         super();
     }

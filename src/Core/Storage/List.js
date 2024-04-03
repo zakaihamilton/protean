@@ -1,4 +1,4 @@
-export default class ListStorage {
+export default class StorageList {
     constructor() {
 
     }

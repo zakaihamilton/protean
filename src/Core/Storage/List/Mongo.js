@@ -1,9 +1,9 @@
 'use server'
 
-import ListStorage from "../List";
+import StorageList from "../List";
 import { MongoClient } from "mongodb";
 
-export default class ListStorageMongo extends ListStorage {
+export default class StorageListMongo extends StorageList {
     constructor() {
         super();
     }

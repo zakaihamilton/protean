@@ -4,18 +4,18 @@ global.structuredClone = (val) => JSON.parse(JSON.stringify(val));
 
 import { testCompare, testInstance, testMethod, testPermutations, testResults } from "../Util/Test";
 
-import FileStorageList from "./FileSystem/List";
-import FileStorageS3 from "./FileSystem/S3";
+import StorageFileList from "./File/List";
+import StorageFileS3 from "./File/S3";
 
-import ListStorageLocal from "./List/Local";
+import StorageListLocal from "./List/Local";
 
 const implementations = [
-    FileStorageList,
-    FileStorageS3
+    StorageFileList,
+    StorageFileS3
 ];
 
 const params = [
-    [new ListStorageLocal]
+    [new StorageListLocal]
 ];
 
 const permutations = testPermutations(implementations, params);

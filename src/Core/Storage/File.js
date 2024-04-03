@@ -1,4 +1,4 @@
-export default class FileStorage {
+export default class StorageFile {
     constructor() {
 
     }

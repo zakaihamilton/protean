@@ -1,7 +1,7 @@
 import { pathFileName, pathFolder, pathNormalize } from "src/Core/Util/Path";
-import FileStorage from "../File";
+import StorageFile from "../File";
 
-export default class FileStorageList extends FileStorage {
+export default class StorageFileList extends StorageFile {
     constructor(listStorage) {
         super();
         if (!listStorage) {

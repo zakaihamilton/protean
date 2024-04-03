@@ -9,9 +9,9 @@ import {
     HeadObjectCommand,
     ListObjectsV2Command
 } from "@aws-sdk/client-s3";
-import FileStorage from "../File";
+import StorageFile from "../File";
 
-export default class FileStorageS3 extends FileStorage {
+export default class StorageFileS3 extends StorageFile {
     constructor() {
         super();
     }

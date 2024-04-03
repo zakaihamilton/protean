@@ -1,6 +1,6 @@
-import ListStorage from "../List";
+import StorageList from "../List";
 
-export default class ListStorageMemory extends ListStorage {
+export default class StorageListMemory extends StorageList {
     constructor() {
         super();
         this.list = {};
