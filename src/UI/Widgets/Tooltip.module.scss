@@ -1,0 +1,19 @@
+.root {
+    position: fixed;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 3px;
+    padding: 5px;
+    user-select: none;
+    z-index: 9999;
+    pointer-events: none;
+    margin: 5px;
+    background-color: white;
+    border: 1px solid lightgray;
+    transform: translate(-50%, 50%);
+    font-family: 'Roboto', sans-serif;
+}
+
+.root.visible {
+    opacity: 1;
+}

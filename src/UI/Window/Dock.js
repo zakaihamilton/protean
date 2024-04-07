@@ -40,6 +40,7 @@ export function Dock() {
 export function useDock() {
     const region = Window.Region.useState();
     const window = Window.State.useState();
+    const displayRegion = useWindowRegion();
     const style = useMemo(() => {
         let { left, top, width, height } = region;
         if (window?.dock === "top" || window.fullscreen || window.maximize) {
@@ -55,8 +56,8 @@ export function useDock() {
             height = "100%";
         }
         else if (window?.center) {
-            left = "50%";
-            top = "50%";
+            left = displayRegion.width / 2 - width / 2;
+            top = displayRegion.height / 2 - height / 2;
         }
         return { left, top, width, height };
         // eslint-disable-next-line react-hooks/exhaustive-deps
