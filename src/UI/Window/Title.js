@@ -1,4 +1,4 @@
-import { className } from "src/Core/Util/Styles";
+import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Title.module.scss";
 import { withTheme } from "../../Core/UI/Theme";
 import Label from "./Title/Label";
@@ -7,9 +7,14 @@ import Minimize from "./Title/Minimize";
 import Maximize from "./Title/Maximize";
 
 function Title({ children }) {
+    const classes = useClasses(styles);
     const window = Window.State.useState();
+    const className = classes({
+        root: true,
+        fullscreen: window.fullscreen
+    });
     return (
-        <div className={className(styles.root, window?.fullscreen && styles.fullscreen)}>
+        <div className={className}>
             <div className={styles.separator} />
             <Label />
             {children}

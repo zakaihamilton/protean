@@ -1,14 +1,16 @@
 import { useCallback } from "react";
 import Screen from "../Screen";
 import styles from "./Collapse.module.scss";
-import { className } from "src/Core/Util/Styles";
+import { useClasses } from "src/Core/Util/Styles";
 
 export default function Collapse() {
+    const classes = useClasses(styles);
     const screen = Screen.State.useState();
     const onClick = useCallback(() => {
         screen.collapse = !screen.collapse;
     }, [screen]);
-    return <div className={className(styles.root, screen.collapse && styles.active)} onClick={onClick}>
+    const className = classes({ root: true, active: screen.collapse });
+    return <div className={className} onClick={onClick}>
         -
     </div>;
 }

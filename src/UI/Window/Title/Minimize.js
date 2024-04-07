@@ -1,20 +1,21 @@
-import { className } from "src/Core/Util/Styles";
+import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Minimize.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import { useCallback } from "react";
 
 function Minimize() {
+    const classes = useClasses(styles);
     const window = Window.State.useState();
-    const classes = className(
-        styles.root,
-        window.focus && styles.focus
-    );
+    const className = classes({
+        root: true,
+        focus: window.focus
+    });
     const onClick = useCallback(() => {
         window.minimize = !window.minimize;
     }, [window]);
     return (
-        <div onClick={onClick} className={classes} />
+        <div onClick={onClick} className={className} />
     )
 }
 

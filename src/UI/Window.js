@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { createState, withState } from "src/Core/Base/State";
-import { className } from "../Core/Util/Styles";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
 import Title from "./Window/Title";
@@ -10,8 +9,10 @@ import { Dock, useDock } from "./Window/Dock";
 import { useWindowsItem } from "./Windows";
 import Fullscreen from "./Window/Fullscreen";
 import { useElement } from "src/Core/Base/Element";
+import { useClasses } from "src/Core/Util/Styles";
 
 function Window({ children }) {
+    const classes = useClasses(styles);
     const region = Window.Region.useState();
     const dockStyle = useDock();
     const window = Window.State.useState();
@@ -22,14 +23,14 @@ function Window({ children }) {
     const ref = useElement();
     useWindowsItem(window, ref?.current);
 
-    const classes = className(
-        styles.root,
-        window?.minimize && styles.minimize,
-        window?.fullscreen && styles.fullscreen,
-        window?.focus && styles.focus,
-        window?.fixed && styles.fixed,
-        window?.center && styles.center
-    );
+    const className = classes({
+        root: true,
+        minimize: window?.minimize,
+        fullscreen: window?.fullscreen,
+        focus: window?.focus,
+        fixed: window?.fixed,
+        center: window?.center
+    });
 
     const style = useMemo(() => {
         return { ...dockStyle, zIndex: window.index };
@@ -39,7 +40,7 @@ function Window({ children }) {
         <>
             <Drag region={region} min={min} />
             <Dock />
-            <div ref={ref} className={classes} style={style}>
+            <div ref={ref} className={className} style={style}>
                 <Title />
                 <Fullscreen />
                 <Content>
