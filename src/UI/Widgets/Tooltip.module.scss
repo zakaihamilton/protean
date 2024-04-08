@@ -9,8 +9,8 @@
     pointer-events: none;
     background-color: white;
     border: 1px solid black;
-    font-family: 'Roboto', sans-serif;
     box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: opacity 0.2s;
 }
 
 .root.visible {
