@@ -11,15 +11,18 @@ export function getTooltipPos(tooltip, element) {
     const childHeight = element?.offsetHeight;
     const tooltipWidth = tooltip?.offsetWidth;
     const tooltipHeight = tooltip?.offsetHeight;
-    let left = elementLeft + (childWidth / 2);
+    let left = elementLeft + (childWidth / 4);
     let top = elementTop + (childHeight / 2);
+    let shiftLeft = 50;
 
     if (left - (tooltipWidth / 2) < 0) {
-        left = elementLeft - (tooltipWidth / 2);
+        left = 10;
+        shiftLeft = 0;
     }
 
     if (left + (tooltipWidth / 2) > window.innerWidth) {
-        left -= (tooltipWidth / 2);
+        left = window.innerWidth - (tooltipWidth / 2) - 10;
+        shiftLeft = 90;
     }
 
     if (top - (tooltipHeight / 2) < 0) {
@@ -30,7 +33,7 @@ export function getTooltipPos(tooltip, element) {
         top -= (tooltipHeight / 2);
     }
 
-    return { left, top };
+    return { left, top, "--shift-left": shiftLeft + "%" };
 }
 
 function useTooltip(tooltipRef, forRef) {
