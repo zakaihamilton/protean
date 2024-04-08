@@ -2,7 +2,7 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tooltip.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
 
 export function getTooltipPos(tooltip, element) {
@@ -36,7 +36,7 @@ export function getTooltipPos(tooltip, element) {
     return { left, top, "--arrow-left": arrowLeft + "%" };
 }
 
-function useTooltip(tooltipRef, forRef) {
+export function useTooltip(tooltipRef, forRef) {
     const tooltip = tooltipRef?.current;
     let element = forRef?.current;
     if (!element) {
@@ -85,7 +85,11 @@ function Tooltip({ children, title, description, forRef }) {
         visible: description,
         hasTitle: title
     });
-    const descriptionLines = description?.split("\\n").map((line, index) => <div className={styles.line} key={index}>{line}</div>);
+    const descriptionLines = useMemo(() => {
+        return description?.split("\\n").map((line, index) => {
+            return <div className={styles.line} key={index}>{line}</div>;
+        });
+    }, [description]);
     return (<>
         <div ref={tooltipRef} style={{ ...position }} className={classesName}>
             <div className={titleClassName}>

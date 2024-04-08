@@ -5,8 +5,8 @@
     user-select: none;
     flex: 0;
     padding: 6px;
-    border-radius: 3px;
-    background-color: red;
+    border-radius: 6px;
+    background-color: lightgray;
     transition: background-color 0.2s, border 0.2s, box-shadow 0.2s;
     box-shadow: none;
     white-space: nowrap;
@@ -23,6 +23,6 @@
 
 .root:hover:active {
     color: rgba(255, 255, 255, 1);
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.5);
     box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
 }
