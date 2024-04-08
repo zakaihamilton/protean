@@ -20,8 +20,8 @@
 }
 
 .root.focus {
-    background-color: var(--accent-color);
-    color: white;
+    background-color: var(--accent-background);
+    color: var(--accent-color);
 }
 
 .root:not(.disabled) {

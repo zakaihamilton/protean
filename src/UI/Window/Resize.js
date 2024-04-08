@@ -14,7 +14,7 @@ function Resize() {
         resizing: drag.resizing,
         dock: window.dock,
         fullscreen: window.fullscreen,
-        fixed: window.fixed
+        fixed: window.fixed || window.center
     });
     return (
         <div ref={ref} className={className}>

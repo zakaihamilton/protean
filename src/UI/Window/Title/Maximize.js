@@ -14,11 +14,12 @@ function Maximize() {
         center: window.center,
         dock: window.dock
     });
+    const title = window.maximize ? "Restore" : "Maximize";
     const onClick = useCallback(() => {
         window.maximize = !window.maximize;
     }, [window]);
     return (
-        <Tooltip title="Maximize">
+        <Tooltip title={title}>
             <div onClick={onClick} className={className} />
         </Tooltip>
     )

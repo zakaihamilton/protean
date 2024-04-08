@@ -8,19 +8,21 @@ import { useMemo } from "react";
 function Label() {
     const classes = useClasses(styles);
     const window = Window.State.useState();
-    const ref = useMoveDrag();
+    const disabled = window.center || window.maximize;
+    const ref = useMoveDrag(!disabled);
     const drag = Drag.useState();
     const style = useMemo(() => {
         return {
-            "--accent-color": window.accentColor || "darkblue"
+            "--accent-background": window.accentBackground || "darkblue",
+            "--accent-color": window.accentColor || "white"
         }
-    }, [window.accentColor]);
+    }, [window.accentBackground, window.accentColor]);
     const className = classes(
         {
             root: true,
             moving: drag.moving,
             focus: window.focus,
-            disabled: window.center || window.maximize
+            disabled
         }
     );
     return (
