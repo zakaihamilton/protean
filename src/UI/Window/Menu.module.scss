@@ -1,14 +1,24 @@
 .root {
     display: none;
+    position: relative;
 }
 
 .root.visible {
     display: flex;
     border-bottom: 1px solid lightgray;
+}
+
+.root:not(.depth) {
     height: 32px;
-    align-items: center;
 }
 
 .root.depth {
+    position: absolute;
     flex-direction: column;
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    user-select: none;
+    z-index: 10;
 }

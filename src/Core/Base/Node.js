@@ -18,6 +18,7 @@ Node.useNode = (nodeId, propId) => {
         while (node && nodeGetId(node) !== nodeId) {
             node = node.parent;
         }
+        return node;
     }
     if (propId) {
         while (node && typeof nodeGetProperty(node, propId) === "undefined") {

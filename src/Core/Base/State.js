@@ -3,7 +3,7 @@ import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
-    function State({ id, nodeId, ...props }) {
+    function State({ nodeId, ...props }) {
         const object = State.useState(null, nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
         const valueChanged = object && objectHasChanged(props, updatedProps);

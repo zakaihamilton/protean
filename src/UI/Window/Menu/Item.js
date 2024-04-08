@@ -12,6 +12,7 @@ export default function Item({ label, id, items, onClick }) {
     const classes = useClasses(styles);
     const selected = menu?.selected?.includes(id);
     const className = classes({ root: true, selected });
+    const labelClassName = classes({ label: true, selected });
     const style = useMemo(() => {
         return {
             "--accent-background": window.accentBackground || "darkblue",
@@ -30,11 +31,12 @@ export default function Item({ label, id, items, onClick }) {
         }
     }, [id, menu, onClick, selected]);
     return <div onClick={onClickItem} className={className} style={style}>
-        <div className={styles.label}>
+        <div className={labelClassName}>
             {label}
         </div>
-        {!!selected && !!items && <Node>
-            <Menu.State visible={selected} items={items} depth={depth + 1} />
+        {!!selected && !!items && <Node id={id}>
+            <Menu.State nodeId={id} visible={selected} items={items} depth={depth + 1} />
+            <Menu />
         </Node>}
     </div>;
 }

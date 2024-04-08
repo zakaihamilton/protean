@@ -1,27 +1,29 @@
-.root {
+.root {}
+
+.label {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 6px;
 }
 
-.root:not(.selected):hover {
+.label:not(.selected):hover {
     background-color: lightgray;
 }
 
-.root:not(.selected):hover:active {
+.label:not(.selected):hover:active {
     background-color: darkgray;
 }
 
-.root.selected {
+.label.selected {
     background-color: var(--accent-background);
     color: var(--accent-color);
 }
 
-.root.selected:hover {
+.label.selected:hover {
     opacity: 0.8;
 }
 
-.root.selected:hover:active {
+.label.selected:hover:active {
     opacity: 0.6;
 }
