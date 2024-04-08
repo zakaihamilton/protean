@@ -16,7 +16,7 @@ function Minimize() {
         window.minimize = !window.minimize;
     }, [window]);
     return (
-        <Tooltip label="Minimize">
+        <Tooltip title="Minimize">
             <div onClick={onClick} className={className} />
         </Tooltip>
     )

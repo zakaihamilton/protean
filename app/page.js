@@ -34,10 +34,10 @@ export default function Page({ children }) {
                     <Window.Region left={250} top={200} width={500} height={500} />
                     <Window label="Two" accentColor="green">
                         <Group>
-                            <Tooltip label="This is a tooltip">
+                            <Tooltip title="This is a tooltip">
                                 <Button label="This is a button" border={true} />
                             </Tooltip>
-                            <Tooltip label="This is a another tooltip">
+                            <Tooltip title="Tooltip" description="This is a another tooltip\nwith multi line text">
                                 <Button label="This is another button" border={true} />
                             </Tooltip>
                         </Group>

@@ -2,8 +2,7 @@
     position: fixed;
     opacity: 0;
     transition: opacity 0.2s;
-    border-radius: 3px;
-    padding: 5px;
+    border-radius: 6px;
     user-select: none;
     z-index: 9999;
     pointer-events: none;
@@ -11,6 +10,7 @@
     border: 1px solid black;
     box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     transition: opacity 0.2s;
+    overflow: hidden;
 }
 
 .root.visible {
@@ -20,10 +20,28 @@
 .root::after {
     content: "";
     position: absolute;
-    top: -35%;
+    top: -11px;
     left: var(--arrow-left);
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
     border-color: transparent transparent black transparent;
+}
+
+.title.visible {
+    padding: 5px;
+    font-weight: bold;
+}
+
+.title.visible.hasDescription {
+    background-color: lightgray;
+    border-bottom: 1px solid darkgray;
+}
+
+.description {
+    overflow-wrap: break-word;
+}
+
+.description.visible {
+    padding: 5px;
 }

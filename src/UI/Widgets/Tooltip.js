@@ -67,7 +67,7 @@ function useTooltip(tooltipRef, forRef) {
     return { visible, position };
 };
 
-function Tooltip({ children, label, forRef }) {
+function Tooltip({ children, title, description, forRef }) {
     const tooltipRef = useRef();
     const { visible, position } = useTooltip(tooltipRef, forRef);
     const classes = useClasses(styles);
@@ -75,9 +75,25 @@ function Tooltip({ children, label, forRef }) {
         root: true,
         visible
     });
+    const titleClassName = classes({
+        title: true,
+        visible: title,
+        hasDescription: description
+    });
+    const descriptionClassName = classes({
+        description: true,
+        visible: description,
+        hasTitle: title
+    });
+    const descriptionLines = description?.split("\\n").map((line, index) => <div className={styles.line} key={index}>{line}</div>);
     return (<>
         <div ref={tooltipRef} style={{ ...position }} className={classesName}>
-            {label}
+            <div className={titleClassName}>
+                {title}
+            </div>
+            <div className={descriptionClassName}>
+                {descriptionLines}
+            </div>
         </div>
         {children}
     </>);
