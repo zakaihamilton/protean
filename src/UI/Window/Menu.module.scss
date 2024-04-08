@@ -8,11 +8,11 @@
     border-bottom: 1px solid lightgray;
 }
 
-.root:not(.depth) {
+.root:not(.parent) {
     height: 32px;
 }
 
-.root.depth {
+.root.parent {
     position: absolute;
     flex-direction: column;
     border: 1px solid lightgray;

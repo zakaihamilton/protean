@@ -11,7 +11,7 @@ function Menu() {
     const className = classes({
         root: true,
         visible: state.visible,
-        depth: state.depth
+        parent: state.parent
     });
     const elements = useMemo(() => {
         return state.items?.map((item, index) => {

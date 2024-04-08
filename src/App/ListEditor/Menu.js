@@ -5,6 +5,7 @@ import Storage from "./Storage";
 
 export default function Menu() {
     const listEditor = ListEditor.State.useState();
+    const storage = listEditor.storage;
     const items = useMemo(() => {
         return [
             {
@@ -14,14 +15,15 @@ export default function Menu() {
                     return {
                         id: item.id,
                         label: item.label,
-                        check: listEditor.storage === item.Component,
+                        check: storage === item.Component,
                         onClick: () => {
                             listEditor.storage = item.Component;
+                            return true;
                         }
                     };
                 })
             }
         ];
-    }, [listEditor]);
+    }, [listEditor, storage]);
     return <WindowMenu.State visible={true} items={items} />;
 }

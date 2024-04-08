@@ -1,29 +1,48 @@
-.root {}
+.item {
+    display: flex;
+    align-items: center;
+}
+
+.item:not(.selected):hover {
+    background-color: lightgray;
+}
+
+.item:not(.selected):hover:active {
+    background-color: darkgray;
+}
+
+.item.selected {
+    background-color: var(--accent-background);
+    color: var(--accent-color);
+}
+
+.item.selected:hover {
+    opacity: 0.8;
+}
+
+.item.selected:hover:active {
+    opacity: 0.6;
+}
+
+.check {
+    margin-left: 5px;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+
+.check:not(.visible) {
+    display: none;
+}
+
+.check.checked {
+    background-color: black;
+}
 
 .label {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 6px;
-}
-
-.label:not(.selected):hover {
-    background-color: lightgray;
-}
-
-.label:not(.selected):hover:active {
-    background-color: darkgray;
-}
-
-.label.selected {
-    background-color: var(--accent-background);
-    color: var(--accent-color);
-}
-
-.label.selected:hover {
-    opacity: 0.8;
-}
-
-.label.selected:hover:active {
-    opacity: 0.6;
 }

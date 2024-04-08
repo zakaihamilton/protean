@@ -5,14 +5,14 @@ import { useCallback, useMemo } from "react";
 import Window from "src/UI/Window";
 import Node from "src/Core/Base/Node";
 
-export default function Item({ label, id, items, onClick }) {
+export default function Item({ label, id, items, onClick, check }) {
     const menu = Menu.State.useState();
-    const depth = menu?.depth || 0;
     const window = Window.State.useState();
     const classes = useClasses(styles);
     const selected = menu?.selected?.includes(id);
-    const className = classes({ root: true, selected });
+    const itemClassName = classes({ item: true, selected });
     const labelClassName = classes({ label: true, selected });
+    const checkClassName = classes({ check: true, selected, checked: check, visible: typeof check !== "undefined" });
     const style = useMemo(() => {
         return {
             "--accent-background": window.accentBackground || "darkblue",
@@ -20,22 +20,37 @@ export default function Item({ label, id, items, onClick }) {
         }
     }, [window.accentBackground, window.accentColor]);
     const onClickItem = useCallback(() => {
+        let close = false;
+        if (onClick) {
+            close = onClick();
+        }
+        if (close) {
+            let parent = menu;
+            for (; ;) {
+                parent = parent.parent;
+                if (!parent) {
+                    break;
+                }
+                parent.selected = [];
+            }
+            return;
+        }
         if (selected) {
             menu.selected = menu.selected.filter(i => i !== id);
         }
         else {
             menu.selected = [...menu.selected || [], id];
         }
-        if (onClick) {
-            onClick();
-        }
     }, [id, menu, onClick, selected]);
-    return <div onClick={onClickItem} className={className} style={style}>
-        <div className={labelClassName}>
-            {label}
+    return <div className={styles.root}>
+        <div className={itemClassName} style={style} onClick={onClickItem}>
+            <div className={checkClassName} />
+            <div className={labelClassName}>
+                {label}
+            </div>
         </div>
         {!!selected && !!items && <Node id={id}>
-            <Menu.State nodeId={id} visible={selected} items={items} depth={depth + 1} />
+            <Menu.State nodeId={id} visible={selected} items={items} parent={menu} />
             <Menu />
         </Node>}
     </div>;
