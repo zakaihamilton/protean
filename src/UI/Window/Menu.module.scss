@@ -1,0 +1,14 @@
+.root {
+    display: none;
+}
+
+.root.visible {
+    display: flex;
+    border-bottom: 1px solid lightgray;
+    height: 32px;
+    align-items: center;
+}
+
+.root.depth {
+    flex-direction: column;
+}

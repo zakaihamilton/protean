@@ -10,6 +10,7 @@ import { useWindowsItem } from "./Windows";
 import Fullscreen from "./Window/Fullscreen";
 import { useElement } from "src/Core/Base/Element";
 import { useClasses } from "src/Core/Util/Styles";
+import Menu from "./Window/Menu";
 
 function Window({ children }) {
     const classes = useClasses(styles);
@@ -43,6 +44,7 @@ function Window({ children }) {
             <div ref={ref} className={className} style={style}>
                 <Title />
                 <Fullscreen />
+                <Menu />
                 <Content>
                     {children}
                 </Content>

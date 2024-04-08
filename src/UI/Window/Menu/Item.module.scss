@@ -1,0 +1,27 @@
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.root:not(.selected):hover {
+    background-color: lightgray;
+}
+
+.root:not(.selected):hover:active {
+    background-color: darkgray;
+}
+
+.root.selected {
+    background-color: var(--accent-background);
+    color: var(--accent-color);
+}
+
+.root.selected:hover {
+    opacity: 0.8;
+}
+
+.root.selected:hover:active {
+    opacity: 0.6;
+}
