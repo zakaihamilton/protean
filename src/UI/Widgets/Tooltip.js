@@ -7,22 +7,22 @@ import { useEventListener } from "src/Core/UI/EventListener";
 
 export function getTooltipPos(tooltip, element) {
     const { left: elementLeft, top: elementTop } = element.getBoundingClientRect();
-    const childWidth = element?.offsetWidth;
-    const childHeight = element?.offsetHeight;
+    const elementWidth = element?.offsetWidth;
+    const elementHeight = element?.offsetHeight;
     const tooltipWidth = tooltip?.offsetWidth;
     const tooltipHeight = tooltip?.offsetHeight;
-    let left = elementLeft + (childWidth / 4);
-    let top = elementTop + (childHeight / 2);
-    let shiftLeft = 50;
+    let left = elementLeft + (elementWidth / 2) - (tooltipWidth / 2);
+    let top = elementTop + elementHeight + 10;
+    let arrowLeft = 50;
 
     if (left - (tooltipWidth / 2) < 0) {
         left = 10;
-        shiftLeft = 0;
+        arrowLeft = 0;
     }
 
-    if (left + (tooltipWidth / 2) > window.innerWidth) {
-        left = window.innerWidth - (tooltipWidth / 2) - 10;
-        shiftLeft = 90;
+    if (left + tooltipWidth > window.innerWidth) {
+        left = window.innerWidth - (tooltipWidth) - 10;
+        arrowLeft = 90;
     }
 
     if (top - (tooltipHeight / 2) < 0) {
@@ -33,19 +33,22 @@ export function getTooltipPos(tooltip, element) {
         top -= (tooltipHeight / 2);
     }
 
-    return { left, top, "--shift-left": shiftLeft + "%" };
+    return { left, top, "--arrow-left": arrowLeft + "%" };
 }
 
 function useTooltip(tooltipRef, forRef) {
-    const tooltip = tooltipRef.current;
-    const element = forRef.current;
+    const tooltip = tooltipRef?.current;
+    let element = forRef?.current;
+    if (!element) {
+        element = tooltip?.nextSibling;
+    }
+
     const [visible, setIsVisible] = useState(false);
     const [position, setPosition] = useState({ top: 0, left: 0 });
     const timerRef = useRef();
 
     const handleMouseEnter = useCallback(() => {
         const position = getTooltipPos(tooltip, element);
-        console.log(position);
         setPosition(position);
         clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
@@ -65,18 +68,18 @@ function useTooltip(tooltipRef, forRef) {
 };
 
 function Tooltip({ children, label, forRef }) {
-    const elementRef = useRef();
-    const { visible, position } = useTooltip(elementRef, forRef);
+    const tooltipRef = useRef();
+    const { visible, position } = useTooltip(tooltipRef, forRef);
     const classes = useClasses(styles);
     const classesName = classes({
         root: true,
         visible
     });
     return (<>
-        {children}
-        <div ref={elementRef} style={{ ...position }} className={classesName}>
+        <div ref={tooltipRef} style={{ ...position }} className={classesName}>
             {label}
         </div>
+        {children}
     </>);
 };
 

@@ -11,6 +11,7 @@ import Windows from "src/UI/Windows"
 import Desktop from "src/UI/Desktop"
 import { createState } from "src/Core/Base/State"
 import { useEffect } from "react"
+import Tooltip from "src/UI/Widgets/Tooltip"
 
 export default function Page({ children }) {
     const state = Page.State.useState();
@@ -26,9 +27,6 @@ export default function Page({ children }) {
                     <Window.Region width={500} height={500} />
                     <Window label="One" fixed center accentColor="red">
                         <Group>
-                            <Button label="Write" border={true} />
-                            <Button label="Read" border={true} />
-                            {state.data}
                         </Group>
                     </Window>
                 </Node>
@@ -36,6 +34,10 @@ export default function Page({ children }) {
                     <Window.Region left={250} top={200} width={500} height={500} />
                     <Window label="Two" accentColor="green">
                         <Group>
+                            <Tooltip label="Hello">
+                                <Button label="This is a button" border={true} />
+                            </Tooltip>
+                            <Button label="Read" border={true} />
                         </Group>
                     </Window>
                 </Node>

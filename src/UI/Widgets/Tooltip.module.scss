@@ -7,10 +7,8 @@
     user-select: none;
     z-index: 9999;
     pointer-events: none;
-    margin: 5px;
     background-color: white;
     border: 1px solid black;
-    transform: translate(-50%, 50%);
     font-family: 'Roboto', sans-serif;
     box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -23,7 +21,7 @@
     content: "";
     position: absolute;
     top: -35%;
-    left: var(--shift-left);
+    left: var(--arrow-left);
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;

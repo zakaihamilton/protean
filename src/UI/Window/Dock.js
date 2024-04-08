@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react";
 import Window from "../Window";
-import { useWindowRegion } from "src/Core/Base/Window";
 import Drag from "../../Core/UI/Drag";
 
 function dockInBorderRegion(rect, point) {
@@ -26,10 +25,10 @@ function dockInBorderRegion(rect, point) {
 export function Dock() {
     const region = Window.Region.useState();
     const window = Window.State.useState();
-    const displayRegion = useWindowRegion();
     const drag = Drag.useState();
 
     useEffect(() => {
+        const displayRegion = { left: 0, top: 0, width: globalThis.innerWidth, height: globalThis.innerHeight };
         window.dock = !window?.fixed && dockInBorderRegion(displayRegion, drag?.touch);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [region?.__counter, drag?.moving, window?.dock]);
@@ -40,7 +39,6 @@ export function Dock() {
 export function useDock() {
     const region = Window.Region.useState();
     const window = Window.State.useState();
-    const displayRegion = useWindowRegion();
     const style = useMemo(() => {
         let { left, top, width, height } = region;
         if (window?.dock === "top" || window.fullscreen || window.maximize) {
@@ -54,10 +52,11 @@ export function useDock() {
             top = 0;
             width = "49.8%";
             height = "100%";
-        }
-        else if (window?.center) {
-            left = displayRegion.width / 2 - width / 2;
-            top = displayRegion.height / 2 - height / 2;
+        } else if (window?.center) {
+            left = "25%";
+            top = "25%";
+            width = "49.8%";
+            height = "49.8%";
         }
         return { left, top, width, height };
         // eslint-disable-next-line react-hooks/exhaustive-deps

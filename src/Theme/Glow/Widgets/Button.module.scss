@@ -9,6 +9,8 @@
     background-color: red;
     transition: background-color 0.2s, border 0.2s, box-shadow 0.2s;
     box-shadow: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .root.border {
