@@ -15,7 +15,7 @@ export default function Menu() {
                     return {
                         id: item.id,
                         label: item.label,
-                        check: storage === item.Component,
+                        checked: storage === item.Component,
                         onClick: () => {
                             listEditor.storage = item.Component;
                             return true;

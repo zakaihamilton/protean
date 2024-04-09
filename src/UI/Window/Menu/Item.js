@@ -5,14 +5,19 @@ import { useCallback, useMemo } from "react";
 import Window from "src/UI/Window";
 import Node from "src/Core/Base/Node";
 
-export default function Item({ label, id, items, onClick, check }) {
+export default function Item({ label, id, items, onClick, checked }) {
     const menu = Menu.State.useState();
     const window = Window.State.useState();
     const classes = useClasses(styles);
-    const selected = menu?.selected?.includes(id);
+    const selected = menu?.selected === id;
     const itemClassName = classes({ item: true, selected });
     const labelClassName = classes({ label: true, selected });
-    const checkClassName = classes({ check: true, selected, checked: check, visible: typeof check !== "undefined" });
+    const checkClassName = classes({
+        check: true,
+        selected,
+        checked,
+        visible: typeof checked !== "undefined"
+    });
     const style = useMemo(() => {
         return {
             "--accent-background": window.accentBackground || "darkblue",
@@ -36,10 +41,10 @@ export default function Item({ label, id, items, onClick, check }) {
             return;
         }
         if (selected) {
-            menu.selected = menu.selected.filter(i => i !== id);
+            menu.selected = null;
         }
         else {
-            menu.selected = [...menu.selected || [], id];
+            menu.selected = id;
         }
     }, [id, menu, onClick, selected]);
     return <div className={styles.root}>
