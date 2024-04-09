@@ -1,23 +1,37 @@
 .root {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 .root.border {
     border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid lightgray;
 }
 
-.root.vertical {
+.title {
+    border: 1px solid lightgray;
+    border-radius: 3px 3px 0px 0px;
+    padding: 3px;
+    font-weight: bold;
+    background-color: lightgray;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tags.vertical {
     flex-direction: column;
 }
 
 .tag {
+    border: 1px solid lightgray;
     display: flex;
     align-items: center;
     padding: 6px;
     flex-shrink: 0;
+    flex-grow: 1;
 }
 
 .key {

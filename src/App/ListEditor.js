@@ -20,9 +20,9 @@ export default function ListEditor() {
         <Menu />
         <Window.Rect left={100} top={100} width={500} height={500} />
         <Window label="List Editor" maximize accentBackground="darkgreen">
-            <Group vertical>
-                <Tags tags={{ ...contentRegion }} border />
-                <Tags tags={{ ...windowRegion }} border />
+            <Group>
+                <Tags title="Content" tags={{ ...contentRegion }} border vertical />
+                <Tags title="Window" tags={{ ...windowRegion }} border vertical />
             </Group>
         </Window>
     </>;

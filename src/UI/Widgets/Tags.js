@@ -3,7 +3,7 @@ import styles from "./Tags.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import { useMemo } from "react";
 
-function Tags({ tags, vertical, border }) {
+function Tags({ tags, vertical, border, title }) {
     const classes = useClasses(styles);
 
     const elements = useMemo(() => {
@@ -21,8 +21,23 @@ function Tags({ tags, vertical, border }) {
         })
     }, [tags]);
 
-    return <div className={classes({ root: true, vertical, border })}>
-        {elements}
+    const rootClassName = classes({
+        root: true,
+        vertical,
+        border
+    });
+
+    const tagsClassName = classes({
+        tags: true,
+        vertical,
+        border
+    });
+
+    return <div className={rootClassName}>
+        {title && <div className={styles.title}>{title}</div>}
+        <div className={tagsClassName}>
+            {elements}
+        </div>
     </div>;
 }
 
