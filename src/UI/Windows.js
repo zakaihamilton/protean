@@ -5,11 +5,11 @@ function Windows({ children }) {
     return children;
 }
 
-export function useWindowsItem(window, target) {
+export function useWindowsItem(window, target, enabled) {
     const windows = Windows.State.useState();
 
     useEffect(() => {
-        if (!window || !target) {
+        if (!window || !target || !enabled) {
             return;
         }
         if (!windows.list) {
@@ -60,7 +60,7 @@ export function useWindowsItem(window, target) {
             windows.focus = windows.focus.filter(item => item !== window);
             updateFocus();
         }
-    }, [target, window, windows]);
+    }, [target, window, windows, enabled]);
 }
 
 export default withState(Windows);

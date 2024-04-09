@@ -18,11 +18,11 @@ function Window({ children }) {
     const dockStyle = useDock();
     const window = Window.State.useState();
     const min = useMemo(() => ({
-        width: window?.min?.width || 150,
-        height: window?.min?.height || 150
+        width: window?.min?.width || 300,
+        height: window?.min?.height || 200
     }), [window?.min]);
     const ref = useElement();
-    useWindowsItem(window, ref?.current);
+    useWindowsItem(window, ref?.current, !window?.close);
 
     const className = classes({
         root: true,
@@ -30,7 +30,8 @@ function Window({ children }) {
         fullscreen: window?.fullscreen,
         focus: window?.focus,
         fixed: window?.fixed,
-        center: window?.center
+        center: window?.center,
+        close: window?.close
     });
 
     const style = useMemo(() => {

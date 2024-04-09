@@ -5,6 +5,7 @@ import Label from "./Title/Label";
 import Window from "../Window";
 import Minimize from "./Title/Minimize";
 import Maximize from "./Title/Maximize";
+import Close from "./Title/Close";
 
 function Title({ children }) {
     const classes = useClasses(styles);
@@ -20,6 +21,7 @@ function Title({ children }) {
             {children}
             <div className={styles.separator} />
             <div className={styles.actions}>
+                <Close />
                 <Minimize />
                 <Maximize />
             </div>
