@@ -2,14 +2,18 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Menu.module.scss";
 import { createState } from "src/Core/Base/State";
 import { withTheme } from "src/Core/UI/Theme";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Item from "./Menu/Item";
 
 function Menu() {
     const state = Menu.State.useState();
     const classes = useClasses(styles);
-    const className = classes({
-        root: true,
+    const popupClassName = classes({
+        popup: true,
+        visible: state?.selected?.length
+    });
+    const elementsClassName = classes({
+        elements: true,
         visible: state.visible,
         parent: state.parent
     });
@@ -18,8 +22,14 @@ function Menu() {
             return <Item key={item.id || index} {...item} />;
         });
     }, [state.items]);
-    return <div className={className}>
-        {elements}
+    const onPopupClick = useCallback(() => {
+        state.selected = [];
+    }, [state]);
+    return <div className={styles.root}>
+        <div className={popupClassName} onClick={onPopupClick} />
+        <div className={elementsClassName}>
+            {elements}
+        </div>
     </div>;
 }
 

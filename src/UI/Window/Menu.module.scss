@@ -1,18 +1,33 @@
-.root {
-    display: none;
-    position: relative;
+.popup {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1000;
 }
 
-.root.visible {
+.popup.visible {
+    pointer-events: all;
+}
+
+.elements {
+    display: none;
+    position: relative;
+    z-index: 2000;
+}
+
+.elements.visible {
     display: flex;
     border-bottom: 1px solid lightgray;
 }
 
-.root:not(.parent) {
+.elements:not(.parent) {
     height: 32px;
 }
 
-.root.parent {
+.elements.parent {
     position: absolute;
     flex-direction: column;
     border: 1px solid lightgray;

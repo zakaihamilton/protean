@@ -6,14 +6,16 @@ import Window from "../Window";
 
 function Resize() {
     const classes = useClasses(styles);
-    const ref = useResizeDrag();
     const drag = Drag.useState();
     const window = Window.State.useState();
+    const disabled = window.center || window.maximize;
+    const ref = useResizeDrag(!disabled);
     const className = classes({
         root: true,
         resizing: drag.resizing,
         dock: window.dock,
         fullscreen: window.fullscreen,
+        maximize: window.maximize,
         fixed: window.fixed || window.center
     });
     return (
