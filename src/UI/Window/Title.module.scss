@@ -3,7 +3,6 @@
     justify-content: center;
     border-bottom: 1px solid lightgray;
     height: 32px;
-    flex-shrink: 0;
     overflow: hidden;
 }
 
@@ -17,6 +16,4 @@
 
 .actions {
     display: flex;
-    position: absolute;
-    right: 0px;
 }

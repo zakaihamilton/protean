@@ -1,5 +1,7 @@
 .root {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .root.border {
@@ -11,14 +13,11 @@
     flex-direction: column;
 }
 
-.tags {
-    display: flex;
-}
-
 .tag {
     display: flex;
     align-items: center;
     padding: 6px;
+    flex-shrink: 0;
 }
 
 .key {

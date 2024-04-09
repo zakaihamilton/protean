@@ -42,7 +42,7 @@ function Window({ children }) {
     return (
         <>
             <Drag rect={rect} min={min} />
-            <Window.Region target={ref?.current} />
+            <Window.Region target={ref?.current} counter={rect.__counter} />
             <Dock />
             <div ref={ref} className={className} style={style}>
                 <Title />
