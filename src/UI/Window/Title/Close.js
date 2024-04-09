@@ -10,7 +10,8 @@ function Close() {
     const window = Window.State.useState();
     const className = classes({
         root: true,
-        focus: window.focus
+        focus: window.focus,
+        visible: !window.permanent
     });
     const onClick = useCallback(() => {
         window.close = true;

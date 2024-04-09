@@ -15,8 +15,7 @@
     pointer-events: none;
 }
 
-.root.center,
-.root.dock {
+.root:not(.visible) {
     display: none;
 }
 
