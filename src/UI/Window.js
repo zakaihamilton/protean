@@ -11,10 +11,11 @@ import Fullscreen from "./Window/Fullscreen";
 import { useElement } from "src/Core/Base/Element";
 import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Window/Menu";
+import { createRegion } from "src/Core/UI/Region";
 
 function Window({ children }) {
     const classes = useClasses(styles);
-    const region = Window.Region.useState();
+    const rect = Window.Rect.useState();
     const dockStyle = useDock();
     const window = Window.State.useState();
     const min = useMemo(() => ({
@@ -40,7 +41,8 @@ function Window({ children }) {
 
     return (
         <>
-            <Drag region={region} min={min} />
+            <Drag rect={rect} min={min} />
+            <Window.Region target={ref?.current} />
             <Dock />
             <div ref={ref} className={className} style={style}>
                 <Title />
@@ -55,6 +57,7 @@ function Window({ children }) {
     )
 }
 
-Window.Region = createState("Window.Region");
+Window.Rect = createState("Window.Rect");
+Window.Region = createRegion("Window.Region");
 
 export default withState(Window);

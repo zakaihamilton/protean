@@ -47,23 +47,23 @@ const useDrag = (initialCb, moverCb, prop, enabled) => {
 
 export function useMoveDrag(enabled) {
     const initialCb = useCallback((e, state) => {
-        if (!state.region) {
+        if (!state.rect) {
             return;
         }
-        const targetRegion = state?.target?.getBoundingClientRect();
+        const targetRect = state?.target?.getBoundingClientRect();
         state.offset = {
-            x: e.clientX - targetRegion.left,
-            y: e.clientY - targetRegion.top
+            x: Math.floor(e.clientX - targetRect.left),
+            y: Math.floor(e.clientY - targetRect.top)
         };
     }, []);
     const moverCb = useCallback((e, state) => {
-        if (!state.region) {
+        if (!state.rect) {
             return;
         }
-        const parentRegion = state?.target?.parentElement?.getBoundingClientRect();
-        const targetRegion = state?.target?.getBoundingClientRect();
-        state.region.left = e.clientX - state.offset.x - (targetRegion.left - parentRegion.left);
-        state.region.top = e.clientY - state.offset.y - (targetRegion.top - parentRegion.top);
+        const parentRect = state?.target?.parentElement?.getBoundingClientRect();
+        const targetRect = state?.target?.getBoundingClientRect();
+        state.rect.left = Math.floor(e.clientX - state.offset.x - (targetRect.left - parentRect.left));
+        state.rect.top = Math.floor(e.clientY - state.offset.y - (targetRect.top - parentRect.top));
         state.touch = { x: e.clientX, y: e.clientY };
     }, []);
     return useDrag(initialCb, moverCb, "moving", enabled);
@@ -71,20 +71,20 @@ export function useMoveDrag(enabled) {
 
 export function useResizeDrag(enabled) {
     const initialCb = useCallback((e, state) => {
-        if (!state.region) {
+        if (!state.rect) {
             return;
         }
         state.offset = {
-            x: e.clientX - state.region.width,
-            y: e.clientY - state.region.height
+            x: Math.floor(e.clientX - state.rect.width),
+            y: Math.floor(e.clientY - state.rect.height)
         };
     }, []);
     const moverCb = useCallback((e, state) => {
-        if (!state.region) {
+        if (!state.rect) {
             return;
         }
-        state.region.width = Math.max(e.clientX - state.offset.x, state.min?.width || 0);
-        state.region.height = Math.max(e.clientY - state.offset.y, state.min?.height || 0);
+        state.rect.width = Math.floor(Math.max(e.clientX - state.offset.x, state.min?.width || 0));
+        state.rect.height = Math.floor(Math.max(e.clientY - state.offset.y, state.min?.height || 0));
     }, []);
     return useDrag(initialCb, moverCb, "resizing", enabled);
 }

@@ -23,7 +23,7 @@ function dockInBorderRegion(rect, point) {
 }
 
 export function Dock() {
-    const region = Window.Region.useState();
+    const region = Window.Rect.useState();
     const window = Window.State.useState();
     const drag = Drag.useState();
 
@@ -37,7 +37,7 @@ export function Dock() {
 }
 
 export function useDock() {
-    const region = Window.Region.useState();
+    const region = Window.Rect.useState();
     const window = Window.State.useState();
     const style = useMemo(() => {
         let { left, top, width, height } = region;

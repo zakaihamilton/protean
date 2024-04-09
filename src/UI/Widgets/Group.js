@@ -1,7 +1,8 @@
-import { className, useClasses } from "src/Core/Util/Styles";
+import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Group.module.scss";
+import { withTheme } from "src/Core/UI/Theme";
 
-export default function Group({ vertical, children }) {
+function Group({ vertical, children }) {
     const classes = useClasses(styles);
     const className = classes({
         root: true,
@@ -11,3 +12,5 @@ export default function Group({ vertical, children }) {
         {children}
     </div>;
 }
+
+export default withTheme(Group);
