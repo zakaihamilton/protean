@@ -5,22 +5,22 @@ import Window from "src/UI/Window";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
 
-function Maximize() {
+function Restore() {
     const classes = useClasses(styles);
     const window = Window.State.useState();
     const className = classes({
         root: true,
         focus: window.focus,
-        visible: !window.maximize && !window.center && !window.dock
+        visible: window.maximize && !window.center && !window.dock
     });
     const onClick = useCallback(() => {
-        window.maximize = true;
+        window.maximize = false;
     }, [window]);
     return (
-        <Tooltip title="Maximize">
+        <Tooltip title="Restore">
             <div onClick={onClick} className={className} />
         </Tooltip>
     )
 }
 
-export default withTheme(Maximize);
+export default withTheme(Restore);

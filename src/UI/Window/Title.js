@@ -6,6 +6,7 @@ import Window from "../Window";
 import Minimize from "./Title/Minimize";
 import Maximize from "./Title/Maximize";
 import Close from "./Title/Close";
+import Restore from "./Title/Restore";
 
 function Title({ children }) {
     const classes = useClasses(styles);
@@ -23,6 +24,7 @@ function Title({ children }) {
             <div className={styles.actions}>
                 <Close />
                 <Minimize />
+                <Restore />
                 <Maximize />
             </div>
         </div>
