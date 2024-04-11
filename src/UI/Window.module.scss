@@ -14,6 +14,27 @@
     border: 1px solid black;
 }
 
+.root.maximize,
+.root.dock {
+    border-radius: 0px;
+}
+
+.root.maximize {
+    border: none;
+}
+
+.root.dock.left {
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
+}
+
+.root.dock.right {
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}
+
 .root.minimize {
     opacity: 0;
     pointer-events: none;

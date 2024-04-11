@@ -27,7 +27,12 @@ function Label() {
     );
     return (
         <div ref={ref} className={className} style={style}>
-            {window?.label}
+            <div className={styles.icon}>
+                {window?.icon}
+            </div>
+            <div className={styles.label}>
+                {window?.label}
+            </div>
         </div>
     )
 }

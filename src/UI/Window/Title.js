@@ -17,7 +17,6 @@ function Title({ children }) {
     });
     return (
         <div className={className}>
-            <div className={styles.separator} />
             <Label />
             {children}
             <div className={styles.separator} />

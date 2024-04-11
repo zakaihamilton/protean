@@ -1,15 +1,11 @@
 .root {
     display: flex;
     align-items: center;
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
     user-select: none;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    border-radius: 0px 0px 3px 3px;
     transition: background-color 0.2s;
-    height: 30px;
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
     color: darkgray;
@@ -26,4 +22,17 @@
 
 .root:not(.disabled) {
     cursor: move;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 5px;
+}
+
+.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

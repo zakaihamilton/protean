@@ -25,14 +25,12 @@ function Window({ children }) {
     const ref = useElement();
     useWindowsItem(window, ref?.current, !window?.close);
 
+    console.log("window", window);
+
     const className = classes({
         root: true,
-        minimize: window?.minimize,
-        fullscreen: window?.fullscreen,
-        focus: window?.focus,
-        fixed: window?.fixed,
-        center: window?.center,
-        close: window?.close
+        ...window,
+        [window.dock]: window.dock
     });
 
     const style = useMemo(() => {

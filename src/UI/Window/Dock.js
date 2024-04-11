@@ -15,8 +15,6 @@ function dockInBorderRegion(rect, point) {
         return "left";
     } else if (point.x >= rightBorder && point.y <= topBorder) {
         return "right";
-    } else if (point.y <= topBorder && point.x >= rect.left + snapThreshold && point.x <= rect.left + rect.width - snapThreshold) {
-        return "top";
     }
 
     return null;
@@ -41,7 +39,7 @@ export function useDock() {
     const window = Window.State.useState();
     const style = useMemo(() => {
         let { left, top, width, height } = region;
-        if (window?.dock === "top" || window.fullscreen || window.maximize) {
+        if (window.fullscreen || window.maximize) {
             left = 0;
             top = 0;
             width = "100%";
@@ -50,7 +48,7 @@ export function useDock() {
         else if (window?.dock) {
             left = window.dock === "left" ? "0%" : "50%";
             top = 0;
-            width = "49.8%";
+            width = "50%";
             height = "100%";
         } else if (window?.center) {
             left = "25%";

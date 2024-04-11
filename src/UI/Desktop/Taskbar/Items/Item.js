@@ -6,7 +6,7 @@ import { useStateFromObject } from "src/Core/Base/State";
 
 function Item({ item }) {
     const classes = useClasses(styles);
-    const { id, label, focus, minimize } = useStateFromObject(item);
+    const { id, label, focus, minimize, icon } = useStateFromObject(item);
     const style = useMemo(() => {
         return {};
     }, []);
@@ -25,6 +25,9 @@ function Item({ item }) {
         minimize
     });
     return <div id={id} onClick={onClick} className={className} style={style}>
+        <div className={styles.icon}>
+            {icon}
+        </div>
         <div className={styles.label}>
             {label}
         </div>
