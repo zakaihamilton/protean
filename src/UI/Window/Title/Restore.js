@@ -1,5 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
-import styles from "./Maximize.module.scss";
+import styles from "./Restore.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import { useCallback } from "react";

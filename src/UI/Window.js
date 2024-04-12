@@ -25,8 +25,6 @@ function Window({ children }) {
     const ref = useElement();
     useWindowsItem(window, ref?.current, !window?.close);
 
-    console.log("window", window);
-
     const className = classes({
         root: true,
         ...window,
