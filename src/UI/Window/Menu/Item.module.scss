@@ -12,8 +12,8 @@
 }
 
 .item.selected {
-    background-color: var(--accent-background);
-    color: var(--accent-color);
+    background-color: darkgray;
+    filter: invert(100%);
 }
 
 .item.selected:hover {
