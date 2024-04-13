@@ -6,17 +6,25 @@ export function createState(displayName) {
     function State({ nodeId = undefined, ...props }) {
         const object = State.useState(undefined, nodeId, { ...props });
         const [updatedProps, setUpdatedProps] = useState({ ...props });
-        const valueChanged = object && objectHasChanged(props, updatedProps);
+        const keysChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
-        if (valueChanged) {
+        if (keysChanged.length) {
             changeRef.current++;
         }
         useEffect(() => {
             if (!changeRef.current) {
                 return;
             }
-            setUpdatedProps({ ...props });
-            Object.assign(object, props);
+            setUpdatedProps(previous => {
+                const result = { ...previous };
+                for (const key of keysChanged) {
+                    result[key] = props[key];
+                }
+                return result;
+            });
+            for (const key of keysChanged) {
+                object[key] = props[key];
+            }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [changeRef.current]);
 

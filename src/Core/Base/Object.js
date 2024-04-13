@@ -1,11 +1,8 @@
-import { useEffect } from "react";
-
 export function objectHasChanged(a, b) {
     a = a || {};
     b = b || {};
     const aKeys = Object.keys(a), bKeys = Object.keys(b);
-    let changed = aKeys.some((_, idx) => bKeys[idx] !== aKeys[idx]);
-    return changed || aKeys.some(key => !Object.is(a[key], b[key]));
+    return aKeys.filter((key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]));
 }
 
 export function createObject(props) {
