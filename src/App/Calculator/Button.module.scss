@@ -1,0 +1,54 @@
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    user-select: none;
+    padding: 6px;
+    background-color: transparent;
+    transition: background-color 0.2s, border 0.2s, box-shadow 0.2s;
+    box-shadow: none;
+    width: var(--width);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    height: 50px;
+    background-color: #848884;
+}
+
+.root:hover:active {
+    background-color: #C0C0C0;
+}
+
+.root.clear,
+.root.plusminus,
+.root.percent {
+    background-color: #71797E;
+}
+
+.root.divide,
+.root.multiply,
+.root.subtract,
+.root.add,
+.root.equals {
+    background-color: rgb(253, 218, 13);
+}
+
+.root.divide:hover:active,
+.root.multiply:hover:active,
+.root.subtract:hover:active,
+.root.add:hover:active,
+.root.equals:hover:active {
+    background-color: rgb(225, 193, 110);
+}
+
+.root.clear:hover:active,
+.root.plusminus:hover:active,
+.root.percent:hover:active {
+    background-color: #848884;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

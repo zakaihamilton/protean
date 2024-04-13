@@ -14,3 +14,7 @@
 .root:not(.vertical)>* {
     margin-right: 6px;
 }
+
+.root.wrap {
+    flex-wrap: wrap;
+}

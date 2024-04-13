@@ -11,7 +11,7 @@ function Maximize() {
     const className = classes({
         root: true,
         focus: window.focus,
-        visible: !window.maximize && !window.center && !window.dock
+        visible: !window.maximize && !window.center && !window.dock && !window.fixed
     });
     const onClick = useCallback(() => {
         window.maximize = true;
