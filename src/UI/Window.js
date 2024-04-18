@@ -19,7 +19,7 @@ function Window({ children }) {
     const dockStyle = useDock();
     const window = Window.State.useState();
     const min = useMemo(() => ({
-        width: window?.min?.width || 300,
+        width: window?.min?.width || 200,
         height: window?.min?.height || 200
     }), [window?.min]);
     const ref = useElement();

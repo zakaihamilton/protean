@@ -4,6 +4,7 @@
     border-bottom: 1px solid lightgray;
     overflow: hidden;
     height: 32px;
+    flex-shrink: 0;
 }
 
 .root.fullscreen {
