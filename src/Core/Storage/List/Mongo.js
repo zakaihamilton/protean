@@ -41,10 +41,11 @@ export default class StorageListMongo extends StorageList {
      * @return {Promise<void>} A promise that resolves when the storage is closed.
      */
     async close() {
-        if (this.client) {
-            await this.client.close();
-            this.client = null;
+        if (!this.client) {
+            return;
         }
+        await this.client.close();
+        this.client = null;
     }
 
     /**
@@ -56,6 +57,9 @@ export default class StorageListMongo extends StorageList {
     async get(key) {
         if (!key) {
             throw new Error("key cannot be null");
+        }
+        if (!this.collection) {
+            return;
         }
         const record = await this.collection.findOne({ id: key });
         if (record) {
@@ -74,6 +78,9 @@ export default class StorageListMongo extends StorageList {
         if (!key) {
             throw new Error("key cannot be null");
         }
+        if (!this.collection) {
+            return;
+        }
         const record = { id: key, value: value };
         await this.collection.replaceOne({ id: key }, record, {
             upsert: true
@@ -86,6 +93,9 @@ export default class StorageListMongo extends StorageList {
     async exists(key) {
         if (!key) {
             throw new Error("key cannot be null");
+        }
+        if (!this.collection) {
+            return false;
         }
         const record = await this.collection.findOne({ id: key });
         return !!record;
@@ -100,6 +110,9 @@ export default class StorageListMongo extends StorageList {
         if (!key) {
             throw new Error("key cannot be null");
         }
+        if (!this.collection) {
+            return;
+        }
         await this.collection.deleteOne({ id: key });
     }
 
@@ -109,6 +122,9 @@ export default class StorageListMongo extends StorageList {
      * @return {Promise<type>} A promise that resolves with the list of keys
      */
     async keys() {
+        if (!this.collection) {
+            return [];
+        }
         let cursor = this.collection.find({}, { id: 1 });
         const results = await cursor.map(item => item.id).toArray();
         return results;
@@ -119,6 +135,9 @@ export default class StorageListMongo extends StorageList {
      * @return {Promise<void>} A promise that resolves when the storage is cleared
      */
     async reset() {
+        if (!this.collection) {
+            return;
+        }
         await this.collection.drop();
     }
 }

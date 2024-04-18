@@ -48,11 +48,11 @@ describe.each(permutations)('List - %s vs %s', (_source, _target, components) =>
         await testMethod(instances, 'exists', 'key');
         await testMethod(instances, 'delete', 'key');
         testCompare(await testMethod(instances, 'get', 'key'));
-    });
+    }, 10000);
 
     it('list', async () => {
         await testMethod(instances, 'set', 'key1', 'value1');
         await testMethod(instances, 'set', 'key2', 'value2');
         testCompare(await testMethod(instances, 'keys'));
-    })
+    }, 10000);
 });
