@@ -10,19 +10,22 @@
     transition: background-color 0.2s, border 0.2s, box-shadow 0.2s;
     box-shadow: none;
     width: var(--width);
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     height: 50px;
-    background-color: #848884;
+    background-color: lightgray;
+    color: black;
+    transition: color 0.5s, background-color 0.5s;
 }
 
 .root:hover:active {
-    background-color: #C0C0C0;
+    background-color: darkgray;
 }
 
 .root.clear,
 .root.plusminus,
 .root.percent {
-    background-color: #71797E;
+    background-color: darkgray;
 }
 
 .root.divide,
@@ -30,7 +33,7 @@
 .root.subtract,
 .root.add,
 .root.equals {
-    background-color: rgb(253, 218, 13);
+    background-color: lightblue;
 }
 
 .root.divide:hover:active,
@@ -38,13 +41,14 @@
 .root.subtract:hover:active,
 .root.add:hover:active,
 .root.equals:hover:active {
-    background-color: rgb(225, 193, 110);
+    background-color: darkblue;
+    color: white;
 }
 
 .root.clear:hover:active,
 .root.plusminus:hover:active,
 .root.percent:hover:active {
-    background-color: #848884;
+    background-color: lightgray;
 }
 
 .content {
