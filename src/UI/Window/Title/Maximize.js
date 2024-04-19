@@ -4,6 +4,7 @@ import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
+import Container from "src/UI/Util/Container";
 
 function Maximize() {
     const classes = useClasses(styles);
@@ -17,9 +18,10 @@ function Maximize() {
         window.maximize = true;
     }, [window]);
     return (
-        <Tooltip title="Maximize">
+        <Container>
+            <Tooltip title="Maximize" />
             <div onClick={onClick} className={className} />
-        </Tooltip>
+        </Container>
     )
 }
 

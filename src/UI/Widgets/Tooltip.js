@@ -2,10 +2,15 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tooltip.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
+import Container from "../Util/Container";
+import { useElement } from "src/Core/Base/Element";
 
 export function getTooltipPos(tooltip, element) {
+    if (!tooltip || !element) {
+        return {};
+    }
     const { left: elementLeft, top: elementTop } = element.getBoundingClientRect();
     const elementWidth = element?.offsetWidth;
     const elementHeight = element?.offsetHeight;
@@ -36,30 +41,30 @@ export function getTooltipPos(tooltip, element) {
     return { left, top, "--arrow-left": arrowLeft + "%" };
 }
 
-export function useTooltip(tooltipRef, forRef) {
-    const tooltip = tooltipRef?.current;
-    let element = forRef?.current;
-    if (!element) {
-        element = tooltip?.nextSibling;
-    }
-
+export function useTooltip(tooltip, element) {
     const [visible, setIsVisible] = useState(false);
     const [position, setPosition] = useState({ top: 0, left: 0 });
     const timerRef = useRef();
 
     const handleMouseEnter = useCallback(() => {
-        const position = getTooltipPos(tooltip, element);
-        setPosition(position);
         clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
             setIsVisible(true);
         }, 500);
-    }, [tooltip, element]);
+    }, []);
 
     const handleMouseLeave = useCallback(() => {
         clearTimeout(timerRef.current);
         setIsVisible(false);
     }, []);
+
+    useEffect(() => {
+        if (!tooltip || !element) {
+            return;
+        }
+        const position = getTooltipPos(tooltip, element);
+        setPosition(position);
+    }, [tooltip, element]);
 
     useEventListener(element, "mouseenter", handleMouseEnter);
     useEventListener(element, "mouseleave", handleMouseLeave);
@@ -67,11 +72,12 @@ export function useTooltip(tooltipRef, forRef) {
     return { visible, position };
 };
 
-function Tooltip({ children, title, description, forRef }) {
-    const tooltipRef = useRef();
-    const { visible, position } = useTooltip(tooltipRef, forRef);
+function Tooltip({ title, description }) {
+    const tooltipRef = useElement();
+    let { element } = Container.State.useState() || {};
+    const { visible, position } = useTooltip(tooltipRef.current, element);
     const classes = useClasses(styles);
-    const classesName = classes({
+    const className = classes({
         root: true,
         visible
     });
@@ -90,17 +96,17 @@ function Tooltip({ children, title, description, forRef }) {
             return <div className={styles.line} key={index}>{line}</div>;
         });
     }, [description]);
-    return (<>
-        <div ref={tooltipRef} style={{ ...position }} className={classesName}>
-            <div className={titleClassName}>
-                {title}
-            </div>
-            <div className={descriptionClassName}>
-                {descriptionLines}
-            </div>
+    if (!visible) {
+        return null;
+    }
+    return <div ref={tooltipRef} style={{ ...position }} className={className}>
+        <div className={titleClassName}>
+            {title}
         </div>
-        {children}
-    </>);
+        <div className={descriptionClassName}>
+            {descriptionLines}
+        </div>
+    </div>;
 };
 
 export default withTheme(Tooltip);

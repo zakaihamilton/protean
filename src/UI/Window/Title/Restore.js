@@ -4,6 +4,7 @@ import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
+import Container from "src/UI/Util/Container";
 
 function Restore() {
     const classes = useClasses(styles);
@@ -17,9 +18,10 @@ function Restore() {
         window.maximize = false;
     }, [window]);
     return (
-        <Tooltip title="Restore">
+        <Container>
+            <Tooltip title="Restore" />
             <div onClick={onClick} className={className} />
-        </Tooltip>
+        </Container>
     )
 }
 

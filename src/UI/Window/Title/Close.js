@@ -4,6 +4,7 @@ import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
+import Container from "src/UI/Util/Container";
 
 function Close() {
     const classes = useClasses(styles);
@@ -17,11 +18,12 @@ function Close() {
         window.close = true;
     }, [window]);
     return (
-        <Tooltip title="Close">
+        <Container>
+            <Tooltip title="Close" />
             <div onClick={onClick} className={className}>
                 <div className={styles.close} />
             </div>
-        </Tooltip>
+        </Container>
     )
 }
 
