@@ -18,8 +18,8 @@ function Minimize() {
     }, [window]);
     return (
         <Container>
-            <Tooltip title="Minimize" />
             <div onClick={onClick} className={className} />
+            <Tooltip title="Minimize" />
         </Container>
     )
 }

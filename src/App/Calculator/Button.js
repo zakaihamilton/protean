@@ -23,12 +23,12 @@ export default function Button({ id, icon, row, column, label, children, width, 
     }
     const title = typeof tooltip === "function" ? tooltip() : tooltip;
     return <Container style={style}>
-        <Tooltip title={title} />
         <div className={className} {...props}>
             <div className={styles.content}>
                 {content}
             </div>
             {children}
         </div>
+        <Tooltip title={title} />
     </Container>;
 }

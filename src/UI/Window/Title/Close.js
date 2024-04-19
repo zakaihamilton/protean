@@ -19,10 +19,10 @@ function Close() {
     }, [window]);
     return (
         <Container>
-            <Tooltip title="Close" />
             <div onClick={onClick} className={className}>
                 <div className={styles.close} />
             </div>
+            <Tooltip title="Close" />
         </Container>
     )
 }

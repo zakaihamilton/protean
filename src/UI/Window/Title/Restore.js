@@ -19,8 +19,8 @@ function Restore() {
     }, [window]);
     return (
         <Container>
-            <Tooltip title="Restore" />
             <div onClick={onClick} className={className} />
+            <Tooltip title="Restore" />
         </Container>
     )
 }

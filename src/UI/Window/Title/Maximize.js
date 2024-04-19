@@ -19,8 +19,8 @@ function Maximize() {
     }, [window]);
     return (
         <Container>
-            <Tooltip title="Maximize" />
             <div onClick={onClick} className={className} />
+            <Tooltip title="Maximize" />
         </Container>
     )
 }
