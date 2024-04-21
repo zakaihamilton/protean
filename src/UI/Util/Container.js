@@ -6,7 +6,7 @@ import { withNode } from "src/Core/Base/Node";
 
 function Container({ children, ...props }) {
     const ref = useElement();
-    const state = Container.State.useState();
+    const state = Container.State.useState(undefined, null);
     const element = ref?.current;
     useEffect(() => {
         state.element = element;

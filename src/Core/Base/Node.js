@@ -14,7 +14,10 @@ export default function Node({ id, children }) {
 
 Node.useNode = (nodeId, propId) => {
     let node = useContext(Context);
-    if (nodeId) {
+    if (typeof nodeId !== "undefined") {
+        if (nodeId === null) {
+            return node;
+        }
         while (node && nodeGetId(node) !== nodeId) {
             node = node.parent;
         }
