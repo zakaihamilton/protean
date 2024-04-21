@@ -42,12 +42,14 @@ function Window({ children }) {
             <Dock />
             <div ref={ref} className={className} style={style}>
                 <Title />
-                <Fullscreen />
-                <Menu />
-                <Content>
-                    {children}
-                </Content>
-                <Resize />
+                {!window.collapse && <>
+                    <Fullscreen />
+                    <Menu />
+                    <Content>
+                        {children}
+                    </Content>
+                    <Resize />
+                </>}
             </div>
         </>
     )

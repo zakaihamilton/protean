@@ -1,6 +1,5 @@
 import { createState } from "src/Core/Base/State";
 import Window from "src/UI/Window";
-import Menu from "./Calculator/Menu";
 import { useCallback, useEffect, useMemo } from "react";
 import { FaCalculator } from "react-icons/fa6";
 import Button from "./Calculator/Button";
@@ -244,7 +243,6 @@ export default function Calculator() {
     }, [calculator]);
 
     return <>
-        <Menu />
         <Window.Rect left={400} top={200} width={300} height={400} />
         <Window icon={icon} label="Calculator" fixed accentBackground="darkblue">
             <div className={styles.grid}>

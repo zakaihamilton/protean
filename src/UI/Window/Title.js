@@ -8,7 +8,7 @@ import Maximize from "./Title/Maximize";
 import Close from "./Title/Close";
 import Restore from "./Title/Restore";
 
-function Title({ children }) {
+function Title() {
     const classes = useClasses(styles);
     const window = Window.State.useState();
     const className = classes({
@@ -18,14 +18,15 @@ function Title({ children }) {
     return (
         <div className={className}>
             <Label />
-            {children}
-            <div className={styles.separator} />
-            <div className={styles.actions}>
-                <Close />
-                <Minimize />
-                <Restore />
-                <Maximize />
-            </div>
+            {!window.collapse && <>
+                <div className={styles.separator} />
+                <div className={styles.actions}>
+                    <Close />
+                    <Minimize />
+                    <Restore />
+                    <Maximize />
+                </div>
+            </>}
         </div>
     )
 }

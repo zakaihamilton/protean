@@ -3,7 +3,7 @@ import styles from "./Label.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import Drag, { useMoveDrag } from "src/Core/UI/Drag";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 function Label() {
     const classes = useClasses(styles);
@@ -11,6 +11,11 @@ function Label() {
     const disabled = window.center || window.maximize;
     const ref = useMoveDrag(!disabled);
     const drag = Drag.useState();
+    const onClick = useCallback(e => {
+        if (e.detail === 2) {
+            window.collapse = !window.collapse;
+        }
+    }, [window]);
     const style = useMemo(() => {
         return {
             "--accent-background": window.accentBackground || "darkblue",
@@ -26,7 +31,7 @@ function Label() {
         }
     );
     return (
-        <div ref={ref} className={className} style={style}>
+        <div ref={ref} className={className} style={style} onClick={onClick}>
             <div className={styles.icon}>
                 {window?.icon}
             </div>
