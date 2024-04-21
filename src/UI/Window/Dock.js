@@ -20,25 +20,18 @@ function dockInBorderRegion(rect, point) {
     return null;
 }
 
-export function Dock() {
-    const region = Window.Rect.useState();
-    const window = Window.State.useState();
+export function useDock() {
     const drag = Drag.useState();
+    const rect = Window.Rect.useState();
+    const window = Window.State.useState();
 
     useEffect(() => {
         const displayRegion = { left: 0, top: 0, width: globalThis.innerWidth, height: globalThis.innerHeight };
         window.dock = !window?.fixed && dockInBorderRegion(displayRegion, drag?.touch);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [region?.__counter, drag?.moving, window?.dock]);
-
-    return null;
-}
-
-export function useDock() {
-    const region = Window.Rect.useState();
-    const window = Window.State.useState();
+    }, [rect?.__counter, drag?.moving, window?.dock]);
     const style = useMemo(() => {
-        let { left, top, width, height } = region;
+        let { left, top, width, height } = rect;
         if (window.collapse) {
             return { left, top };
         }
@@ -61,6 +54,6 @@ export function useDock() {
         }
         return { left, top, width, height };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [region?.__counter, window?.dock, window?.fullscreen, window?.center, window.maximize, window.collapse]);
+    }, [rect?.__counter, window?.dock, window?.fullscreen, window?.center, window?.maximize, window?.collapse]);
     return style;
 }

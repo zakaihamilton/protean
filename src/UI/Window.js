@@ -12,6 +12,7 @@ import { useElement } from "src/Core/Base/Element";
 import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Window/Menu";
 import { createRegion } from "src/Core/UI/Region";
+import { withNode } from "src/Core/Base/Node";
 
 function Window({ children }) {
     const classes = useClasses(styles);
@@ -39,7 +40,6 @@ function Window({ children }) {
         <>
             <Drag rect={rect} min={min} />
             <Window.Region target={ref?.current} counter={rect.__counter} />
-            <Dock />
             <div ref={ref} className={className} style={style}>
                 <Title />
                 {!window.collapse && <>
@@ -58,4 +58,4 @@ function Window({ children }) {
 Window.Rect = createState("Window.Rect");
 Window.Region = createRegion("Window.Region");
 
-export default withState(Window);
+export default withNode(withState(Window));

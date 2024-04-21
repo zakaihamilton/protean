@@ -5,7 +5,7 @@ import { objectHasChanged, createObject } from "./Object";
 export function createState(displayName) {
     function State({ nodeId = undefined, ...props }) {
         const object = State.useState(undefined, nodeId, { ...props });
-        const [updatedProps, setUpdatedProps] = useState({ ...props });
+        const [updatedProps, setUpdatedProps] = useState({});
         const keysChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
         if (keysChanged.length) {
