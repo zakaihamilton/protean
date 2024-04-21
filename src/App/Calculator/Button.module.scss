@@ -33,7 +33,8 @@
 .root.subtract,
 .root.add,
 .root.equals {
-    background-color: lightblue;
+    background-color: slategray;
+    color: white;
 }
 
 .root.divide:hover:active,
@@ -41,8 +42,8 @@
 .root.subtract:hover:active,
 .root.add:hover:active,
 .root.equals:hover:active {
-    background-color: darkblue;
-    color: white;
+    background-color: lightgray;
+    color: black;
 }
 
 .root.clear:hover:active,
