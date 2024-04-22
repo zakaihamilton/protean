@@ -10,6 +10,12 @@ import { PiPlusMinusBold, PiDivide } from "react-icons/pi";
 function useLayout() {
     const state = Calculator.State.useState();
     return useMemo(() => {
+        const mapNumber = (n) => {
+            return {
+                id: String(n),
+                label: String(n)
+            };
+        };
         return [[
             {
                 id: "clear",
@@ -33,18 +39,7 @@ function useLayout() {
             }
         ],
         [
-            {
-                id: "7",
-                label: "7"
-            },
-            {
-                id: "8",
-                label: "8"
-            },
-            {
-                id: "9",
-                label: "9"
-            },
+            ...[7, 8, 9].map(mapNumber),
             {
                 id: "multiply",
                 label: "x",
@@ -52,18 +47,7 @@ function useLayout() {
             }
         ],
         [
-            {
-                id: "4",
-                label: "4"
-            },
-            {
-                id: "5",
-                label: "5"
-            },
-            {
-                id: "6",
-                label: "6"
-            },
+            ...[4, 5, 6].map(mapNumber),
             {
                 id: "subtract",
                 label: "-",
@@ -71,18 +55,7 @@ function useLayout() {
             }
         ],
         [
-            {
-                id: "1",
-                label: "1"
-            },
-            {
-                id: "2",
-                label: "2"
-            },
-            {
-                id: "3",
-                label: "3"
-            },
+            ...[1, 2, 3].map(mapNumber),
             {
                 id: "add",
                 label: "+",
@@ -124,22 +97,6 @@ function useCalculator(state) {
         }
     }, [state]);
 
-    const add = useCallback(() => {
-        operation('+');
-    }, [operation]);
-
-    const subtract = useCallback(() => {
-        operation('-');
-    }, [operation]);
-
-    const multiply = useCallback(() => {
-        operation('*');
-    }, [operation]);
-
-    const divide = useCallback(() => {
-        operation('/');
-    }, [operation]);
-
     const percent = useCallback(() => {
         if (state.input !== '0') {
             state.input = (parseFloat(state.input) / 100).toString();
@@ -169,16 +126,16 @@ function useCalculator(state) {
             const num2 = parseFloat(state.input);
             let result;
             switch (state.operation) {
-                case '+':
+                case 'add':
                     result = num1 + num2;
                     break;
-                case '-':
+                case 'subtract':
                     result = num1 - num2;
                     break;
-                case '*':
+                case 'multiply':
                     result = num1 * num2;
                     break;
-                case '/':
+                case 'divide':
                     if (num2 === 0) {
                         result = 'Error'; // Handle division by zero
                     } else {
@@ -198,15 +155,15 @@ function useCalculator(state) {
         return {
             clear,
             decimal,
-            add,
-            subtract,
-            multiply,
-            divide,
+            add: () => operation('add'),
+            subtract: () => operation('subtract'),
+            multiply: () => operation('multiply'),
+            divide: () => operation('divide'),
             percent,
             equals,
             plusminus
         };
-    }, [add, clear, decimal, divide, equals, multiply, percent, plusminus, subtract]);
+    }, [clear, decimal, equals, operation, percent, plusminus]);
 }
 
 export default function Calculator() {
