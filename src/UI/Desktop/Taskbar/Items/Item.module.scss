@@ -1,8 +1,9 @@
-.root {
+.root {}
+
+.item {
     display: flex;
     align-items: center;
     border: 2px solid black;
-    margin: 3px;
     padding-left: 6px;
     padding-right: 6px;
     outline: 1px solid var(--accent-color);
@@ -16,28 +17,48 @@
     color: black;
     user-select: none;
     border-radius: 6px;
+    height: 38px;
+    margin: 3px;
 }
 
-.root.minimize {
+.item.static {
+    position: relative;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.item.draggable {
+    position: absolute;
+    top: 0px;
+}
+
+.item.minimize {
     outline: 1px solid transparent;
     border: 2px inset lightgray;
     border: 2px solid lightgray;
     color: black;
 }
 
-.root.focus {
+.item.focus {
     outline: 2px solid var(--accent-color);
     background-color: white;
 }
 
-.root.focus:active {
+.item.focus:active {
     border: 2px inset #fff;
     background: lightgray;
 }
 
-.root:not(.focus):active {
+.item:not(.focus):active {
     border: 2px inset white;
     background: lightgray;
+}
+
+.item.draggable.moving.range {
+    left: var(--left);
+    z-index: 1000;
+    filter: invert(100%);
+    opacity: 0.8;
 }
 
 .icon {

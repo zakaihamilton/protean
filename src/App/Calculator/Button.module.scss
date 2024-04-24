@@ -1,4 +1,11 @@
 .root {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,46 +16,45 @@
     background-color: transparent;
     transition: background-color 0.2s, border 0.2s, box-shadow 0.2s;
     box-shadow: none;
-    width: var(--width);
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    height: 50px;
     background-color: lightgray;
     color: black;
     transition: color 0.5s, background-color 0.5s;
+    flex: 1;
 }
 
-.root:hover:active {
+.button:hover:active {
     background-color: darkgray;
 }
 
-.root.clear,
-.root.plusminus,
-.root.percent {
+.button.clear,
+.button.plusminus,
+.button.percent {
     background-color: darkgray;
 }
 
-.root.divide,
-.root.multiply,
-.root.subtract,
-.root.add,
-.root.equals {
+.button.divide,
+.button.multiply,
+.button.subtract,
+.button.add,
+.button.equals {
     background-color: slategray;
     color: white;
 }
 
-.root.divide:hover:active,
-.root.multiply:hover:active,
-.root.subtract:hover:active,
-.root.add:hover:active,
-.root.equals:hover:active {
+.button.divide:hover:active,
+.button.multiply:hover:active,
+.button.subtract:hover:active,
+.button.add:hover:active,
+.button.equals:hover:active {
     background-color: lightgray;
     color: black;
 }
 
-.root.clear:hover:active,
-.root.plusminus:hover:active,
-.root.percent:hover:active {
+.button.clear:hover:active,
+.button.plusminus:hover:active,
+.button.percent:hover:active {
     background-color: lightgray;
 }
 

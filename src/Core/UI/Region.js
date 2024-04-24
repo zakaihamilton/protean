@@ -1,6 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createState } from "src/Core/Base/State";
 
+
+function findIntersectingElements(element, elements) {
+    const intersectingElements = [];
+    const elementRect = element.getBoundingClientRect();
+    for (const otherElement of elements) {
+        const otherRect = otherElement.getBoundingClientRect();
+        const isIntersectingHorizontally = elementRect.left < otherRect.right && elementRect.right > otherRect.left;
+        const isIntersectingVertically = elementRect.top < otherRect.bottom && elementRect.bottom > otherRect.top;
+        if (isIntersectingHorizontally && isIntersectingVertically) {
+            intersectingElements.push(otherElement);
+        }
+    }
+    return intersectingElements;
+}
+
+export function getHitTargets(parent, child) {
+    if (!parent || !child) {
+        return null;
+    }
+    const elements = [...parent.children];
+    const hits = findIntersectingElements(child, elements);
+
+    return hits;
+}
+
 export function createRegion(displayName) {
     function Region({ target, counter, delay = 50 }) {
         const [region, setRegion] = useState({});

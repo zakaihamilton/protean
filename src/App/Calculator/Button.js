@@ -6,8 +6,8 @@ import Container from "src/UI/Util/Container";
 
 export default function Button({ id, icon, row, column, label, children, width, tooltip, ...props }) {
     const classes = useClasses(styles);
-    const className = classes({
-        root: true,
+    const buttonClassName = classes({
+        button: true,
         [id]: true
     });
     const style = useMemo(() => {
@@ -22,8 +22,8 @@ export default function Button({ id, icon, row, column, label, children, width, 
         content = content();
     }
     const title = typeof tooltip === "function" ? tooltip() : tooltip;
-    return <Container style={style}>
-        <div className={className} {...props}>
+    return <Container style={style} className={styles.root}>
+        <div className={buttonClassName} {...props}>
             <div className={styles.content}>
                 {content}
             </div>

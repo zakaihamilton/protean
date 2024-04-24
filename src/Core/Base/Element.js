@@ -22,9 +22,3 @@ export function useElementConstructor(element, constructor) {
         }
     }, [handle, constructor]);
 }
-
-function Element() {
-    
-}
-
-export default Element;

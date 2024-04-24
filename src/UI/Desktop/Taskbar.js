@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";
-import { className, useClasses } from "src/Core/Util/Styles";
+import { useClasses } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
 import { withTheme } from "src/Core/UI/Theme";

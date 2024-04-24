@@ -28,4 +28,5 @@ html {
     user-select: none;
     -webkit-user-drag: none;
     -webkit-app-region: no-drag;
+    box-sizing: border-box;
 }
