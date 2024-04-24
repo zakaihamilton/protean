@@ -55,7 +55,9 @@ function Item({ item, index }) {
     });
     const staticClassName = classes({
         item: true,
-        static: true
+        static: true,
+        moving: drag.moving,
+        range: inRange
     });
     const draggableClassName = classes({
         item: true,
