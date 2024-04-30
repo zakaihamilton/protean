@@ -1,4 +1,12 @@
-.root {}
+.root {
+    display: flex;
+    margin: 3px;
+    position: relative;
+}
+
+.root.vertical {
+    flex-direction: column;
+}
 
 .item {
     display: flex;
@@ -8,8 +16,6 @@
     padding-right: 6px;
     outline: 1px solid var(--accent-color);
     background-color: lightgray;
-    min-width: 100px;
-    max-width: 200px;
     border: 2px inset #fff;
     border-right-color: black;
     border-bottom-color: black;
@@ -18,7 +24,15 @@
     user-select: none;
     border-radius: 6px;
     height: 38px;
-    margin: 3px;
+}
+
+.root:not(.vertical) .item {
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.root.vertical .item {
+    width: 100%;
 }
 
 .item.static {
@@ -29,7 +43,6 @@
 
 .item.draggable {
     position: absolute;
-    top: 0px;
 }
 
 .item.minimize {
@@ -60,6 +73,7 @@
 
 .item.draggable.moving.range {
     left: var(--left);
+    top: var(--top);
     z-index: 1000;
     filter: invert(100%);
     opacity: 0.8;

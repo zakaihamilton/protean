@@ -3,10 +3,19 @@
     align-items: stretch;
 }
 
+.root.vertical {
+    flex-direction: column;
+}
+
 .items {
     display: flex;
     align-items: stretch;
     flex: 1;
     margin-left: 10px;
     position: relative;
+}
+
+.items.vertical {
+    flex-direction: column;
+    margin-left: 0;
 }

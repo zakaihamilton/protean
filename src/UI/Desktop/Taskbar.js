@@ -22,7 +22,7 @@ function Taskbar() {
 
     const className = classes({ root: true, visible: state?.visible });
     return <div className={className}>
-        <Items />
+        <Items list={list} />
     </div>;
 }
 
