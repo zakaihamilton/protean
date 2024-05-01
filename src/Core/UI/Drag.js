@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createState } from "src/Core/Base/State";
+import { useEventListener } from "./EventListener";
+import { getOffsetRect } from "./Region";
 
 const Drag = createState("Drag");
 
@@ -34,29 +36,16 @@ const useDrag = (initialCb, moverCb, prop, enabled) => {
         }
     }, [state, prop, moverCb]);
 
-    useEffect(() => {
-        if (!handle) {
-            return;
-        }
-        if (!enabled) {
-            return;
-        }
-        handle.addEventListener("pointerdown", handlePointerDown);
-        window.document.addEventListener("pointerup", handlePointerUp);
-        window.document.addEventListener("pointermove", handlePointerMove);
-        return () => {
-            handle.removeEventListener("pointerdown", handlePointerDown);
-            window.document.removeEventListener("pointerup", handlePointerUp);
-            window.document.removeEventListener("pointermove", handlePointerMove);
-        };
-    }, [enabled, handle, handlePointerDown, handlePointerMove, handlePointerUp]);
+    useEventListener(!!enabled && handle, "pointerdown", handlePointerDown, { passive: true });
+    useEventListener(!!enabled && window.document, "pointermove", handlePointerMove, { passive: true });
+    useEventListener(!!enabled && window.document, "pointerup", handlePointerUp, { passive: true });
 
     return ref;
 };
 
 export function useMoveDrag(enabled) {
     const initialCb = useCallback((e, state) => {
-        const targetRect = state?.target?.getBoundingClientRect();
+        const targetRect = getOffsetRect(state?.target);
         state.offset = {
             x: Math.floor(e.clientX - targetRect.left + (state.marginLeft || 0)),
             y: Math.floor(e.clientY - targetRect.top + (state.marginTop || 0))
@@ -64,7 +53,7 @@ export function useMoveDrag(enabled) {
         state.base = { x: e.clientX, y: e.clientY };
     }, []);
     const moverCb = useCallback((e, state) => {
-        const targetRect = state?.target?.getBoundingClientRect();
+        const targetRect = getOffsetRect(state?.target);
         if (!state.rect) {
             state.rect = { ...targetRect };
         }
@@ -81,7 +70,7 @@ export function useMoveDrag(enabled) {
 
 export function useResizeDrag(enabled) {
     const initialCb = useCallback((e, state) => {
-        const targetRect = state?.target?.getBoundingClientRect();
+        const targetRect = getOffsetRect(state?.target);
         if (!state.rect) {
             state.rect = { ...targetRect };
         }

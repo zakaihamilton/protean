@@ -26,6 +26,34 @@ export function getHitTargets(parent, child) {
     return hits;
 }
 
+export function getOffsetRect(element) {
+    if (!element) {
+        return undefined;
+    }
+    const rect = {
+        left: 0,
+        top: 0,
+        width: element.offsetWidth,
+        height: element.offsetHeight
+    };
+    let current = element;
+
+    while (current && current !== document.body) {
+        const computedStyle = window.getComputedStyle(current);
+        const position = computedStyle.getPropertyValue('position');
+
+        if (position === 'relative' || position === 'absolute') {
+            rect.left += current.offsetLeft - current.scrollLeft;
+            rect.top += current.offsetTop - current.scrollTop;
+            break;
+        }
+
+        current = current.parentElement;
+    }
+
+    return rect;
+}
+
 export function createRegion(displayName) {
     function Region({ target, counter, delay = 50 }) {
         const [region, setRegion] = useState({});
