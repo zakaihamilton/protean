@@ -20,8 +20,8 @@ function Item({ item, index, vertical }) {
     const drag = Drag.useState(undefined, null);
     const ref = useMoveDrag(true);
     const inRange = vertical ?
-        (Math.abs(drag?.moved?.y) > DRAG_RANGE && drag?.moved?.x >= -DRAG_RANGE) :
-        (Math.abs(drag?.moved?.x) > DRAG_RANGE && drag?.moved?.y >= -DRAG_RANGE);
+        (Math.abs(drag?.dragged?.y) > DRAG_RANGE && drag?.dragged?.x >= -DRAG_RANGE) :
+        (Math.abs(drag?.dragged?.x) > DRAG_RANGE && drag?.dragged?.y >= -DRAG_RANGE);
     const style = useMemo(() => {
         return vertical ? {
             "--top": (inRange && drag?.rect?.top || 0) + "px"
@@ -29,12 +29,8 @@ function Item({ item, index, vertical }) {
             "--left": (inRange && drag?.rect?.left || 0) + "px"
         };
     }, [drag?.rect?.left, drag?.rect?.top, inRange, vertical]);
-    const onDragEnd = useCallback(handle => {
-        const x = drag?.moved?.x || 0, y = drag?.moved?.y || 0;
-        if (vertical ? Math.abs(x) > DRAG_RANGE : Math.abs(y) > DRAG_RANGE) {
-            return;
-        }
-        if (vertical ? Math.abs(y) > DRAG_RANGE : Math.abs(x) > DRAG_RANGE) {
+    const onDragEnd = useCallback((state, handle) => {
+        if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
             const hitTargets = getHitTargets(container.element, handle);
             const hitTarget = hitTargets?.[hitTargets?.length - 1];
             if (hitTarget) {
@@ -50,7 +46,7 @@ function Item({ item, index, vertical }) {
             item.minimize = false;
             item.focus = true;
         }
-    }, [container.element, drag?.moved, index, item, windows, vertical]);
+    }, [container.element, index, item, windows, vertical]);
     const className = classes({
         root: true,
         vertical
