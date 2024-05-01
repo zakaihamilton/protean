@@ -38,7 +38,7 @@ function Window({ children }) {
 
     return (
         <>
-            <Drag rect={rect} min={min} marginLeft={1} marginTop={1} />
+            <Drag rect={rect} min={min} />
             <Window.Region target={ref?.current} counter={rect.__counter} />
             <div ref={ref} className={className} style={style}>
                 <Title />
