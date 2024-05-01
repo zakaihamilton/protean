@@ -28,13 +28,10 @@ function Item({ item, index, vertical }) {
         } : {
             "--left": (inRange && drag?.rect?.left || 0) + "px"
         };
-    }, [drag?.rect, inRange, vertical]);
+    }, [drag?.rect?.left, drag?.rect?.top, inRange, vertical]);
     const onDragEnd = useCallback(handle => {
         const x = drag?.moved?.x || 0, y = drag?.moved?.y || 0;
         if (vertical ? Math.abs(x) > DRAG_RANGE : Math.abs(y) > DRAG_RANGE) {
-            if (windows.backup) {
-                windows.list = windows.backup;
-            }
             return;
         }
         if (vertical ? Math.abs(y) > DRAG_RANGE : Math.abs(x) > DRAG_RANGE) {

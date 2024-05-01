@@ -1,11 +1,15 @@
 .root {
     display: flex;
-    margin: 3px;
-    position: relative;
 }
 
 .root.vertical {
-    flex-direction: column;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.root:not(.vertical) {
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 .item {

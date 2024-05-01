@@ -15,7 +15,7 @@ export default function TaskManager() {
     return <>
         <Window.Rect left={50} top={300} width={300} height={300} />
         <Window icon={icon} label="Task Manager" accentBackground="gold" accentColor="black">
-            <Group vertical>
+            <Group vertical flex>
                 <Items vertical list={list} />
             </Group>
         </Window>
