@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createState } from "src/Core/Base/State";
 import { useEventListener } from "./EventListener";
 import { getOffsetRect } from "./Region";
+import { getClientDocument } from "../Util/Client";
 
 const Drag = createState("Drag");
 
@@ -36,9 +37,10 @@ const useDrag = (initialCb, moverCb, prop, enabled) => {
         }
     }, [state, prop, moverCb]);
 
+    const document = getClientDocument();
     useEventListener(!!enabled && handle, "pointerdown", handlePointerDown, { passive: true });
-    useEventListener(!!enabled && window.document, "pointermove", handlePointerMove, { passive: true });
-    useEventListener(!!enabled && window.document, "pointerup", handlePointerUp, { passive: true });
+    useEventListener(!!enabled && document, "pointermove", handlePointerMove, { passive: true });
+    useEventListener(!!enabled && document, "pointerup", handlePointerUp, { passive: true });
 
     return ref;
 };
