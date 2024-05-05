@@ -6,6 +6,7 @@ import { useClasses } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
 import { withTheme } from "src/Core/UI/Theme";
+import { withNode } from "src/Core/Base/Node";
 
 function Taskbar() {
     const classes = useClasses(styles);
@@ -26,4 +27,4 @@ function Taskbar() {
     </div>;
 }
 
-export default withTheme(withState(Taskbar));
+export default withTheme(withNode(withState(Taskbar)));

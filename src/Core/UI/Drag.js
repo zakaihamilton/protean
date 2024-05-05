@@ -18,10 +18,10 @@ const useDrag = (initialCb, moverCb, prop, enabled) => {
         state[prop] = true;
         initialCb(e, state);
         moverCb(e, state);
-        state.onDragStart && state.onDragStart(state);
+        state.onDragStart && state.onDragStart(state, handle);
     }, [state, handle, initialCb, moverCb, prop]);
     const handlePointerUp = useCallback(() => {
-        if (!state.target || !state[prop]) {
+    if (!state.target || !state[prop]) {
             return;
         }
         const handle = state.target;
@@ -33,7 +33,8 @@ const useDrag = (initialCb, moverCb, prop, enabled) => {
     const handlePointerMove = useCallback((e) => {
         if (state.target && state[prop]) {
             moverCb(e, state);
-            state.onDragMove && state.onDragMove(state);
+            const handle = state.target;
+            state.onDragMove && state.onDragMove(state, handle);
         }
     }, [state, prop, moverCb]);
 
@@ -52,7 +53,14 @@ export function useMoveDrag(enabled) {
             x: Math.floor(e.clientX - targetRect.left + (state.marginLeft || 0)),
             y: Math.floor(e.clientY - targetRect.top + (state.marginTop || 0))
         };
-        state.base = { x: e.clientX, y: e.clientY, left: targetRect.left, top: targetRect.top };
+        state.base = {
+            x: e.clientX,
+            y: e.clientY,
+            left: targetRect.left,
+            top: targetRect.top,
+            width: targetRect.width,
+            height: targetRect.height
+        };
     }, []);
     const moverCb = useCallback((e, state) => {
         const targetRect = getOffsetRect(state?.target);
@@ -83,7 +91,12 @@ export function useResizeDrag(enabled) {
             x: Math.floor(e.clientX - state.rect.width),
             y: Math.floor(e.clientY - state.rect.height)
         };
-        state.base = { x: e.clientX, y: e.clientY, width: state.rect.width, height: state.rect.height };
+        state.base = {
+            x: e.clientX,
+            y: e.clientY,
+            width: state.rect.width,
+            height: state.rect.height
+        };
     }, []);
     const moverCb = useCallback((e, state) => {
         const width = Math.floor(Math.max(e.clientX - state.offset.x, state.min?.width || 0));

@@ -1,12 +1,14 @@
 import { withTheme } from "src/Core/UI/Theme"
-import Windows from "src/UI/Windows";
 import styles from "./Items.module.scss";
 import Item from "./Items/Item";
 import { useMemo } from "react";
 import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
+import { withState } from "src/Core/Base/State";
 
-function Items({ vertical = false, list }) {
+function Items() {
+    const state = Items.State.useState();
+    const { list, vertical } = state;
     const classes = useClasses(styles);
 
     const items = useMemo(() => {
@@ -25,4 +27,4 @@ function Items({ vertical = false, list }) {
     </div>
 }
 
-export default withTheme(Items);
+export default withTheme(withState(Items));
