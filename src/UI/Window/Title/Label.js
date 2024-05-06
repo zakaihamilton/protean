@@ -2,7 +2,8 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Label.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
-import Drag, { useMoveDrag } from "src/Core/UI/Drag";
+import Drag from "src/Core/UI/Drag";
+import { useMoveDrag } from "src/Core/UI/Drag/Move";
 import { useCallback, useMemo } from "react";
 
 function Label() {

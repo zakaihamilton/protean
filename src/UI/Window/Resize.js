@@ -1,7 +1,8 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Resize.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
-import Drag, { useResizeDrag } from "src/Core/UI/Drag";
+import Drag from "src/Core/UI/Drag";
+import { useResizeDrag } from "src/Core/UI/Drag/Resize";
 import Window from "../Window";
 
 function Resize() {
