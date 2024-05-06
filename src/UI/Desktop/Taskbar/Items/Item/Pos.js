@@ -22,7 +22,7 @@ export function useItemPos({ index, vertical, ref }) {
         }
     }, [container, element, index, vertical]);
     return useMemo(() => {
-        let x = 0, y = 0;
+        let x = 0, y = 0, styles = {};
         if (drag?.moving) {
             x = left;
             y = top;
@@ -30,25 +30,22 @@ export function useItemPos({ index, vertical, ref }) {
         else {
             const sizes = container.sizes;
             if (!sizes) {
-                return [x, y];
+                return [x, y, styles];
             }
             for (let i = 0; i < Object.keys(sizes).length; i++) {
                 const size = sizes[i];
-                if (i === index) {
-                    break;
-                }
                 if (container.target) {
                     const targetIndex = container.target.dataset.index;
-                    const isDragging = parseInt(targetIndex) === i;
+                    const isDragging = parseInt(targetIndex) === index;
                     if (isDragging) {
-                        console.log("dragging", container.target.dataset.label);
-                        if (vertical) {
-
-                        }
-                        else {
-
-                        }
+                        styles.opacity = "0.5";
                     }
+                }
+                else {
+                    styles = "";
+                }
+                if (i === index) {
+                    break;
                 }
                 if (vertical) {
                     y += size + PADDING;
@@ -58,6 +55,6 @@ export function useItemPos({ index, vertical, ref }) {
                 }
             }
         }
-        return [x, y];
+        return [x, y, styles];
     }, [container.sizes, container.target, drag?.moving, index, left, top, vertical]);
 }

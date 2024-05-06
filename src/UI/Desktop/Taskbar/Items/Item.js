@@ -14,22 +14,24 @@ function Item({ item, index, vertical }) {
     const { label, focus, minimize, icon } = useStateFromObject(item);
     const drag = Drag.useState(undefined, null);
     const ref = useMoveDrag(true);
-    const [left, top] = useItemPos({ index, vertical, ref });
+    const [left, top, itemStyles] = useItemPos({ index, vertical, ref });
     const inRange = vertical ?
         (Math.abs(drag?.dragged?.y) > DRAG_RANGE) :
         (Math.abs(drag?.dragged?.x) > DRAG_RANGE);
     const style = useMemo(() => {
         if (vertical) {
             return {
-                "--top": top + "px"
+                "--top": top + "px",
+                ...itemStyles
             };
         }
         else {
             return {
-                "--left": left + "px"
+                "--left": left + "px",
+                ...itemStyles
             };
         }
-    }, [left, top, vertical]);
+    }, [left, top, vertical, itemStyles]);
     const className = classes({
         root: true,
         focus,

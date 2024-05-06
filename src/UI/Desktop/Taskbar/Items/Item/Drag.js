@@ -2,7 +2,7 @@ import Drag from "src/Core/UI/Drag";
 import Container from "src/UI/Util/Container";
 import Windows from "src/UI/Windows";
 import { useCallback } from "react";
-import { getCenterHitTargets } from "src/Core/UI/Region";
+import { getHitTargets } from "src/Core/UI/Region";
 import { moveItem } from "src/Core/Base/Array";
 
 export const DRAG_RANGE = 12;
@@ -11,14 +11,14 @@ export function ItemDrag({ item, index, vertical }) {
     const windows = Windows.State.useState(null);
     const container = Container.State.useState();
     const onDragMove = useCallback((_, handle) => {
-        const hitTargets = getCenterHitTargets(container.element, handle);
+        const hitTargets = getHitTargets(container.element, handle);
         const hitTarget = hitTargets?.[hitTargets?.length - 1];
         container.target = hitTarget;
     }, [container]);
     const onDragEnd = useCallback((state, handle) => {
         container.target = null;
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
-            const hitTargets = getCenterHitTargets(container.element, handle);
+            const hitTargets = getHitTargets(container.element, handle);
             const hitTarget = hitTargets?.[hitTargets?.length - 1];
             if (hitTarget) {
                 const targetIndex = parseInt(hitTarget.dataset.index);

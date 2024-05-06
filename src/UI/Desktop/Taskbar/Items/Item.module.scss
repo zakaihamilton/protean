@@ -17,6 +17,7 @@
     position: absolute;
     left: var(--left);
     top: var(--top);
+    transform: var(--transform);
 }
 
 .root:not(.vertical) {
