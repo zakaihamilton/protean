@@ -4,16 +4,13 @@ import Item from "./Items/Item";
 import { useMemo } from "react";
 import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
-import { withState } from "src/Core/Base/State";
 
-function Items() {
-    const state = Items.State.useState();
-    const { list, vertical } = state;
+function Items({ list, vertical }) {
     const classes = useClasses(styles);
 
-    const items = useMemo(() => {
+    const elements = useMemo(() => {
         return list?.map((item, index) => {
-            return <Item key={item?.id || index} index={index} item={item} vertical={vertical} />;
+            return <Item key={item?.id || item?.label} index={index} item={item} vertical={vertical} />;
         });
     }, [list, vertical]);
 
@@ -22,9 +19,9 @@ function Items() {
 
     return <div className={rootClassName}>
         <Container className={itemsClassName}>
-            {items}
+            {elements}
         </Container>
     </div>
 }
 
-export default withTheme(withState(Items));
+export default withTheme(Items);

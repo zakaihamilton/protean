@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
 import Windows from "src/UI/Windows";

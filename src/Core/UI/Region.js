@@ -2,12 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createState } from "src/Core/Base/State";
 
 
-function findIntersectingElements(element, elements) {
+function findIntersectingCenterElements(element, elements) {
     const intersectingElements = [];
     const elementRect = element.getBoundingClientRect();
     for (const otherElement of elements) {
+        if (otherElement === element) {
+            continue;
+        }
         const otherRect = otherElement.getBoundingClientRect();
-        const isIntersectingHorizontally = elementRect.left < otherRect.right && elementRect.right > otherRect.left;
+        const isIntersectingHorizontally = elementRect.left + elementRect.width / 2 < otherRect.right && elementRect.right - elementRect.width / 2 > otherRect.left;
         const isIntersectingVertically = elementRect.top < otherRect.bottom && elementRect.bottom > otherRect.top;
         if (isIntersectingHorizontally && isIntersectingVertically) {
             intersectingElements.push(otherElement);
@@ -16,12 +19,12 @@ function findIntersectingElements(element, elements) {
     return intersectingElements;
 }
 
-export function getHitTargets(parent, child) {
+export function getCenterHitTargets(parent, child) {
     if (!parent || !child) {
         return null;
     }
     const elements = [...parent.children];
-    const hits = findIntersectingElements(child, elements);
+    const hits = findIntersectingCenterElements(child, elements);
 
     return hits;
 }

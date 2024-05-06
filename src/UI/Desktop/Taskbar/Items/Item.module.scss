@@ -1,20 +1,5 @@
 .root {
     display: flex;
-    position: relative;
-}
-
-.root.vertical {
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-
-.root:not(.vertical) {
-    padding-left: 3px;
-    padding-right: 3px;
-}
-
-.item {
-    display: flex;
     align-items: center;
     border: 2px solid black;
     padding-left: 6px;
@@ -29,56 +14,47 @@
     user-select: none;
     border-radius: 6px;
     height: 38px;
+    position: absolute;
+    left: var(--left);
+    top: var(--top);
 }
 
-.root:not(.vertical) .item {
+.root:not(.vertical) {
     min-width: 100px;
     max-width: 200px;
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
-.root.vertical .item {
+.root.vertical {
     width: 100%;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
-.item.static {
-    position: relative;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.item.draggable {
-    position: absolute;
-}
-
-.item.minimize {
+.root.minimize {
     outline: 1px solid transparent;
     border: 2px inset lightgray;
     border: 2px solid lightgray;
     color: black;
 }
 
-.item.focus {
+.root.focus {
     outline: 2px solid var(--accent-color);
     background-color: white;
 }
 
-.item.focus:active {
+.root.focus:active {
     border: 2px inset #fff;
     background: lightgray;
 }
 
-.item:not(.focus):active {
+.root:not(.focus):active {
     border: 2px inset white;
     background: lightgray;
 }
 
-.item.static.moving.range {
-    opacity: 0.4;
-}
-
-.item.draggable.moving.range {
-    left: var(--left);
-    top: var(--top);
+.root.moving {
     z-index: 1000;
     filter: invert(100%);
     opacity: 0.8;
