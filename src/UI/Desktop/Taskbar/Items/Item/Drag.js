@@ -17,15 +17,16 @@ export function ItemDrag({ item, index, vertical }) {
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
             const hitTargets = getHitTargets(container.element, handle);
             const hitTarget = hitTargets?.[hitTargets?.length - 1];
-            container.target = hitTarget;
+            if (hitTarget) {
+                container.target = hitTarget;
+            }
             state.clickable = false;
         }
     }, [container, vertical]);
     const onDragEnd = useCallback((state, handle) => {
+        const hitTarget = container.target;
         container.target = null;
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
-            const hitTargets = getHitTargets(container.element, handle);
-            const hitTarget = hitTargets?.[hitTargets?.length - 1];
             if (hitTarget) {
                 const targetIndex = parseInt(hitTarget.dataset.index);
                 windows.list = moveItem(windows.list, index, targetIndex, item);
