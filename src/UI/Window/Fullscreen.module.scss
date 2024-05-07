@@ -2,23 +2,25 @@
     position: absolute;
     left: 0px;
     bottom: 0px;
+}
+
+.root.hidden {
+    display: none;
+}
+
+.button {
     border: 1px solid transparent;
     border-radius: 3px;
     margin: 5px;
     transition: border 0.5s;
-    z-index: 10;
     width: 20px;
     height: 20px;
 }
 
-.root.fixed {
-    display: none;
-}
-
-.root:hover {
+.button:hover {
     border: 1px solid darkgray;
 }
 
-.root:hover:active {
+.button:hover:active {
     border: 1px solid black;
 }

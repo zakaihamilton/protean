@@ -23,7 +23,7 @@ export function ItemDrag({ item, index, vertical }) {
             state.clickable = false;
         }
     }, [container, vertical]);
-    const onDragEnd = useCallback((state, handle) => {
+    const onDragEnd = useCallback((state) => {
         const hitTarget = container.target;
         container.target = null;
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {

@@ -43,11 +43,11 @@ function Window({ children }) {
             <div ref={ref} className={className} style={style}>
                 <Title />
                 {!window.collapse && <>
-                    <Fullscreen />
                     <Menu />
                     <Content>
                         {children}
                     </Content>
+                    <Fullscreen />
                     <Resize />
                 </>}
             </div>

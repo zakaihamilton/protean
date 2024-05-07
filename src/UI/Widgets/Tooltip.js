@@ -34,8 +34,8 @@ export function getTooltipPos(tooltip, element) {
         top = elementTop - (tooltipHeight / 2);
     }
 
-    if (top + (tooltipHeight / 2) > window.innerHeight) {
-        top -= (tooltipHeight / 2);
+    if (top + tooltipHeight * 2 > window.innerHeight) {
+        top = elementTop - tooltipHeight;
     }
 
     return { left, top, "--arrow-left": arrowLeft + "%" };
