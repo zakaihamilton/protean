@@ -10,11 +10,17 @@ export const DRAG_RANGE = 12;
 export function ItemDrag({ item, index, vertical }) {
     const windows = Windows.State.useState(null);
     const container = Container.State.useState();
-    const onDragMove = useCallback((_, handle) => {
-        const hitTargets = getHitTargets(container.element, handle);
-        const hitTarget = hitTargets?.[hitTargets?.length - 1];
-        container.target = hitTarget;
-    }, [container]);
+    const onDragStart = useCallback((state) => {
+        state.clickable = true;
+    }, []);
+    const onDragMove = useCallback((state, handle) => {
+        if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
+            const hitTargets = getHitTargets(container.element, handle);
+            const hitTarget = hitTargets?.[hitTargets?.length - 1];
+            container.target = hitTarget;
+            state.clickable = false;
+        }
+    }, [container, vertical]);
     const onDragEnd = useCallback((state, handle) => {
         container.target = null;
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
@@ -24,6 +30,9 @@ export function ItemDrag({ item, index, vertical }) {
                 const targetIndex = parseInt(hitTarget.dataset.index);
                 windows.list = moveItem(windows.list, index, targetIndex, item);
             }
+            return;
+        }
+        if (!state.clickable) {
             return;
         }
         if (item?.focus) {
@@ -36,6 +45,7 @@ export function ItemDrag({ item, index, vertical }) {
     }, [container, vertical, item, windows, index]);
 
     return <Drag
+        onDragStart={onDragStart}
         onDragMove={onDragMove}
         onDragEnd={onDragEnd} />;
 }

@@ -4,7 +4,7 @@ import Container from "src/UI/Util/Container";
 
 const PADDING = 6;
 
-export function useItemPos({ index, vertical, ref }) {
+export function useItemPos({ index, vertical, ref, inRange }) {
     const drag = Drag.usePassiveState(null);
     const container = Container.State.useState();
     const element = ref.current;
@@ -23,7 +23,7 @@ export function useItemPos({ index, vertical, ref }) {
     }, [container, element, index, vertical]);
     return useMemo(() => {
         let x = 0, y = 0, styles = {};
-        if (drag?.moving) {
+        if (drag?.moving && inRange) {
             x = left;
             y = top;
         }
@@ -56,5 +56,5 @@ export function useItemPos({ index, vertical, ref }) {
             }
         }
         return [x, y, styles];
-    }, [container.sizes, container.target, drag?.moving, index, left, top, vertical]);
+    }, [container.sizes, container.target, drag?.moving, inRange, index, left, top, vertical]);
 }

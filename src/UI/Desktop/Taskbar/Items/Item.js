@@ -14,10 +14,10 @@ function Item({ item, index, vertical }) {
     const { label, focus, minimize, icon } = useStateFromObject(item);
     const drag = Drag.useState(undefined, null);
     const ref = useMoveDrag(true);
-    const [left, top, itemStyles] = useItemPos({ index, vertical, ref });
     const inRange = vertical ?
         (Math.abs(drag?.dragged?.y) > DRAG_RANGE) :
         (Math.abs(drag?.dragged?.x) > DRAG_RANGE);
+    const [left, top, itemStyles] = useItemPos({ index, vertical, ref, inRange });
     const style = useMemo(() => {
         if (vertical) {
             return {
