@@ -16,6 +16,24 @@ function Container({ children, ...props }) {
     </div>;
 }
 
+export function useContainerItem(index, item) {
+    const container = Container.State.useState();
+    useEffect(() => {
+        if (item) {
+            const items = Object.assign({}, container.items);
+            items[index] = item;
+            container.items = items;
+        }
+        return () => {
+            if (item) {
+                const items = Object.assign({}, container.items);
+                delete items[index];
+                container.items = items;
+            }
+        }
+    }, [container, index, item]);
+}
+
 Container.State = createState("Container.State");
 
 export default withNode(Container);

@@ -8,16 +8,18 @@ import { useMoveDrag } from "src/Core/UI/Drag/Move";
 import { withNode } from "src/Core/Base/Node";
 import { DRAG_RANGE, ItemDrag } from "./Item/Drag";
 import { useItemPos } from "./Item/Pos";
+import { useContainerItem } from "src/UI/Util/Container";
 
 function Item({ item, index, vertical }) {
     const classes = useClasses(styles);
     const { label, focus, minimize, icon } = useStateFromObject(item);
     const drag = Drag.useState(undefined, null);
     const ref = useMoveDrag(true);
+    useContainerItem(index, ref.current);
     const inRange = vertical ?
         (Math.abs(drag?.dragged?.y) > DRAG_RANGE) :
         (Math.abs(drag?.dragged?.x) > DRAG_RANGE);
-    const [left, top, itemStyles] = useItemPos({ index, vertical, ref, inRange });
+    const [left, top, itemStyles] = useItemPos({ index, vertical, inRange });
     const style = useMemo(() => {
         if (vertical) {
             return {

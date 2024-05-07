@@ -4,23 +4,10 @@ import Container from "src/UI/Util/Container";
 
 const PADDING = 6;
 
-export function useItemPos({ index, vertical, ref, inRange }) {
+export function useItemPos({ index, vertical, inRange }) {
     const drag = Drag.usePassiveState(null);
     const container = Container.State.useState();
-    const element = ref.current;
     const { left, top } = drag?.rect || {};
-    useEffect(() => {
-        if (element) {
-            const sizes = Object.assign({}, container.sizes);
-            if (vertical) {
-                sizes[index] = element.offsetHeight;
-            }
-            else {
-                sizes[index] = element.offsetWidth;
-            }
-            container.sizes = sizes;
-        }
-    }, [container, element, index, vertical]);
     return useMemo(() => {
         let x = 0, y = 0, styles = {};
         if (drag?.moving && inRange) {
@@ -28,15 +15,16 @@ export function useItemPos({ index, vertical, ref, inRange }) {
             y = top;
         }
         else {
-            const sizes = container.sizes;
-            if (!sizes) {
+            const items = container.items;
+            if (!items) {
                 return [x, y, styles];
             }
-            for (let i = 0; i < Object.keys(sizes).length; i++) {
-                const size = sizes[i];
-                if (container.target) {
-                    const targetIndex = container.target.dataset.index;
-                    const isDragging = parseInt(targetIndex) === index;
+            for (let i = 0; i < Object.keys(items).length; i++) {
+                const item = items[i];
+                const target = container.target;
+                if (target) {
+                    const targetIndex = parseInt(target.dataset.index);
+                    const isDragging = targetIndex === index;
                     if (isDragging) {
                         styles.opacity = "0.5";
                     }
@@ -48,13 +36,13 @@ export function useItemPos({ index, vertical, ref, inRange }) {
                     break;
                 }
                 if (vertical) {
-                    y += size + PADDING;
+                    y += item.offsetHeight + PADDING;
                 }
                 else {
-                    x += size + PADDING;
+                    x += item.offsetWidth + PADDING;
                 }
             }
         }
         return [x, y, styles];
-    }, [container.sizes, container.target, drag?.moving, inRange, index, left, top, vertical]);
+    }, [container.items, container.target, drag?.moving, inRange, index, left, top, vertical]);
 }
