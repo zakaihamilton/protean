@@ -19,25 +19,24 @@ function Item({ item, index, vertical }) {
     const inRange = vertical ?
         (Math.abs(drag?.dragged?.y) > DRAG_RANGE) :
         (Math.abs(drag?.dragged?.x) > DRAG_RANGE);
-    const [left, top, itemStyles] = useItemPos({ index, vertical, inRange });
+    const [left, top, target] = useItemPos({ index, vertical, inRange });
     const style = useMemo(() => {
         if (vertical) {
             return {
-                "--top": top + "px",
-                ...itemStyles
+                "--top": top + "px"
             };
         }
         else {
             return {
-                "--left": left + "px",
-                ...itemStyles
+                "--left": left + "px"
             };
         }
-    }, [left, top, vertical, itemStyles]);
+    }, [left, top, vertical]);
     const className = classes({
         root: true,
         focus,
         minimize,
+        target,
         moving: drag.moving && inRange,
         vertical
     });

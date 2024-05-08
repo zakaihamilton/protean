@@ -58,7 +58,11 @@
 .root.moving {
     z-index: 1000;
     filter: invert(100%);
-    opacity: 0.8;
+    opacity: 0.6;
+}
+
+.root.target {
+    border: 2px solid black;
 }
 
 .icon {

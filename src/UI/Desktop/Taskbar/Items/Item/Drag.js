@@ -22,6 +22,9 @@ export function ItemDrag({ item, index, vertical }) {
             }
             state.clickable = false;
         }
+        else {
+            container.target = null;
+        }
     }, [container, vertical]);
     const onDragEnd = useCallback((state) => {
         const hitTarget = container.target;
