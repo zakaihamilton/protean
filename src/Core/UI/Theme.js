@@ -1,12 +1,12 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { withState } from "src/Core/Base/State";
 
-function Theme({ children }) {
+function Theme() {
     const theme = Theme.State.useState();
 
-    console.log("theme", theme?.name);
-
-    return children;
+    useEffect(() => {
+        console.log("theme", theme?.name);
+    }, [theme?.name]);
 }
 
 export function replaceTheme(Component, name, ThemedComponent) {

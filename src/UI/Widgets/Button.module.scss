@@ -24,6 +24,10 @@
     border: 1px solid rgba(0, 0, 0, 1);
 }
 
+.root.selected {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 .label {
     display: flex;
     flex: 1;
