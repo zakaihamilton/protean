@@ -20,7 +20,7 @@
 
 .elements.visible {
     display: flex;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid light-dark(lightgray, darkgray);
 }
 
 .elements:not(.parent) {
@@ -30,10 +30,10 @@
 .elements.parent {
     position: absolute;
     flex-direction: column;
-    border: 1px solid lightgray;
+    border: 1px solid light-dark(lightgray, darkgray);
     border-radius: 6px;
-    background-color: white;
-    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: light-dark(white, black);
+    box-shadow: 0 10px 16px 0 light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2)), 0 6px 20px 0 light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2));
     user-select: none;
     z-index: 10;
 }

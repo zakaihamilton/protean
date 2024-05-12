@@ -6,8 +6,9 @@
     user-select: none;
     z-index: 9999;
     pointer-events: none;
-    background-color: white;
-    border: 1px solid black;
+    background-color: light-dark(white, black);
+    border: 1px solid light-dark(black, white);
+    color: light-dark(black, white);
     box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     transition: opacity 0.2s;
     overflow: hidden;
@@ -25,7 +26,7 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent black transparent;
+    border-color: transparent transparent light-dark(black, white) transparent;
 }
 
 .title.visible {
@@ -34,8 +35,8 @@
 }
 
 .title.visible.hasDescription {
-    background-color: lightgray;
-    border-bottom: 1px solid darkgray;
+    background-color: light-dark(lightgray, darkgray);
+    border-bottom: 1px solid light-dark(darkgray, lightgray);
 }
 
 .description {
