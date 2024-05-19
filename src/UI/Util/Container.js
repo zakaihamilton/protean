@@ -6,10 +6,10 @@ import { withNode } from "src/Core/Base/Node";
 
 function Container({ children, ...props }) {
     const ref = useElement();
-    const state = Container.State.useState(undefined, null);
+    const state = Container.State.useState({ nodeId: null });
     const element = ref?.current;
     useEffect(() => {
-        state.element = element;
+        state.element = element || undefined;
     }, [state, element]);
     return <div ref={ref} className={styles.root} {...props}>
         {children}

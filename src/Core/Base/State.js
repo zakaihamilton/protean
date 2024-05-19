@@ -1,17 +1,17 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ nodeId = undefined, ...props }) {
-        const object = State.useState(undefined, nodeId, { ...props });
+        const object = State.useState({ nodeId, initial: props });
         const [updatedProps, setUpdatedProps] = useState({});
         const keysChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
         if (keysChanged.length) {
             changeRef.current++;
         }
-        useEffect(() => {
+        useLayoutEffect(() => {
             if (!changeRef.current) {
                 return;
             }
@@ -30,7 +30,7 @@ export function createState(displayName) {
 
         return null;
     }
-    State.useState = (selector, nodeId, props) => {
+    State.useState = ({ selector, nodeId, initial, id } = {}) => {
         let node = Node.useNode(nodeId, State);
         const lastNode = Node.useNode(nodeId);
         if (!node) {
@@ -38,10 +38,10 @@ export function createState(displayName) {
         }
         let object = nodeGetProperty(node, State);
         if (!object && node) {
-            object = createObject(props || {});
+            object = createObject({ ...initial || {} }, displayName);
             nodeSetProperty(node, State, object);
         }
-        useStateFromObject(object, selector);
+        useStateFromObject(object, selector, id);
         return object;
     };
     State.usePassiveState = (nodeId) => {
@@ -73,27 +73,28 @@ export function isSelectorMatch(selector, key) {
     return true;
 }
 
-export function useStateHandlerFromObject(object, handler) {
+export function useStateHandlerFromObject(object, handler, id) {
     useEffect(() => {
         if (!object || !handler) {
             return;
         }
-        object.__monitor(null, handler);
+        object.__monitor(null, handler, id);
+        handler(null, null);
         return () => {
-            object.__unmonitor(null, handler);
+            object.__unmonitor(null, handler, id);
         };
-    }, [object, handler]);
+    }, [object, handler, id]);
     return object;
 }
 
-export function useStateFromObject(object, selector) {
+export function useStateFromObject(object, selector, id) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_value, key) => {
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
     }, [selector]);
-    useStateHandlerFromObject(object, selector !== null && handler);
+    useStateHandlerFromObject(object, handler, id);
     return object;
 };
 

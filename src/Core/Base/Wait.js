@@ -4,11 +4,11 @@ import { createState } from "./State";
 export function createWait(displayName) {
     const Wait = createState(displayName);
     Wait.useComplete = () => {
-        const state = Wait.useState(["complete"]);
+        const state = Wait.useState({ selector: ["complete"] });
         return state?.complete;
     };
     Wait.useAsync = (promise, depends, id) => {
-        const state = Wait.useState(null);
+        const state = Wait.useState({ selector: null });
         const element = useMemo(() => {
             return [{ id: undefined, complete: false, error: undefined, value: undefined }];
         }, []);
@@ -45,7 +45,7 @@ export function createWait(displayName) {
         }, depends);
     };
     Wait.useStatus = () => {
-        const state = Wait.useState(["status"]);
+        const state = Wait.useState({ selector: ["status"] });
         return state?.status;
     };
     return Wait;

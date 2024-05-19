@@ -5,15 +5,17 @@ export function objectHasChanged(a, b) {
     return aKeys.filter((key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]));
 }
 
-export function createObject(props) {
+export function createObject(props, id) {
     const monitor = [];
     let counter = 0;
+    const unique = crypto.randomUUID();
     const forward = (method, ...args) => {
         const result = Reflect[method](...args);
         counter++;
         for (const item of monitor) {
             const [_target, key, value] = args;
             if ((!item.key || key === item.key) && item.cb) {
+                item.counter++;
                 item.cb(value, key);
             }
         }
@@ -37,20 +39,32 @@ export function createObject(props) {
         }
     });
     Object.defineProperty(proxy, "__monitor", {
-        value: (key, cb) => {
-            monitor.push({ key, cb })
+        value: (key, cb, id) => {
+            monitor.push({ id, key, cb, counter: 0 });
         },
         writable: false,
         enumerable: false
     });
     Object.defineProperty(proxy, "__unmonitor", {
-        value: (key, cb) => {
-            const index = monitor.findIndex(item => item.key === key && item.cb === cb);
+        value: (key, cb, id) => {
+            const index = monitor.findIndex(item => item.key === key && item.cb === cb && item.id === id);
             if (index !== -1) {
                 monitor.splice(index, 1);
             }
         },
         writable: false,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__monitored", {
+        get: () => monitor,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__unique", {
+        get: () => unique,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__id", {
+        get: () => id,
         enumerable: false
     });
     Object.defineProperty(proxy, "__counter", {

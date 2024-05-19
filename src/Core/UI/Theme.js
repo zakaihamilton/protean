@@ -1,11 +1,14 @@
 import { useCallback, useEffect } from "react";
 import { withState } from "src/Core/Base/State";
+import { createConsole } from "../Base/Console";
+
+const console = createConsole("Theme");
 
 function Theme() {
     const theme = Theme.State.useState();
 
     useEffect(() => {
-        console.log("theme", theme?.name);
+        console.log("theme:", theme?.name);
     }, [theme?.name]);
 }
 

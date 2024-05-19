@@ -4,6 +4,7 @@ import ListEditor from "./App/ListEditor";
 import Calculator from "./App/Calculator";
 import Controls from "./App/Controls";
 import TaskManager from "./App/TaskManager";
+import Logs from "./App/Logs";
 
 export default function App() {
     return <>
@@ -18,6 +19,9 @@ export default function App() {
         </Node>
         <Node>
             <TaskManager />
+        </Node>
+        <Node>
+            <Logs />
         </Node>
     </>;
 }

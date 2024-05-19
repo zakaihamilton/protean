@@ -8,7 +8,7 @@ import { moveItem } from "src/Core/Base/Array";
 export const DRAG_RANGE = 12;
 
 export function ItemDrag({ item, index, vertical }) {
-    const windows = Windows.State.useState(null);
+    const windows = Windows.State.useState({ selector: null });
     const container = Container.State.useState();
     const onDragStart = useCallback((state) => {
         state.clickable = true;

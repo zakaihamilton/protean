@@ -3,8 +3,8 @@ import { createState } from "./State";
 
 export function createEvents(...args) {
     const State = createState(...args);
-    State.useEvent = (type, callback, ...args) => {
-        const state = State.useState(null, ...args);
+    State.useEvent = (type, callback, nodeId) => {
+        const state = State.useState({ selector: null, nodeId });
         useEffect(() => {
             if (!state) {
                 return;
@@ -16,7 +16,7 @@ export function createEvents(...args) {
         }, [type, callback, state]);
     };
     State.useListeners = (target, nodeId) => {
-        const state = State.useState(undefined, nodeId);
+        const state = State.useState({ nodeId });
         const entries = state && Object.entries(state) || [];
         useEffect(() => {
             if (!target) {

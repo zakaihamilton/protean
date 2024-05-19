@@ -1,22 +1,25 @@
 'use client'
 
 import Theme from "src/Core/UI/Theme"
-
-import "src/Theme/Glow"
 import Windows from "src/UI/Windows"
 import Desktop from "src/UI/Desktop"
 import App from "src/App"
-import ColorTheme from "src/Core/UI/ColorTheme"
+import ColorScheme from "src/Core/UI/ColorScheme"
+import Logger from "src/Core/Base/Logger"
+import Node from "src/Core/Base/Node"
+
+import "src/Theme/Glow"
 
 export default function Page({ children }) {
-    return <>
+    return <Node>
+        <Logger />
         <Theme name="glow" />
-        <ColorTheme />
+        <ColorScheme />
         <Windows>
             <Desktop>
                 <App />
                 {children}
             </Desktop>
         </Windows>
-    </>
+    </Node>
 }

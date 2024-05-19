@@ -8,8 +8,8 @@ export function createAlias(...args) {
         return <Alias.State nodeId={nodeId} />;
     }
     Alias.State = createState(...args);
-    Alias.useAlias = (...args) => {
-        const state = Alias.State.useState(...args);
+    Alias.useAlias = (stateProps) => {
+        const state = Alias.State.useState(stateProps);
         return state?.nodeId;
     };
     return Alias;
