@@ -8,13 +8,13 @@ import Windows from "src/UI/Windows";
 export default function TaskManager() {
     const windows = Windows.State.useState();
     const list = useMemo(() => {
-        return windows.list?.filter(item => item.label !== "Task Manager");
+        return windows.list?.filter(item => item.id !== "task-manager");
     }, [windows.list]);
     const icon = useMemo(() => <BiWindows />, []);
 
     return <>
         <Window.Rect left={50} top={300} width={300} height={300} />
-        <Window icon={icon} label="Task Manager" accentBackground="gold" accentColor="black">
+        <Window icon={icon} id="task-manager" label="Task Manager" accentBackground="gold" accentColor="black">
             <Group vertical flex>
                 <Items vertical list={list} />
             </Group>

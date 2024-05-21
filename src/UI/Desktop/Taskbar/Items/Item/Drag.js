@@ -31,14 +31,21 @@ export function ItemDrag({ item, index, vertical }) {
         container.target = null;
         if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
             if (hitTarget) {
-                const targetIndex = parseInt(hitTarget.dataset.index);
-                windows.list = moveItem(windows.list, index, targetIndex, item);
+                const targetId = hitTarget.dataset.id;
+                if (targetId) {
+                    const sourceIndex = windows.list.findIndex(elem => elem.id === item.id);
+                    const targetIndex = windows.list.findIndex(elem => elem.id === targetId);
+                    if (targetIndex !== -1) {
+                        windows.list = moveItem(windows.list, sourceIndex, targetIndex, item);
+                    }
+                }
             }
             return;
         }
         if (!state.clickable) {
             return;
         }
+        windows.forceFocusId = null;
         if (item?.focus) {
             item.minimize = true;
         }

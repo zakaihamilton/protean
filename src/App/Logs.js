@@ -19,7 +19,7 @@ export default function Logs() {
 
     return <>
         <Window.Rect left={200} top={100} width={400} height={600} />
-        <Window icon={icon} label="Logs" accentBackground="darkorange">
+        <Window icon={icon} id="logs" label="Logs" accentBackground="darkorange">
             <Group vertical>
                 {elements}
             </Group>
