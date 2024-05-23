@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo } from "react";
 import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
-import Windows from "src/UI/Windows";
+import Windows from "src/Core/UI/Windows";
 
-function Navigation({ children }) {
+function Navigation() {
     const window = getClientWindow();
     const windows = Windows.State.useState();
     const current = windows.current;
@@ -37,10 +37,6 @@ function Navigation({ children }) {
         }
         navigation.hash = current?.id || "";
     }, [navigation, current]);
-
-    return <>
-        {children}
-    </>;
 }
 
 Navigation.State = createState("Navigation.State");

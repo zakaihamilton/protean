@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { BiWindows } from "react-icons/bi";
 import Group from "src/UI/Widgets/Group";
 import Items from "src/UI/Desktop/Taskbar/Items";
-import Windows from "src/UI/Windows";
+import Windows from "src/Core/UI/Windows";
 
 export default function TaskManager() {
     const windows = Windows.State.useState();

@@ -6,7 +6,7 @@ import Title from "./Window/Title";
 import Drag from "../Core/UI/Drag";
 import Resize from "./Window/Resize";
 import { Dock, useDock } from "./Window/Dock";
-import { useWindowsItem } from "./Windows";
+import { useWindowsItem } from "../Core/UI/Windows";
 import Fullscreen from "./Window/Fullscreen";
 import { useElement } from "src/Core/Base/Element";
 import { useClasses } from "src/Core/Util/Styles";

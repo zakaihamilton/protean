@@ -1,7 +1,7 @@
 'use client'
 
 import Theme from "src/Core/UI/Theme"
-import Windows from "src/UI/Windows"
+import Windows from "src/Core/UI/Windows"
 import Desktop from "src/UI/Desktop"
 import App from "src/App"
 import ColorScheme from "src/Core/UI/ColorScheme"

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import styles from "./Taskbar.module.scss";
 import Items from "./Taskbar/Items";
-import Windows from "src/UI/Windows";
+import Windows from "src/Core/UI/Windows";
 import { useClasses } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";

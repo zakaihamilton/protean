@@ -1,6 +1,6 @@
 import Drag from "src/Core/UI/Drag";
 import Container from "src/UI/Util/Container";
-import Windows from "src/UI/Windows";
+import Windows from "src/Core/UI/Windows";
 import { useCallback } from "react";
 import { getHitTargets } from "src/Core/UI/Region";
 import { moveItem } from "src/Core/Base/Array";
