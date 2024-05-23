@@ -53,7 +53,7 @@ export function ItemDrag({ item, index, vertical }) {
             item.minimize = false;
             item.focus = true;
         }
-    }, [container, vertical, item, windows, index]);
+    }, [container, vertical, item, windows]);
 
     return <Drag
         onDragStart={onDragStart}

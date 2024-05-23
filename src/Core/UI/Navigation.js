@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
@@ -17,7 +17,7 @@ function Navigation({ children }) {
     }, []);
     const navigation = Navigation.State.useState({ initial });
 
-    const onHashChange = useMemo(() => {
+    const onHashChange = useCallback(() => {
         navigation.hash = window?.location?.hash;
     }, [navigation, window]);
     useEventListener(window, "hashchange", onHashChange);
@@ -27,6 +27,7 @@ function Navigation({ children }) {
         const rootId = navigation.hash.replace("#", "").split("/")[0];
         if (rootId) {
             windows.forceFocusId = rootId;
+            windows.updateFocus();
         }
     }, [navigation.hash, window?.location, windows]);
 

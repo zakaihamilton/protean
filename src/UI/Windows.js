@@ -1,8 +1,26 @@
-import { useEffect } from "react";
-import { withState } from "src/Core/Base/State";
+import { useCallback, useEffect } from "react";
+import { createState } from "src/Core/Base/State";
 
 function Windows({ children }) {
-    return children;
+    const windows = Windows.State.useState();
+    const updateFocus = useCallback(() => {
+        const available = windows.focus?.filter(item => !item.minimize);
+        let focused = available?.[available?.length - 1];
+        if (windows.forceFocusId) {
+            focused = windows.list?.find(item => item.id === windows.forceFocusId);
+        }
+        windows.focus = [...windows.focus?.filter(item => item !== focused) || [], focused].filter(Boolean);
+        windows.focus.forEach((item, index) => {
+            const isFocused = !!(item === focused);
+            item.focus = isFocused;
+            item.index = index;
+        });
+        windows.current = focused;
+    }, [windows]);
+    return <>
+        <Windows.State updateFocus={updateFocus} />
+        {children}
+    </>;
 }
 
 export function useWindowsItem(window, target, enabled) {
@@ -12,28 +30,8 @@ export function useWindowsItem(window, target, enabled) {
         if (!window || !target || !enabled) {
             return;
         }
-        if (!windows.list) {
-            windows.list = [];
-        }
-        if (!windows.focus) {
-            windows.focus = [];
-        }
-        windows.list = [...windows.list, window];
-        windows.focus = [...windows.focus, window];
-        const updateFocus = () => {
-            const available = windows.focus.filter(item => !item.minimize);
-            let focused = available[available.length - 1];
-            if (windows.forceFocusId) {
-                focused = windows.list.find(item => item.id === windows.forceFocusId);
-            }
-            windows.focus = [...windows.focus.filter(item => item !== focused), focused].filter(Boolean);
-            windows.focus.forEach((item, index) => {
-                const isFocused = !!(item === focused);
-                item.focus = isFocused;
-                item.index = index;
-            });
-            windows.current = focused;
-        };
+        windows.list = [...windows.list || [], window];
+        windows.focus = [...windows.focus || [], window];
         const focus = (val) => {
             if (window.minimize) {
                 return;
@@ -41,18 +39,18 @@ export function useWindowsItem(window, target, enabled) {
             if (val) {
                 windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
             }
-            updateFocus();
+            windows.updateFocus();
         };
         const minimize = (val) => {
             if (val) {
                 windows.forceFocusId = null;
                 window.focus = false;
             }
-            updateFocus();
+            windows.updateFocus();
         };
         window.__monitor("focus", focus);
         window.__monitor("minimize", minimize);
-        updateFocus();
+        windows.updateFocus();
         const handleMouseDown = () => {
             windows.forceFocusId = null;
             window.focus = true;
@@ -69,4 +67,6 @@ export function useWindowsItem(window, target, enabled) {
     }, [target, window, windows, enabled]);
 }
 
-export default withState(Windows);
+Windows.State = createState("Windows.State");
+
+export default Windows;

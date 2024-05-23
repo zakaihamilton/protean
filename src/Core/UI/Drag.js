@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { createState } from "src/Core/Base/State";
 import { useEventListener } from "./EventListener";
 import { getClientDocument } from "../Util/Client";
