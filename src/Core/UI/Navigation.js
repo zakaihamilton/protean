@@ -9,7 +9,7 @@ function Navigation({ children }) {
     const windows = Windows.State.useState();
     const current = windows.current;
     const initial = useMemo(() => {
-        const hash = window.location.hash;
+        const hash = window?.location?.hash;
         return {
             hash
         };
@@ -18,7 +18,7 @@ function Navigation({ children }) {
     const navigation = Navigation.State.useState({ initial });
 
     const onHashChange = useMemo(() => {
-        navigation.hash = window.location.hash;
+        navigation.hash = window?.location?.hash;
     }, [navigation, window]);
     useEventListener(window, "hashchange", onHashChange);
 
@@ -28,7 +28,7 @@ function Navigation({ children }) {
         if (rootId) {
             windows.forceFocusId = rootId;
         }
-    }, [navigation.hash, window.location, windows]);
+    }, [navigation.hash, window?.location, windows]);
 
     useEffect(() => {
         if (!current) {
