@@ -4,41 +4,38 @@ global.structuredClone = (val) => JSON.parse(JSON.stringify(val));
 
 import { testCompare, testInstance, testMethod, testPermutations, testResults } from "../Util/Test";
 
-import StorageFileList from "./File/List";
-import StorageFileS3 from "./File/S3";
+import * as StorageFileList from "./File/List";
+import * as StorageFileS3 from "./File/S3";
 
-import StorageListLocal from "./List/Local";
+import * as StorageListLocal from "./List/Local";
 
-const implementations = [
+const implementations = {
     StorageFileList,
     StorageFileS3
-];
+};
 
-const params = [
-    [new StorageListLocal]
-];
+const params = {
+    StorageFileList: [StorageListLocal]
+};
 
 const permutations = testPermutations(implementations, params);
+
+const timeout = undefined;
 
 describe.each(permutations)('File - %s vs %s', (_source, _target, components, params) => {
     let instances;
 
     beforeEach(async () => {
-        await testResults(await testMethod(components, 'isSupported'), (result, index) => {
-            if (!result) {
-                throw new Error("Storage is not supported", components[index]);
-            }
-        });
-
         instances = testInstance(components, params);
+        testCompare(await testMethod(instances, 'isSupported'));
         await testMethod(instances, 'open');
-    }, 10000);
+    }, timeout);
 
     afterEach(async () => {
         await testMethod(instances, 'reset');
         await testMethod(instances, 'close');
         jest.clearAllMocks();
-    }, 10000);
+    }, timeout);
 
     it('folder lifecycle', async () => {
         await testMethod(instances, 'createFolder', '/test');

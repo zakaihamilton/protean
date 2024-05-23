@@ -31,6 +31,10 @@ Node.useNode = (nodeId, propId) => {
     return node;
 };
 
+export function nodeGetParent(node) {
+    return node?.parent;
+}
+
 export function nodeGetProperty(node, propId) {
     const item = node?.items?.find(i => i.id === propId);
     return item?.value;
