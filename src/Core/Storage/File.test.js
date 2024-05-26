@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 
 global.structuredClone = (val) => JSON.parse(JSON.stringify(val));
 
-import { testCompare, testInstance, testMethod, testPermutations, testResults } from "../Util/Test";
+import { testCompare, testInstance, testMethod, testPermutations } from "../Util/Test";
 
 import * as StorageFileList from "./File/List";
 import * as StorageFileS3 from "./File/S3";

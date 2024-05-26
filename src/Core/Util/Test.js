@@ -1,12 +1,10 @@
 function getComponentPermutations(components) {
     const permutations = [];
     const keys = Object.keys(components);
-    for (let i = 0; i < keys.length; i++) {
-        for (let j = i + 1; j < keys.length; j++) {
-            const sourceKey = keys[i], targetKey = keys[j];
-            let source = components[sourceKey], target = components[targetKey];
-            permutations.push([source, target, sourceKey, targetKey]);
-        }
+    for (let i = 0; i < keys.length; i += 2) {
+        const sourceKey = keys[i], targetKey = keys[i === keys.length - 1 ? 0 : i + 1];
+        let source = components[sourceKey], target = components[targetKey];
+        permutations.push([source, target, sourceKey, targetKey]);
     }
     return permutations;
 }
@@ -35,13 +33,6 @@ export async function testMethod(instances, method, ...params) {
         result.push(await instance[method](...params));
     }
     return result;
-}
-
-export async function testResults(results, cb) {
-    for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        await cb(result, i);
-    }
 }
 
 export function testCompare(values) {

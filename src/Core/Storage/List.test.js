@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 
 global.structuredClone = (val) => JSON.parse(JSON.stringify(val));
 
-import { testCompare, testInstance, testMethod, testPermutations, testResults } from "../Util/Test";
+import { testCompare, testInstance, testMethod, testPermutations } from "../Util/Test";
 
 import * as StorageListDb from "./List/Db";
 import * as StorageListLocal from "./List/Local";
@@ -13,16 +13,16 @@ import * as StorageListMongo from "./List/Mongo";
 
 const implementations = {
     StorageListRedis,
-    StorageListS3,
-    StorageListMongo,
     StorageListDb,
+    StorageListS3,
     StorageListLocal,
+    StorageListMongo,
     StorageListMemory
 };
 
 const permutations = testPermutations(implementations);
 
-const timeout = 10000;
+const timeout = undefined;
 
 describe.each(permutations)('List - %s vs %s', (_source, _target, components) => {
     let instances;
