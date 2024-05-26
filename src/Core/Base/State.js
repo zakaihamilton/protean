@@ -75,7 +75,7 @@ export function isSelectorMatch(selector, key) {
 
 export function useStateHandlerFromObject(object, handler, id) {
     useEffect(() => {
-        if (!object || !handler) {
+        if (!object || !handler || !object.__monitor || !object.__unmonitor) {
             return;
         }
         object.__monitor(null, handler, id);
@@ -105,9 +105,10 @@ export function withState(Component) {
     const displayName = Component.displayName || Component.name || "";
     const State = Component.State = createState(displayName + ".State");
     function WrappedState({ children, ...props }) {
+        const state = State.useState();
         return <>
             <State {...props} />
-            <Component>
+            <Component {...state}>
                 {children}
             </Component>
         </>;

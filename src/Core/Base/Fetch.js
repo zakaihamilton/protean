@@ -5,9 +5,9 @@ const Fetch = createState("Fetch");
 export default Fetch;
 
 function useFetch(custom) {
-    const state = Fetch.useState();
+    const fetch = Fetch.useState();
     const handleError = useCallback(async (text, err, ...args) => {
-        const error = custom?.error || state?.error;
+        const error = custom?.error || fetch?.error;
         console.error(text, err, ...args);
         if (error) {
             try {
@@ -23,11 +23,11 @@ function useFetch(custom) {
         else {
             throw new Error(err);
         }
-    }, [custom, state]);
+    }, [custom, fetch]);
 
     const retrieve = useCallback(async (url, options, type = "json") => {
-        const prepare = custom?.prepare || state?.prepare;
-        const mapping = custom?.mapping || state?.mapping;
+        const prepare = custom?.prepare || fetch?.prepare;
+        const mapping = custom?.mapping || fetch?.mapping;
         const params = {
             url,
             options,
@@ -46,7 +46,7 @@ function useFetch(custom) {
         /* 2. fetch */
         let response = null;
         try {
-            response = await fetch(params?.url, params?.options);
+            response = await window.fetch(params?.url, params?.options);
         }
         catch (err) {
             await handleError("Failed to fetch data", err, params, response);
@@ -72,7 +72,7 @@ function useFetch(custom) {
             }
         }
         return result;
-    }, [custom, handleError, state]);
+    }, [custom, handleError, fetch]);
 
     return retrieve;
 }

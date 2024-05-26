@@ -8,7 +8,7 @@ import styles from "./Calculator.module.scss";
 import { PiPlusMinusBold, PiDivide } from "react-icons/pi";
 
 function useLayout() {
-    const state = Calculator.State.useState();
+    const calculator = Calculator.State.useState();
     return useMemo(() => {
         const mapNumber = (n) => {
             return {
@@ -19,8 +19,8 @@ function useLayout() {
         return [[
             {
                 id: "clear",
-                label: () => state.input === "0" ? "AC" : "C",
-                tooltip: () => state.input === "0" ? "All Clear" : "Clear"
+                label: () => calculator.input === "0" ? "AC" : "C",
+                tooltip: () => calculator.input === "0" ? "All Clear" : "Clear"
             },
             {
                 id: "plusminus",
@@ -78,54 +78,54 @@ function useLayout() {
                 tooltip: "Equals"
             }
         ]]
-    }, [state]);
+    }, [calculator]);
 }
 
-function useCalculator(state) {
+function useCalculatorMethods(calculator) {
 
     const decimal = useCallback(() => {
-        if (!state.input.includes('.')) {
-            state.input = state.input + '.';
+        if (!calculator.input.includes('.')) {
+            calculator.input = calculator.input + '.';
         }
-    }, [state]);
+    }, [calculator]);
 
     const operation = useCallback(op => {
-        if (state.input !== '0') {
-            state.operation = op;
-            state.previous = state.input;
-            state.input = '0';
+        if (calculator.input !== '0') {
+            calculator.operation = op;
+            calculator.previous = calculator.input;
+            calculator.input = '0';
         }
-    }, [state]);
+    }, [calculator]);
 
     const percent = useCallback(() => {
-        if (state.input !== '0') {
-            state.input = (parseFloat(state.input) / 100).toString();
+        if (calculator.input !== '0') {
+            calculator.input = (parseFloat(calculator.input) / 100).toString();
         }
-    }, [state]);
+    }, [calculator]);
 
     const clear = useCallback(() => {
-        if (state.input === '0') {
-            state.input = '0';
-            state.previous = null;
-            state.operation = null;
+        if (calculator.input === '0') {
+            calculator.input = '0';
+            calculator.previous = null;
+            calculator.operation = null;
         }
         else {
-            state.input = '0';
+            calculator.input = '0';
         }
-    }, [state]);
+    }, [calculator]);
 
     const plusminus = useCallback(() => {
-        if (state.input !== '0') {
-            state.input = (parseFloat(state.input) * -1).toString();
+        if (calculator.input !== '0') {
+            calculator.input = (parseFloat(calculator.input) * -1).toString();
         }
-    }, [state]);
+    }, [calculator]);
 
     const equals = useCallback(() => {
-        if (state.operation !== null && state.previous !== null) {
-            const num1 = parseFloat(state.previous);
-            const num2 = parseFloat(state.input);
+        if (calculator.operation !== null && calculator.previous !== null) {
+            const num1 = parseFloat(calculator.previous);
+            const num2 = parseFloat(calculator.input);
             let result;
-            switch (state.operation) {
+            switch (calculator.operation) {
                 case 'add':
                     result = num1 + num2;
                     break;
@@ -145,11 +145,11 @@ function useCalculator(state) {
                 default:
                     result = 'Error';
             }
-            state.input = result.toString();
-            state.previous = null;
-            state.operation = null;
+            calculator.input = result.toString();
+            calculator.previous = null;
+            calculator.operation = null;
         }
-    }, [state]);
+    }, [calculator]);
 
     return useMemo(() => {
         return {
@@ -167,10 +167,10 @@ function useCalculator(state) {
 }
 
 export default function Calculator() {
-    const state = Calculator.State.useState();
+    const calculator = Calculator.State.useState();
     const icon = useMemo(() => <FaCalculator />, []);
     const layout = useLayout();
-    const calculator = useCalculator(state);
+    const methods = useCalculatorMethods(calculator);
     const elements = useMemo(() => {
         const elements = [];
         layout.forEach((row, rowIndex) => {
@@ -180,11 +180,11 @@ export default function Calculator() {
                     const value = parseFloat(item.id);
                     const isAction = isNaN(value);
                     if (isAction) {
-                        calculator[item.id]();
+                        methods[item.id]();
                     }
                     else {
-                        const current = parseFloat(state.input);
-                        state.input = (current * 10 + value).toString();
+                        const current = parseFloat(calculator.input);
+                        calculator.input = (current * 10 + value).toString();
                     }
                 };
                 elements.push(<Button key={item.id} row={rowIndex + 2} column={columnIndex} onClick={onClick} {...item} />);
@@ -193,17 +193,17 @@ export default function Calculator() {
         });
         return elements;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layout, state, state.input]);
+    }, [layout, calculator, calculator.input]);
 
     useEffect(() => {
-        calculator.clear();
-    }, [calculator]);
+        methods.clear();
+    }, [methods]);
 
     return <>
         <Window.Rect left={400} top={200} width={300} height={400} />
         <Window icon={icon} id="calculator" label="Calculator" fixed accentBackground="darkblue">
             <div className={styles.root}>
-                <div className={styles.input}>{state.input}</div>
+                <div className={styles.input}>{calculator.input}</div>
                 {elements}
             </div>
         </Window>

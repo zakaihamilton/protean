@@ -4,8 +4,8 @@ import styles from "./Screen.module.scss";
 
 function Screen({ children }) {
     const classes = useClasses(styles);
-    const state = Screen.State.useState();
-    const className = classes({ root: true, collapse: state.collapse });
+    const screen = Screen.State.useState();
+    const className = classes({ root: true, collapse: screen.collapse });
     return (
         <div className={className}>
             {children}

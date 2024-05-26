@@ -3,11 +3,12 @@ import { createState } from "src/Core/Base/State";
 
 function Windows({ children }) {
     const windows = Windows.State.useState();
-    const updateFocus = useCallback(() => {
+    const updateFocus = useCallback((focusId) => {
         const available = windows.focus?.filter(item => !item.minimize);
         let focused = available?.[available?.length - 1];
-        if (windows.forceFocusId) {
-            focused = windows.list?.find(item => item.id === windows.forceFocusId);
+        focusId = focusId || windows.forceFocusId;
+        if (focusId) {
+            focused = windows.list?.find(item => item.id === focusId);
         }
         windows.focus = [...windows.focus?.filter(item => item !== focused) || [], focused].filter(Boolean);
         windows.focus.forEach((item, index) => {
@@ -36,10 +37,7 @@ export function useWindowsItem(window, target, enabled) {
             if (window.minimize) {
                 return;
             }
-            if (val) {
-                windows.focus = [...windows.focus.filter(item => item !== window), window].filter(Boolean);
-            }
-            windows.updateFocus();
+            windows.updateFocus(val ? window.id : undefined);
         };
         const minimize = (val) => {
             if (val) {
@@ -62,7 +60,7 @@ export function useWindowsItem(window, target, enabled) {
             target.removeEventListener("mousedown", handleMouseDown);
             windows.list = windows.list.filter(item => item !== window);
             windows.focus = windows.focus.filter(item => item !== window);
-            updateFocus();
+            windows.updateFocus();
         }
     }, [target, window, windows, enabled]);
 }

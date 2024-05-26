@@ -4,10 +4,12 @@ import Windows from "src/Core/UI/Windows";
 import { useCallback } from "react";
 import { getHitTargets } from "src/Core/UI/Region";
 import { moveItem } from "src/Core/Base/Array";
+import IconList from "../../IconList";
 
 export const DRAG_RANGE = 12;
 
-export function ItemDrag({ item, index, vertical }) {
+export function ItemDrag({ item, vertical }) {
+    const iconList = IconList.State.useState();
     const windows = Windows.State.useState({ selector: null });
     const container = Container.State.useState();
     const onDragStart = useCallback((state) => {
@@ -45,15 +47,8 @@ export function ItemDrag({ item, index, vertical }) {
         if (!state.clickable) {
             return;
         }
-        windows.forceFocusId = null;
-        if (item?.focus) {
-            item.minimize = true;
-        }
-        else {
-            item.minimize = false;
-            item.focus = true;
-        }
-    }, [container, vertical, item, windows]);
+        iconList.onClick(item);
+    }, [container, vertical, item, windows, iconList]);
 
     return <Drag
         onDragStart={onDragStart}

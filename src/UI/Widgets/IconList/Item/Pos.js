@@ -1,11 +1,13 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import Drag from "src/Core/UI/Drag";
 import Container from "src/UI/Util/Container";
 
 const PADDING = 6;
 
-export function useItemPos({ index, vertical, inRange }) {
+export function useItemPos({ index, vertical, wrap, inRange }) {
     const drag = Drag.usePassiveState(null);
+    const region = Container.Region.useRegion();
+    const regionWidth = region?.width || 0;
     const container = Container.State.useState();
     const { left, top } = drag?.rect || {};
     return useMemo(() => {
@@ -30,6 +32,10 @@ export function useItemPos({ index, vertical, inRange }) {
                     dragged = true;
                 }
             }
+            if (wrap && x + item.offsetWidth >= regionWidth) {
+                x = 0;
+                y += item.offsetHeight + PADDING;
+            }
             if (i === index) {
                 break;
             }
@@ -41,5 +47,5 @@ export function useItemPos({ index, vertical, inRange }) {
             }
         }
         return [x, y, dragged];
-    }, [container.items, container.target, drag?.moving, inRange, index, left, top, vertical]);
+    }, [container.items, container.target, drag?.moving, inRange, index, left, top, vertical, wrap, regionWidth]);
 }

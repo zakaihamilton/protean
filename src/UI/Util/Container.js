@@ -3,15 +3,17 @@ import { useElement } from "src/Core/Base/Element";
 import { createState } from "src/Core/Base/State";
 import styles from "./Container.module.scss";
 import { withNode } from "src/Core/Base/Node";
+import { createRegion } from "src/Core/UI/Region";
 
 function Container({ children, ...props }) {
     const ref = useElement();
-    const state = Container.State.useState({ nodeId: null });
+    const container = Container.State.useState({ nodeId: null });
     const element = ref?.current;
     useEffect(() => {
-        state.element = element || undefined;
-    }, [state, element]);
+        container.element = element || undefined;
+    }, [container, element]);
     return <div ref={ref} className={styles.root} {...props}>
+        <Container.Region target={ref?.current} />
         {children}
     </div>;
 }
@@ -32,8 +34,10 @@ export function useContainerItem(index, item) {
             }
         }
     }, [container, index, item]);
+    return container;
 }
 
 Container.State = createState("Container.State");
+Container.Region = createRegion("Container.Region");
 
 export default withNode(Container);

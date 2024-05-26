@@ -1,29 +1,40 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import styles from "./Taskbar.module.scss";
-import Items from "./Taskbar/Items";
 import Windows from "src/Core/UI/Windows";
 import { useClasses } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
 import { withTheme } from "src/Core/UI/Theme";
 import { withNode } from "src/Core/Base/Node";
+import IconList from "../Widgets/IconList";
 
 function Taskbar() {
     const classes = useClasses(styles);
     const windows = Windows.State.useState();
     const list = windows.list;
-    const state = Taskbar.State.useState();
+    const taskbar = Taskbar.State.useState();
 
     const monitor = useCallback(() => {
         const hidden = list.some(item => item.fullscreen && !item.minimize);
-        state.visible = !hidden;
-    }, [state, list]);
+        taskbar.visible = !hidden;
+    }, [taskbar, list]);
 
     useMonitor(list, "fullscreen", monitor);
 
-    const className = classes({ root: true, visible: state?.visible });
+    const onClick = useCallback(item => {
+        windows.forceFocusId = null;
+        if (item?.focus) {
+            item.minimize = true;
+        }
+        else {
+            item.minimize = false;
+            item.focus = true;
+        }
+    }, [windows]);
+
+    const className = classes({ root: true, visible: taskbar?.visible });
     return <div className={className}>
-        <Items list={list} />
+        <IconList list={list} onClick={onClick} />
     </div>;
 }
 

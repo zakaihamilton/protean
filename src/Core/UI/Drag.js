@@ -8,33 +8,33 @@ const Drag = createState("Drag");
 
 export function useDrag(initialCb, moverCb, prop, enabled) {
     const ref = useElement();
-    const state = Drag.useState();
+    const drag = Drag.useState();
     const handle = ref.current;
     const handlePointerDown = useCallback((e) => {
-        state.dragged = null;
-        state.target = handle;
-        state[prop] = true;
-        initialCb(e, state);
-        moverCb(e, state);
-        state.onDragStart && state.onDragStart(state, handle);
-    }, [state, handle, initialCb, moverCb, prop]);
+        drag.dragged = null;
+        drag.target = handle;
+        drag[prop] = true;
+        initialCb(e, drag);
+        moverCb(e, drag);
+        drag.onDragStart && drag.onDragStart(drag, handle);
+    }, [drag, handle, initialCb, moverCb, prop]);
     const handlePointerMove = useCallback((e) => {
-        if (state.target && state[prop]) {
-            moverCb(e, state);
-            const handle = state.target;
-            state.onDragMove && state.onDragMove(state, handle);
+        if (drag.target && drag[prop]) {
+            moverCb(e, drag);
+            const handle = drag.target;
+            drag.onDragMove && drag.onDragMove(drag, handle);
         }
-    }, [state, prop, moverCb]);
+    }, [drag, prop, moverCb]);
     const handlePointerUp = useCallback(() => {
-        if (!state.target || !state[prop]) {
+        if (!drag.target || !drag[prop]) {
             return;
         }
-        const handle = state.target;
-        state.target = null;
-        state.offset = null;
-        state[prop] = false;
-        state.onDragEnd && state.onDragEnd(state, handle);
-    }, [state, prop]);
+        const handle = drag.target;
+        drag.target = null;
+        drag.offset = null;
+        drag[prop] = false;
+        drag.onDragEnd && drag.onDragEnd(drag, handle);
+    }, [drag, prop]);
 
     const document = getClientDocument();
     useEventListener(!!enabled && handle, "pointerdown", handlePointerDown, { passive: true });

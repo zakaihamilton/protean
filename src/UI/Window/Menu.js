@@ -6,25 +6,25 @@ import { useCallback, useMemo } from "react";
 import Item from "./Menu/Item";
 
 function Menu() {
-    const state = Menu.State.useState();
+    const menu = Menu.State.useState();
     const classes = useClasses(styles);
     const popupClassName = classes({
         popup: true,
-        visible: state?.selected?.length
+        visible: menu?.selected?.length
     });
     const elementsClassName = classes({
         elements: true,
-        visible: state.visible,
-        parent: state.parent
+        visible: menu.visible,
+        parent: menu.parent
     });
     const elements = useMemo(() => {
-        return state.items?.map((item, index) => {
+        return menu.items?.map((item, index) => {
             return <Item key={item.id || index} {...item} />;
         });
-    }, [state.items]);
+    }, [menu.items]);
     const onPopupClick = useCallback(() => {
-        state.selected = [];
-    }, [state]);
+        menu.selected = [];
+    }, [menu]);
     return <div className={styles.root}>
         <div className={popupClassName} onClick={onPopupClick} />
         <div className={elementsClassName}>

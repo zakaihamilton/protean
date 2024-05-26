@@ -3,6 +3,10 @@
     align-items: stretch;
 }
 
+.root.flex {
+    flex: 1;
+}
+
 .root.vertical {
     flex-direction: column;
 }
@@ -12,6 +16,10 @@
     align-items: stretch;
     flex: 1;
     position: relative;
+}
+
+.items.wrap {
+    flex-wrap: wrap;
 }
 
 .items.vertical {

@@ -1,9 +1,9 @@
 import Window from "src/UI/Window";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { BiWindows } from "react-icons/bi";
 import Group from "src/UI/Widgets/Group";
-import Items from "src/UI/Desktop/Taskbar/Items";
 import Windows from "src/Core/UI/Windows";
+import IconList from "src/UI/Widgets/IconList";
 
 export default function TaskManager() {
     const windows = Windows.State.useState();
@@ -11,12 +11,22 @@ export default function TaskManager() {
         return windows.list?.filter(item => item.id !== "task-manager");
     }, [windows.list]);
     const icon = useMemo(() => <BiWindows />, []);
+    const onClick = useCallback(item => {
+        windows.forceFocusId = null;
+        if (item?.focus) {
+            item.minimize = true;
+        }
+        else {
+            item.minimize = false;
+            item.focus = true;
+        }
+    }, [windows]);
 
     return <>
         <Window.Rect left={50} top={300} width={300} height={300} />
         <Window icon={icon} id="task-manager" label="Task Manager" accentBackground="gold" accentColor="black">
             <Group vertical flex>
-                <Items vertical list={list} />
+                <IconList vertical list={list} onClick={onClick} />
             </Group>
         </Window>
     </>;

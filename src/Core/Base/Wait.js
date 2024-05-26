@@ -4,11 +4,11 @@ import { createState } from "./State";
 export function createWait(displayName) {
     const Wait = createState(displayName);
     Wait.useComplete = () => {
-        const state = Wait.useState({ selector: ["complete"] });
-        return state?.complete;
+        const wait = Wait.useState({ selector: ["complete"] });
+        return wait?.complete;
     };
     Wait.useAsync = (promise, depends, id) => {
-        const state = Wait.useState({ selector: null });
+        const wait = Wait.useState({ selector: null });
         const element = useMemo(() => {
             return [{ id: undefined, complete: false, error: undefined, value: undefined }];
         }, []);
@@ -16,21 +16,21 @@ export function createWait(displayName) {
             item.id = id;
         }, [element, id]);
         useEffect(() => {
-            const status = [...state.status] || [];
-            state.status = [...status, element];
+            const status = [...wait.status] || [];
+            wait.status = [...status, element];
             return () => {
-                state.status = state.status.filter(item => item !== element);
+                wait.status = wait.status.filter(item => item !== element);
                 setItem(undefined, undefined);
             };
-        }, [state, element]);
+        }, [wait, element]);
         useEffect(() => {
             const setItem = (val, err) => {
                 element.complete = true;
                 element.value = val;
                 element.error = err;
-                state.status = [...state.status];
-                if (state.status.every(item => item.complete)) {
-                    state.complete = true;
+                wait.status = [...wait.status];
+                if (wait.status.every(item => item.complete)) {
+                    wait.complete = true;
                 }
             };
             element.complete = false;
@@ -39,14 +39,14 @@ export function createWait(displayName) {
             }).catch(err => {
                 setItem(undefined, err);
             });
-            state.complete = false;
-            state.status = [...state.status];
+            wait.complete = false;
+            wait.status = [...wait.status];
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, depends);
     };
     Wait.useStatus = () => {
-        const state = Wait.useState({ selector: ["status"] });
-        return state?.status;
+        const wait = Wait.useState({ selector: ["status"] });
+        return wait?.status;
     };
     return Wait;
 }

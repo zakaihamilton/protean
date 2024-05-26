@@ -9,13 +9,13 @@ import Tags from "src/UI/Widgets/Tags";
 import { MdOutlineListAlt } from "react-icons/md";
 
 export default function ListEditor() {
-    const state = ListEditor.State.useState();
+    const listEditor = ListEditor.State.useState();
     const contentRegion = Content.Region.useRegion();
     const windowRegion = Window.Region.useRegion();
 
     useEffect(() => {
-        state.storage = Storage[0].Component;
-    }, [state]);
+        listEditor.storage = Storage[0].Component;
+    }, [listEditor]);
 
     const icon = useMemo(() => <MdOutlineListAlt />, []);
 
