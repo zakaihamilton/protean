@@ -9,7 +9,13 @@ export default function Apps() {
     const windows = Windows.State.useState();
     const launch = useCallback(({ id, Component }) => {
         const exists = apps.list?.find(item => item.id === id);
-        if (!exists) {
+        if (exists) {
+            const window = windows?.closed?.find(item => item.id === id);
+            if (window) {
+                window.close = false;
+            }
+        }
+        else {
             apps.list = [...apps.list || [], { id, Component }];
         }
         windows.updateFocus(id);

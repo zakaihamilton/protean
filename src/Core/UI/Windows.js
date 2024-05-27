@@ -28,13 +28,18 @@ export function useWindowsItem(window, target, enabled) {
     const windows = Windows.State.useState();
 
     useEffect(() => {
-        if (!window || !target || !enabled) {
+        if (!window || !target) {
             return;
         }
-        windows.list = [...windows.list || [], window];
-        windows.focus = [...windows.focus || [], window];
+        if (enabled) {
+            windows.list = [...windows.list || [], window];
+            windows.focus = [...windows.focus || [], window];
+        }
+        else {
+            windows.closed = [...windows.closed || [], window];
+        }
         const focus = (val) => {
-            if (window.minimize) {
+            if (window.minimize || windows.close) {
                 return;
             }
             windows.updateFocus(val ? window.id : undefined);
@@ -58,8 +63,9 @@ export function useWindowsItem(window, target, enabled) {
             window.__unmonitor("focus", focus);
             window.__unmonitor("minimize", minimize);
             target.removeEventListener("mousedown", handleMouseDown);
-            windows.list = windows.list.filter(item => item !== window);
-            windows.focus = windows.focus.filter(item => item !== window);
+            windows.list = windows.list?.filter(item => item !== window);
+            windows.focus = windows.focus?.filter(item => item !== window);
+            windows.closed = windows.closed?.filter(item => item !== window);
             windows.updateFocus();
         }
     }, [target, window, windows, enabled]);
