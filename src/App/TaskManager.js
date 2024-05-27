@@ -18,7 +18,7 @@ export default function TaskManager() {
         }
         else {
             item.minimize = false;
-            item.focus = true;
+            windows.updateFocus(item?.id);
         }
     }, [windows]);
 

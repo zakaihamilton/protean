@@ -38,29 +38,23 @@ export function useWindowsItem(window, target, enabled) {
         else {
             windows.closed = [...windows.closed || [], window];
         }
-        const focus = (val) => {
-            if (window.minimize || windows.close) {
-                return;
-            }
-            windows.updateFocus(val ? window.id : undefined);
-        };
         const minimize = (val) => {
             if (val) {
                 windows.forceFocusId = null;
-                window.focus = false;
+                windows.updateFocus();
             }
-            windows.updateFocus();
+            else {
+                windows.updateFocus(window.id);
+            }
         };
-        window.__monitor("focus", focus);
         window.__monitor("minimize", minimize);
         windows.updateFocus();
         const handleMouseDown = () => {
             windows.forceFocusId = null;
-            window.focus = true;
+            windows.updateFocus(window.id);
         };
         target.addEventListener("mousedown", handleMouseDown);
         return () => {
-            window.__unmonitor("focus", focus);
             window.__unmonitor("minimize", minimize);
             target.removeEventListener("mousedown", handleMouseDown);
             windows.list = windows.list?.filter(item => item !== window);
