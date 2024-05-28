@@ -3,10 +3,12 @@ import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
 import Windows from "src/Core/UI/Windows";
+import Apps from "./Apps";
 
 function Navigation() {
     const window = getClientWindow();
     const windows = Windows.State.useState();
+    const apps = Apps.State.useState();
     const current = windows.current;
     const initial = useMemo(() => {
         const hash = window?.location?.hash;
@@ -24,18 +26,31 @@ function Navigation() {
 
     useEffect(() => {
         window.location.hash = navigation.hash;
-        const rootId = navigation.hash.replace("#", "").split("/")[0];
-        if (rootId) {
-            windows.forceFocusId = rootId;
+        const segments = navigation.hash.replace("#", "").split("/");
+        const appId = segments[0], windowsId = segments[1] || segments[0];
+        if (appId) {
+            apps.appId = appId;
+        }
+        if (windowsId) {
+            windows.forceFocusId = windowsId;
             windows.updateFocus();
         }
-    }, [navigation.hash, window?.location, windows]);
+    }, [navigation.hash, window?.location, windows, apps]);
 
     useEffect(() => {
         if (!current) {
             return;
         }
-        navigation.hash = current?.id || "";
+        const appId = current.appId || current.id;
+        const windowsId = current.id;
+        let hash = "";
+        if (windowsId === appId) {
+            hash = appId;
+        }
+        else {
+            hash = `${appId}/${windowsId}`;
+        }
+        navigation.hash = hash;
     }, [navigation, current]);
 }
 

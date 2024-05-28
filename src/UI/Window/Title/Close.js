@@ -22,7 +22,7 @@ function Close() {
             <div onClick={onClick} className={className}>
                 <div className={styles.close} />
             </div>
-            <Tooltip title="Close" />
+            <Tooltip title="Close" enabled={window.focus} />
         </Container>
     )
 }

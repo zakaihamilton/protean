@@ -19,7 +19,7 @@ function Minimize() {
     return (
         <Container>
             <div onClick={onClick} className={className} />
-            <Tooltip title="Minimize" />
+            <Tooltip title="Minimize" enabled={window.focus} />
         </Container>
     )
 }

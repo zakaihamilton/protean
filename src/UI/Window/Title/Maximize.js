@@ -20,7 +20,7 @@ function Maximize() {
     return (
         <Container>
             <div onClick={onClick} className={className} />
-            <Tooltip title="Maximize" />
+            <Tooltip title="Maximize" enabled={window.focus} />
         </Container>
     )
 }

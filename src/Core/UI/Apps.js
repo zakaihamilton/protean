@@ -1,38 +1,48 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { createState } from "../Base/State";
 import Windows from "./Windows";
-import Node from "../Base/Node";
 import SupportedApps from "src/Apps";
+import App from "./Apps/App";
 
 export default function Apps() {
     const apps = Apps.State.useState();
     const windows = Windows.State.useState();
     const launch = useCallback(({ id, Component }) => {
+        if (!id) {
+            return;
+        }
         const exists = apps.list?.find(item => item.id === id);
         if (exists) {
-            const window = windows?.closed?.find(item => item.id === id);
+            let windowId = windows?.forceFocusId;
+            if (!windowId) {
+                windowId = windows?.list?.toReversed()?.find(item => item.appId === id)?.id;
+            }
+            if (!windowId) {
+                windowId = windows?.closed?.toReversed()?.find(item => item.appId === id)?.id;
+            }
+            const window = windows?.closed?.find(item => item.id === windowId);
             if (window) {
                 window.close = false;
             }
+            windows.updateFocus(windowId);
         }
-        else {
+        else if (Component) {
             apps.list = [...apps.list || [], { id, Component }];
         }
-        windows.updateFocus(id);
     }, [apps, windows]);
     useEffect(() => {
-        if (windows.forceFocusId) {
-            const app = SupportedApps.find(item => item.id === windows.forceFocusId);
+        if (apps.appId) {
+            const app = SupportedApps.find(item => item.id === apps.appId);
             if (app) {
                 launch(app);
             }
         }
-    }, [windows.forceFocusId, launch]);
+    }, [apps.appId, launch]);
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {
-            return <Node key={id}>
+            return <App key={id} id={id}>
                 <Component />
-            </Node>
+            </App>
         });
     }, [apps.list]);
     return <>

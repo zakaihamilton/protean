@@ -13,12 +13,16 @@ export default function Fullscreen() {
         window.fullscreen = !window.fullscreen;
     }, [window]);
 
-    const className = classes({ root: true, hidden: window.fixed || !window.maximize });
+    const className = classes({
+        root: true,
+        hidden: window.fixed || !window.maximize,
+        focus: window.focus
+    });
     const buttonClassName = classes({ button: true });
     return (
         <Container className={className}>
             <div className={buttonClassName} onClick={onClick} />
-            <Tooltip title="Fullscreen" />
+            <Tooltip title="Fullscreen" enabled={window.focus} />
         </Container>
     );
 }

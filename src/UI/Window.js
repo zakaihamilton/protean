@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { createState, withState } from "src/Core/Base/State";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
@@ -13,12 +13,14 @@ import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Window/Menu";
 import { createRegion } from "src/Core/UI/Region";
 import { withNode } from "src/Core/Base/Node";
+import App from "src/Core/UI/Apps/App";
 
 function Window({ children }) {
     const classes = useClasses(styles);
     const rect = Window.Rect.useState();
     const dockStyle = useDock();
     const window = Window.State.useState();
+    const app = App.State.useState();
     const min = useMemo(() => ({
         width: window?.min?.width || 200,
         height: window?.min?.height || 200
@@ -35,6 +37,12 @@ function Window({ children }) {
     const style = useMemo(() => {
         return { ...dockStyle, zIndex: window.index };
     }, [dockStyle, window.index]);
+
+    useEffect(() => {
+        if (window) {
+            window.appId = app?.id;
+        }
+    }, [app?.id, window]);
 
     return (
         <>

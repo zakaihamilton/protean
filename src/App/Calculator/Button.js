@@ -4,11 +4,12 @@ import styles from "./Button.module.scss";
 import Tooltip from "src/UI/Widgets/Tooltip";
 import Container from "src/UI/Util/Container";
 
-export default function Button({ id, icon, row, column, label, children, width, tooltip, ...props }) {
+export default function Button({ id, icon, row, column, label, children, width, enabled, tooltip, ...props }) {
     const classes = useClasses(styles);
     const buttonClassName = classes({
         button: true,
-        [id]: true
+        [id]: true,
+        enabled
     });
     const style = useMemo(() => {
         return {
@@ -29,6 +30,6 @@ export default function Button({ id, icon, row, column, label, children, width, 
             </div>
             {children}
         </div>
-        <Tooltip title={title} />
+        <Tooltip title={title} enabled={enabled} />
     </Container>;
 }

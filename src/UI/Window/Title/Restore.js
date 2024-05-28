@@ -20,7 +20,7 @@ function Restore() {
     return (
         <Container>
             <div onClick={onClick} className={className} />
-            <Tooltip title="Restore" />
+            <Tooltip title="Restore" enabled={window.focus} />
         </Container>
     )
 }

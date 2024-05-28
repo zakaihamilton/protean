@@ -41,7 +41,7 @@ export function getTooltipPos(tooltip, element) {
     return { left, top, "--arrow-left": arrowLeft + "%" };
 }
 
-export function useTooltip(tooltip, element) {
+export function useTooltip(tooltip, element, enabled) {
     const [visible, setIsVisible] = useState(false);
     const [position, setPosition] = useState({ top: 0, left: 0 });
     const timerRef = useRef();
@@ -66,16 +66,16 @@ export function useTooltip(tooltip, element) {
         setPosition(position);
     }, [tooltip, element]);
 
-    useEventListener(element, "mouseenter", handleMouseEnter);
-    useEventListener(element, "mouseleave", handleMouseLeave);
+    useEventListener(element, "mouseenter", enabled && handleMouseEnter);
+    useEventListener(element, "mouseleave", enabled && handleMouseLeave);
 
     return { visible, position };
 };
 
-function Tooltip({ title, description }) {
+function Tooltip({ title, description, enabled = true }) {
     const tooltipRef = useElement();
     let { element } = Container.State.useState() || {};
-    const { visible, position } = useTooltip(tooltipRef.current, element);
+    const { visible, position } = useTooltip(tooltipRef.current, element, enabled);
     const classes = useClasses(styles);
     const className = classes({
         root: true,
