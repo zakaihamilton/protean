@@ -65,6 +65,31 @@
     border: 2px solid black;
 }
 
+
+.root.big-icons {
+    border: 2px solid transparent;
+    background: none;
+    flex-direction: column;
+    height: 70px;
+    width: 120px;
+}
+
+.root.big-icons.focus:active {
+    filter: invert(100%);
+    background: white;
+    border: none;
+}
+
+.root.big-icons:active {
+    filter: invert(100%);
+    background: white;
+    border: none;
+}
+
+.root.target.big-icons {
+    border: 2px solid black;
+}
+
 .icon {
     display: flex;
     align-items: center;
@@ -72,9 +97,19 @@
     padding-right: 5px;
 }
 
+.icon.big-icons {
+    padding-top: 6px;
+}
+
 .label {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     user-select: none;
+}
+
+.label.big-icons {
+    padding-top: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
 }

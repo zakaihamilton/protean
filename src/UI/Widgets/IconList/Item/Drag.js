@@ -8,7 +8,8 @@ import IconList from "../../IconList";
 
 export const DRAG_RANGE = 12;
 
-export function ItemDrag({ item, vertical }) {
+export function ItemDrag({ item, inRange }) {
+    const { vertical, layout } = IconList.State.useState();
     const iconList = IconList.State.useState();
     const windows = Windows.State.useState({ selector: null });
     const container = Container.State.useState();
@@ -16,7 +17,7 @@ export function ItemDrag({ item, vertical }) {
         state.clickable = true;
     }, []);
     const onDragMove = useCallback((state, handle) => {
-        if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
+        if (inRange) {
             const hitTargets = getHitTargets(container.element, handle);
             const hitTarget = hitTargets?.[hitTargets?.length - 1];
             if (hitTarget) {
@@ -27,11 +28,11 @@ export function ItemDrag({ item, vertical }) {
         else {
             container.target = null;
         }
-    }, [container, vertical]);
+    }, [inRange, container]);
     const onDragEnd = useCallback((state) => {
         const hitTarget = container.target;
         container.target = null;
-        if (vertical ? Math.abs(state.dragged?.y) > DRAG_RANGE : Math.abs(state.dragged?.x) > DRAG_RANGE) {
+        if (inRange) {
             if (hitTarget) {
                 const targetId = hitTarget.dataset.id;
                 if (targetId) {
@@ -48,7 +49,7 @@ export function ItemDrag({ item, vertical }) {
             return;
         }
         iconList.onClick(item);
-    }, [container, vertical, item, windows, iconList]);
+    }, [container, inRange, iconList, item, windows]);
 
     return <Drag
         onDragStart={onDragStart}

@@ -21,7 +21,7 @@ export default function Launcher() {
         <Window.Rect left={100} top={200} width={300} height={300} />
         <Window icon={icon} id="launcher" label="Launcher" accentBackground="purple">
             <Group vertical flex>
-                <IconList list={list} flex wrap onClick={onClick} />
+                <IconList list={list} flex wrap onClick={onClick} layout="big-icons" />
             </Group>
         </Window>
     </>;
