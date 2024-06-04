@@ -6,6 +6,7 @@ import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
 import Container from "../Util/Container";
 import { useElement } from "src/Core/Base/Element";
+import { createState } from "src/Core/Base/State";
 
 export function getTooltipPos(tooltip, element) {
     if (!tooltip || !element) {
@@ -41,35 +42,44 @@ export function getTooltipPos(tooltip, element) {
     return { left, top, "--arrow-left": arrowLeft + "%" };
 }
 
-export function useTooltip(tooltip, element, enabled) {
-    const [visible, setIsVisible] = useState(false);
-    const [position, setPosition] = useState({ top: 0, left: 0 });
-    const timerRef = useRef();
+export function useTooltip(ref, element, enabled) {
+    const tooltip = Tooltip.State.useState();
 
     const handleMouseEnter = useCallback(() => {
-        clearTimeout(timerRef.current);
-        timerRef.current = setTimeout(() => {
-            setIsVisible(true);
+        clearTimeout(tooltip.timer);
+        tooltip.timer = setTimeout(() => {
+            tooltip.visible = true;
         }, 500);
-    }, []);
+    }, [tooltip]);
 
     const handleMouseLeave = useCallback(() => {
-        clearTimeout(timerRef.current);
-        setIsVisible(false);
-    }, []);
+        clearTimeout(tooltip.timer);
+        tooltip.timer = null;
+        tooltip.visible = false;
+    }, [tooltip]);
 
     useEffect(() => {
-        if (!tooltip || !element) {
+        if (!enabled && tooltip.visible) {
+            clearTimeout(tooltip.timer);
+            tooltip.timer = null;
+            tooltip.visible = false;
+        }
+    }, [enabled, tooltip]);
+
+    useEffect(() => {
+        if (!ref || !element) {
             return;
         }
-        const position = getTooltipPos(tooltip, element);
-        setPosition(position);
-    }, [tooltip, element]);
+        tooltip.position = getTooltipPos(ref, element);
+    }, [ref, element, tooltip]);
 
     useEventListener(element, "mouseenter", enabled && handleMouseEnter);
     useEventListener(element, "mouseleave", enabled && handleMouseLeave);
 
-    return { visible, position };
+    return {
+        visible: tooltip.visible,
+        position: tooltip.position || { left: 0, top: 0 }
+    };
 };
 
 function Tooltip({ title, description, enabled = true }) {
@@ -108,5 +118,7 @@ function Tooltip({ title, description, enabled = true }) {
         </div>
     </div>;
 };
+
+Tooltip.State = createState("Tooltip.State");
 
 export default withTheme(Tooltip);
