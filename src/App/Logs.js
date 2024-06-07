@@ -3,6 +3,7 @@ import { VscDebugAltSmall } from "react-icons/vsc";
 import { useMemo } from "react";
 import Group from "src/UI/Widgets/Group";
 import Logger from "src/Core/Base/Logger";
+import styles from "./Logs.module.scss";
 
 export default function Logs() {
     const logger = Logger.State.useState({ id: "logs" });
@@ -12,7 +13,7 @@ export default function Logs() {
         let elements = [];
         elements.push(...logger.items?.map((item, index) => {
             const { type, message } = item;
-            return <div key={index}>{type}: {message}</div>;
+            return <div className={styles.item} key={index}>{type}: {message}</div>;
         }) || []);
         return elements;
     }, [logger.items]);

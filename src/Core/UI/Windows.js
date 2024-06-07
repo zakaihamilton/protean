@@ -51,7 +51,9 @@ export function useWindowsItem(window, target, enabled) {
         windows.updateFocus();
         const handleMouseDown = () => {
             windows.forceFocusId = null;
-            windows.updateFocus(window.id);
+            if (windows.current?.id !== window.id) {
+                windows.updateFocus(window.id);
+            }
         };
         target.addEventListener("mousedown", handleMouseDown);
         return () => {
