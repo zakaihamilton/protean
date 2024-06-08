@@ -4,13 +4,12 @@
     border: 2px solid black;
     padding-left: 6px;
     padding-right: 6px;
-    outline: 1px solid var(--accent-color);
-    background-color: lightgray;
-    border: 2px inset #fff;
-    border-right-color: black;
-    border-bottom-color: black;
-    background: lightgray;
-    color: black;
+    background-color: light-dark(lightgray, darkgray);
+    border: 2px inset light-dark(#fff, #000);
+    border-right-color: light-dark(black, white);
+    border-bottom-color: light-dark(black, white);
+    background: light-dark(lightgray, darkgray);
+    color: light-dark(black, white);
     user-select: none;
     border-radius: 6px;
     height: 38px;
@@ -35,24 +34,23 @@
 
 .root.minimize {
     outline: 1px solid transparent;
-    border: 2px inset lightgray;
-    border: 2px solid lightgray;
+    border: 2px inset light-dark(lightgray, darkgray);
+    border: 2px solid light-dark(lightgray, darkgray);
     color: black;
 }
 
 .root.focus {
-    outline: 2px solid var(--accent-color);
-    background-color: white;
+    background-color: light-dark(white, black);
 }
 
 .root.focus:active {
-    border: 2px inset #fff;
-    background: lightgray;
+    border: 2px inset light-dark(#fff, #000);
+    background: light-dark(lightgray, darkgray);
 }
 
 .root:not(.focus):active {
-    border: 2px inset white;
-    background: lightgray;
+    border: 2px inset light-dark(white, black);
+    background: light-dark(lightgray, white);
 }
 
 .root.moving {
@@ -62,7 +60,7 @@
 }
 
 .root.target {
-    border: 2px solid black;
+    border: 2px solid light-dark(black, white);
 }
 
 
@@ -76,18 +74,18 @@
 
 .root.big-icons.focus:active {
     filter: invert(100%);
-    background: white;
+    background: light-dark(white, black);
     border: none;
 }
 
 .root.big-icons:active {
     filter: invert(100%);
-    background: white;
+    background: light-dark(white, black);
     border: none;
 }
 
 .root.target.big-icons {
-    border: 2px solid black;
+    border: 2px solid light-dark(black, white);
 }
 
 .icon {

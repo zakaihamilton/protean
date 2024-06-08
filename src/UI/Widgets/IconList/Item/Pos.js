@@ -32,6 +32,9 @@ export function useItemPos({ index, vertical, wrap, inRange }) {
                     dragged = true;
                 }
             }
+            if (!item) {
+                continue;
+            }
             if (wrap && x + item.offsetWidth >= regionWidth) {
                 x = 0;
                 y += item.offsetHeight + PADDING;

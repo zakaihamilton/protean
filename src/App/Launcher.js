@@ -5,13 +5,18 @@ import Group from "src/UI/Widgets/Group";
 import Apps from "src/Core/UI/Apps";
 import IconList from "src/UI/Widgets/IconList";
 import SupportedApps from "src/Apps";
+import Search from "src/UI/Widgets/Search";
+import { createState } from "src/Core/Base/State";
+import { useDynamic } from "src/Core/Base/Dynamic";
 
 export default function Launcher() {
+    const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
     const apps = Apps.State.useState();
     const list = useMemo(() => {
-        return SupportedApps;
-    }, []);
+        return SupportedApps.filter(app => !launcher.search || app?.label?.toLowerCase()?.includes(launcher.search?.toLowerCase()));
+    }, [launcher?.search]);
+    const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {
         apps.launch(item);
@@ -21,8 +26,11 @@ export default function Launcher() {
         <Window.Rect left={100} top={200} width={300} height={300} />
         <Window icon={icon} id="launcher" label="Launcher" accentBackground="purple">
             <Group vertical flex>
+                <Search dynamic={searchDynamic} />
                 <IconList list={list} flex wrap onClick={onClick} layout="big-icons" />
             </Group>
         </Window>
     </>;
 }
+
+Launcher.State = createState("Launcher.State");
