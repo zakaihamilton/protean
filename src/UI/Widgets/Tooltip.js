@@ -45,6 +45,11 @@ export function getTooltipPos(tooltip, element) {
 export function useTooltip(ref, element, enabled) {
     const tooltip = Tooltip.State.useState();
 
+    const handleMouseUp = useCallback(() => {
+        clearTimeout(tooltip.timer);
+        tooltip.visible = false;
+    }, [tooltip]);
+
     const handleMouseEnter = useCallback(() => {
         clearTimeout(tooltip.timer);
         tooltip.timer = setTimeout(() => {
@@ -73,6 +78,7 @@ export function useTooltip(ref, element, enabled) {
         tooltip.position = getTooltipPos(ref, element);
     }, [ref, element, tooltip]);
 
+    useEventListener(element, "mouseup", enabled && handleMouseUp);
     useEventListener(element, "mouseenter", enabled && handleMouseEnter);
     useEventListener(element, "mouseleave", enabled && handleMouseLeave);
 

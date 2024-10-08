@@ -9,7 +9,6 @@ import IconList from "../../IconList";
 export const DRAG_RANGE = 12;
 
 export function ItemDrag({ item, inRange }) {
-    const { vertical, layout } = IconList.State.useState();
     const iconList = IconList.State.useState();
     const windows = Windows.State.useState({ selector: null });
     const container = Container.State.useState();
@@ -48,7 +47,7 @@ export function ItemDrag({ item, inRange }) {
         if (!state.clickable) {
             return;
         }
-        iconList.onClick(item);
+        iconList?.onClick(item);
     }, [container, inRange, iconList, item, windows]);
 
     return <Drag

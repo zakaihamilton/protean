@@ -8,8 +8,10 @@ import SupportedApps from "src/Apps";
 import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Base/Dynamic";
+import Windows from "src/Core/UI/Windows";
 
 export default function Launcher() {
+    const windows = Windows.State.useState();
     const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
     const apps = Apps.State.useState();
@@ -19,8 +21,9 @@ export default function Launcher() {
     const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {
+        windows.forceFocusId = null;
         apps.launch(item);
-    }, [apps]);
+    }, [windows, apps]);
 
     return <>
         <Window.Rect left={100} top={200} width={300} height={300} />

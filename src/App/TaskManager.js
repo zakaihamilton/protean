@@ -8,7 +8,7 @@ import IconList from "src/UI/Widgets/IconList";
 export default function TaskManager() {
     const windows = Windows.State.useState();
     const list = useMemo(() => {
-        return windows.list?.filter(item => item.id !== "task-manager");
+        return windows.list?.filter(item => item?.id !== "task-manager");
     }, [windows.list]);
     const icon = useMemo(() => <BiWindows />, []);
     const onClick = useCallback(item => {
