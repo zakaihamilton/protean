@@ -8,7 +8,7 @@ import { useCallback } from "react";
 function Search({ flex, placeholder = "Search...", dynamic }) {
     const classes = useClasses(styles);
 
-    const value = dynamic?.();
+    const value = dynamic?.() ?? "";
 
     const rootClassName = classes({ root: true, flex });
     const containerClassName = classes({ container: true });
