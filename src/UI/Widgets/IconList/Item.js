@@ -15,7 +15,7 @@ import { IconContext } from "react-icons";
 function Item({ item, index }) {
     const { vertical, wrap, layout } = IconList.State.useState();
     const classes = useClasses(styles);
-    const { id, label, focus, minimize, icon } = useStateFromObject(item);
+    const { id, label, focus, minimize, icon } = useStateFromObject(item) || {};
     const drag = Drag.useState({ nodeId: null });
     const ref = useMoveDrag(true);
     useContainerItem(index, ref.current);
