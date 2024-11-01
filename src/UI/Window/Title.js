@@ -3,10 +3,7 @@ import styles from "./Title.module.scss";
 import { withTheme } from "../../Core/UI/Theme";
 import Label from "./Title/Label";
 import Window from "../Window";
-import Minimize from "./Title/Minimize";
-import Maximize from "./Title/Maximize";
-import Close from "./Title/Close";
-import Restore from "./Title/Restore";
+import Actions from "./Title/Actions";
 
 function Title() {
     const classes = useClasses(styles);
@@ -20,12 +17,7 @@ function Title() {
             <Label />
             {!window.collapse && <>
                 <div className={styles.separator} />
-                <div className={styles.actions}>
-                    <Close />
-                    <Minimize />
-                    <Restore />
-                    <Maximize />
-                </div>
+                <Actions />
             </>}
         </div>
     )
