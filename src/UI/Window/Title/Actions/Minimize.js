@@ -8,10 +8,12 @@ import Container from "src/UI/Util/Container";
 
 function Minimize() {
     const classes = useClasses(styles);
+    const actions = Window.Actions.useState();
     const window = Window.State.useState();
     const className = classes({
         root: true,
-        focus: window.focus
+        focus: window.focus,
+        visible: actions.minimize ?? true
     });
     const onClick = useCallback(() => {
         window.minimize = !window.minimize;

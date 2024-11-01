@@ -8,11 +8,12 @@ import Container from "src/UI/Util/Container";
 
 function Restore() {
     const classes = useClasses(styles);
+    const actions = Window.Actions.useState();
     const window = Window.State.useState();
     const className = classes({
         root: true,
         focus: window.focus,
-        visible: window.maximize && !window.center && !window.dock
+        visible: window.maximize && !window.center && !window.dock && !window.fixed && (actions.restore ?? true)
     });
     const onClick = useCallback(() => {
         window.maximize = false;

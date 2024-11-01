@@ -5,7 +5,7 @@ import Content from "./Window/Content";
 import Title from "./Window/Title";
 import Drag from "../Core/UI/Drag";
 import Resize from "./Window/Resize";
-import { Dock, useDock } from "./Window/Dock";
+import { useDock } from "./Window/Dock";
 import { useWindowsItem } from "../Core/UI/Windows";
 import Fullscreen from "./Window/Fullscreen";
 import { useElement } from "src/Core/Base/Element";
@@ -65,5 +65,6 @@ function Window({ children }) {
 
 Window.Rect = createState("Window.Rect");
 Window.Region = createRegion("Window.Region");
+Window.Actions = createState("Windnow.Actions");
 
 export default withNode(withState(Window));

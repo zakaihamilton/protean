@@ -8,11 +8,12 @@ import Container from "src/UI/Util/Container";
 
 function Close() {
     const classes = useClasses(styles);
+    const actions = Window.Actions.useState();
     const window = Window.State.useState();
     const className = classes({
         root: true,
         focus: window.focus,
-        visible: !window.permanent
+        visible: !window.permanent && (actions.close ?? true)
     });
     const onClick = useCallback(() => {
         window.close = true;
