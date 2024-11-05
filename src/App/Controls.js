@@ -1,5 +1,5 @@
 import Window from "src/UI/Window";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { MdOutlineWidgets } from "react-icons/md";
 import Button from "src/UI/Widgets/Button";
 import ColorScheme from "src/Core/UI/ColorScheme";
