@@ -98,7 +98,7 @@ export function useStateFromObject(object, selector, id) {
     return object;
 }
 
-export function withState(Component) {
+export function withState(Component, baseProps = {}) {
     if (!Component) {
         throw new Error("Component is required");
     }
@@ -107,8 +107,8 @@ export function withState(Component) {
     function WrappedState({ children, ...props }) {
         const state = State.useState();
         return <>
-            <State {...props} />
-            <Component {...state}>
+            <State {...baseProps}{...props} />
+            <Component {...baseProps}{...state}>
                 {children}
             </Component>
         </>;
