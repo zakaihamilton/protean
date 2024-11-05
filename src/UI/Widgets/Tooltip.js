@@ -2,7 +2,7 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tooltip.module.scss";
 import { withTheme } from "src/Core/UI/Theme";
 
-import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
 import Container from "../Util/Container";
 import { useElement } from "src/Core/Base/Element";
@@ -86,7 +86,7 @@ export function useTooltip(ref, element, enabled) {
         visible: tooltip.visible,
         position: tooltip.position || { left: 0, top: 0 }
     };
-};
+}
 
 function Tooltip({ title, description, enabled = true }) {
     const tooltipRef = useElement();
@@ -123,7 +123,7 @@ function Tooltip({ title, description, enabled = true }) {
             {descriptionLines}
         </div>
     </div>;
-};
+}
 
 Tooltip.State = createState("Tooltip.State");
 

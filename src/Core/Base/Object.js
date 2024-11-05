@@ -13,7 +13,7 @@ export function createObject(props, id) {
         const result = Reflect[method](...args);
         counter++;
         for (const item of monitor) {
-            const [_target, key, value] = args;
+            const [, key, value] = args;
             if ((!item.key || key === item.key) && item.cb) {
                 item.counter++;
                 item.cb(value, key);

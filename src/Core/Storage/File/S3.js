@@ -75,7 +75,7 @@ export async function close() {
  * @param {string} path - The path where the folder should be created.
  * @return {Promise} - A promise that resolves when the folder has been created.
  */
-export async function createFolder(path) {
+export async function createFolder(/*path*/) {
 
 }
 
@@ -175,7 +175,7 @@ export async function copyFolder(fromPath, toPath) {
                 const copyCommand = new CopyObjectCommand({
                     ACL: 'public-read',
                     Bucket: bucketName,
-                    CopySource: `${fromBucket}/${fromObjectKey}`,
+                    CopySource: `${bucketName}/${fromObjectKey}`,
                     Key: toObjectKey
                 });
                 await client.send(copyCommand);

@@ -118,7 +118,7 @@ export async function set(key, value) {
         const store = transaction.objectStore(objectStoreName);
         const request = store.put(value, key);
 
-        request.onsuccess = (event) => {
+        request.onsuccess = () => {
             resolve();
         };
 
@@ -162,7 +162,7 @@ export async function deleteKey(key) {
         const store = transaction.objectStore(objectStoreName);
         const request = store.delete(key);
 
-        request.onsuccess = (event) => {
+        request.onsuccess = () => {
             resolve();
         }
 

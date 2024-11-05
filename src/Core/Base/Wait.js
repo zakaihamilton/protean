@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { createState } from "./State";
 
 export function createWait(displayName) {
@@ -13,8 +13,17 @@ export function createWait(displayName) {
             return [{ id: undefined, complete: false, error: undefined, value: undefined }];
         }, []);
         useEffect(() => {
-            item.id = id;
+            element.id = id;
         }, [element, id]);
+        const setItem = useCallback((val, err) => {
+            element.complete = true;
+            element.value = val;
+            element.error = err;
+            wait.status = [...wait.status];
+            if (wait.status.every(item => item.complete)) {
+                wait.complete = true;
+            }
+        }, [wait, element]);
         useEffect(() => {
             const status = [...wait.status] || [];
             wait.status = [...status, element];
@@ -22,17 +31,8 @@ export function createWait(displayName) {
                 wait.status = wait.status.filter(item => item !== element);
                 setItem(undefined, undefined);
             };
-        }, [wait, element]);
+        }, [wait, element, setItem]);
         useEffect(() => {
-            const setItem = (val, err) => {
-                element.complete = true;
-                element.value = val;
-                element.error = err;
-                wait.status = [...wait.status];
-                if (wait.status.every(item => item.complete)) {
-                    wait.complete = true;
-                }
-            };
             element.complete = false;
             element.promise = promise?.then(val => {
                 setItem(val, undefined);

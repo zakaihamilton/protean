@@ -96,7 +96,7 @@ export function useStateFromObject(object, selector, id) {
     }, [selector]);
     useStateHandlerFromObject(object, handler, id);
     return object;
-};
+}
 
 export function withState(Component) {
     if (!Component) {

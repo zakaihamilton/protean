@@ -1,7 +1,7 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Item.module.scss";
 import Menu from "../Menu";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import Node from "src/Core/Base/Node";
 
 export default function Item({ label, id, items, onClick, checked }) {
