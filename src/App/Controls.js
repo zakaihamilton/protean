@@ -13,6 +13,10 @@ export default function Controls() {
     const onToggleTheme = useCallback(() => {
         colorSceme.toggle();
     }, [colorSceme]);
+    const lang = Lang.State.useState();
+    const onToggleLanguage = useCallback(() => {
+        lang.id = lang.id === "heb" ? "eng" : "heb";
+    }, [lang]);
 
     const text = Lang.useText();
 
@@ -22,7 +26,9 @@ export default function Controls() {
             <Group>
                 <Button selected={selected} onClick={onToggleTheme}>Toggle Dark Theme</Button>
             </Group>
-            {text?.TEST}
+            <Group>
+                <Button selected={selected} onClick={onToggleLanguage}>{text?.LANGAUGE}</Button>
+            </Group>
         </Window>
     </>;
 }
