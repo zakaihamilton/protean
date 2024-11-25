@@ -2,7 +2,7 @@ import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Menu.module.scss";
 import { createState } from "src/Core/Base/State";
 import { withTheme } from "src/Core/UI/Theme";
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import Item from "./Menu/Item";
 
 function Menu() {
@@ -18,7 +18,13 @@ function Menu() {
         parent: menu.parent
     });
     const elements = useMemo(() => {
+        if (!Array.isArray(menu.items)) {
+            return menu.items;
+        }
         return menu.items?.map((item, index) => {
+            if (React.isValidElement(item)) {
+                return item;
+            }
             return <Item key={item.id || index} {...item} />;
         });
     }, [menu.items]);
@@ -34,5 +40,6 @@ function Menu() {
 }
 
 Menu.State = createState("Menu.State");
+Menu.Item = Item;
 
 export default withTheme(Menu);

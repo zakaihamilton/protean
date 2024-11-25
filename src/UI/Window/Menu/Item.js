@@ -1,10 +1,10 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Item.module.scss";
 import Menu from "../Menu";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import Node from "src/Core/Base/Node";
 
-export default function Item({ label, id, items, onClick, checked }) {
+export default function Item({ label, id, items, onClick, checked, children }) {
     const menu = Menu.State.useState();
     const classes = useClasses(styles);
     const selected = menu?.selected === id;
@@ -39,6 +39,9 @@ export default function Item({ label, id, items, onClick, checked }) {
             menu.selected = id;
         }
     }, [id, menu, onClick, selected]);
+    const combinedItems = useMemo(() => {
+        return [...items || [], ...children || []];
+    }, [items, children]);
     return <div className={styles.root}>
         <div className={itemClassName} onClick={onClickItem}>
             <div className={checkClassName} />
@@ -46,8 +49,8 @@ export default function Item({ label, id, items, onClick, checked }) {
                 {label}
             </div>
         </div>
-        {!!selected && !!items && <Node id={id}>
-            <Menu.State nodeId={id} visible={selected} items={items} parent={menu} />
+        {!!selected && !!combinedItems?.length && <Node id={id}>
+            <Menu.State nodeId={id} visible={selected} items={combinedItems} parent={menu} />
             <Menu />
         </Node>}
     </div>;

@@ -13,10 +13,10 @@ function Label() {
     const ref = useMoveDrag(!disabled);
     const drag = Drag.useState();
     const onClick = useCallback(e => {
-        if (e.detail === 2) {
+        if (e.detail === 2 && !disabled) {
             window.collapse = !window.collapse;
         }
-    }, [window]);
+    }, [window, disabled]);
     const style = useMemo(() => {
         return {
             "--accent-background": window.accentBackground || "darkblue",
