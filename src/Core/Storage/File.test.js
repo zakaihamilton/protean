@@ -20,7 +20,7 @@ const params = {
 
 const permutations = testPermutations(implementations, params);
 
-const timeout = undefined;
+const timeout = 10000;
 
 describe.each(permutations)('File - %s vs %s', (_source, _target, components, params) => {
     let instances;

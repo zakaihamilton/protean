@@ -2,7 +2,7 @@ import { withTheme } from "src/Core/UI/Theme";
 import styles from "./Item.module.scss";
 import { useClasses } from "src/Core/Util/Styles";
 import { useMemo } from "react";
-import { useStateFromObject } from "src/Core/Base/State";
+import { useObjectState } from "src/Core/Base/State";
 import Drag from "src/Core/UI/Drag";
 import { useMoveDrag } from "src/Core/UI/Drag/Move";
 import { withNode } from "src/Core/Base/Node";
@@ -15,7 +15,7 @@ import { IconContext } from "react-icons";
 function Item({ item, index }) {
     const { vertical, wrap, layout } = IconList.State.useState();
     const classes = useClasses(styles);
-    const { id, label, focus, minimize, icon } = useStateFromObject(item) || {};
+    const { id, label, focus, minimize, icon } = useObjectState(item) || {};
     const drag = Drag.useState({ nodeId: null });
     const ref = useMoveDrag(true);
     useContainerItem(index, ref.current);

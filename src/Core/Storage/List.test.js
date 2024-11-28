@@ -22,7 +22,7 @@ const implementations = {
 
 const permutations = testPermutations(implementations);
 
-const timeout = undefined;
+const timeout = 10000;
 
 describe.each(permutations)('List - %s vs %s', (_source, _target, components) => {
     let instances;

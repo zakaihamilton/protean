@@ -40,8 +40,9 @@ export function createState(displayName) {
         if (!object && node) {
             object = createObject({ ...initial || {} }, displayName);
             nodeSetProperty(node, State, object);
+            object.__node = node;
         }
-        useStateFromObject(object, selector, id);
+        useObjectState(object, selector, id);
         return object;
     };
     State.usePassiveState = (nodeId) => {
@@ -73,7 +74,7 @@ export function isSelectorMatch(selector, key) {
     return true;
 }
 
-export function useStateHandlerFromObject(object, handler, id) {
+export function useObjectHandler(object, handler, id) {
     useEffect(() => {
         if (!object || !handler || !object.__monitor || !object.__unmonitor) {
             return;
@@ -87,14 +88,14 @@ export function useStateHandlerFromObject(object, handler, id) {
     return object;
 }
 
-export function useStateFromObject(object, selector, id) {
+export function useObjectState(object, selector, id) {
     const [, setCounter] = useState(0);
     const handler = useCallback((_value, key) => {
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
     }, [selector]);
-    useStateHandlerFromObject(object, handler, id);
+    useObjectHandler(object, handler, id);
     return object;
 }
 

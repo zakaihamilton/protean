@@ -11,10 +11,28 @@
 
 const { TextDecoder, TextEncoder, ReadableStream } = require('node:util');
 
+const { MessageChannel } = require('worker-mock');
+
+class MessagePort {
+    postMessage() {
+        throw new Error('MessagePort.postMessage is not implemented in this polyfill.');
+    }
+    addEventListener() {
+        throw new Error('MessagePort.addEventListener is not implemented in this polyfill.');
+    }
+    removeEventListener() {
+        throw new Error('MessagePort.removeEventListener is not implemented in this polyfill.');
+    }
+    start() { }
+    close() { }
+}
+
 Object.defineProperties(globalThis, {
     TextDecoder: { value: TextDecoder },
     TextEncoder: { value: TextEncoder },
-    ReadableStream: { value: ReadableStream }
+    ReadableStream: { value: ReadableStream },
+    MessageChannel: { value: MessageChannel },
+    MessagePort: { value: MessagePort }
 });
 
 const { Blob, File } = require('node:buffer');

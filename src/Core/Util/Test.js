@@ -2,6 +2,8 @@ function getComponentPermutations(components) {
     const permutations = [];
     const keys = Object.keys(components);
     for (let i = 0; i < keys.length; i += 2) {
+
+
         const sourceKey = keys[i], targetKey = keys[i === keys.length - 1 ? 0 : i + 1];
         let source = components[sourceKey], target = components[targetKey];
         permutations.push([source, target, sourceKey, targetKey]);

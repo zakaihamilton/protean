@@ -9,6 +9,9 @@ const nextConfig = {
   },
   eslint: {
     dirs: ['pages', 'src']
+  },
+  sassOptions: {
+    silenceDeprecations: ["legacy-js-api"]
   }
 }
 

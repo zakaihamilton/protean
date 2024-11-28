@@ -8,6 +8,7 @@ export function objectHasChanged(a, b) {
 export function createObject(props, id) {
     const monitor = [];
     let counter = 0;
+    let node = undefined;
     const unique = crypto.randomUUID();
     const forward = (method, ...args) => {
         const result = Reflect[method](...args);
@@ -69,6 +70,13 @@ export function createObject(props, id) {
     });
     Object.defineProperty(proxy, "__counter", {
         get: () => counter,
+        enumerable: false
+    });
+    Object.defineProperty(proxy, "__node", {
+        get: () => node,
+        set: (value) => {
+            node = value
+        },
         enumerable: false
     });
     return proxy;

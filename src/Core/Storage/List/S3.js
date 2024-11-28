@@ -141,7 +141,7 @@ export async function exists(key) {
     try {
         await client.send(new HeadObjectCommand(params));
         exists = true;
-    } catch (err) {
+    } catch {
         exists = false;
     }
     return exists;

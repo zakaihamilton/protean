@@ -6,7 +6,7 @@
 export async function isSupported() {
     try {
         return 'localStorage' in window;
-    } catch (e) {
+    } catch {
         return false;
     }
 }

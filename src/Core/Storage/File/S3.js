@@ -369,7 +369,7 @@ export async function fileExists(path) {
     try {
         await client.send(new HeadObjectCommand(params));
         exists = true;
-    } catch (err) {
+    } catch {
         exists = false;
     }
     return exists;

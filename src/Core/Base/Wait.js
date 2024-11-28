@@ -25,7 +25,7 @@ export function createWait(displayName) {
             }
         }, [wait, element]);
         useEffect(() => {
-            const status = [...wait.status] || [];
+            const status = [...wait.status || []];
             wait.status = [...status, element];
             return () => {
                 wait.status = wait.status.filter(item => item !== element);
