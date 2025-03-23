@@ -3,6 +3,7 @@ import { createState } from "../Base/State";
 import Windows from "./Windows";
 import SupportedApps from "src/Apps";
 import App from "./Apps/App";
+import Node from "../Base/Node";
 
 export default function Apps() {
     const apps = Apps.State.useState();
@@ -43,9 +44,11 @@ export default function Apps() {
     }, [apps.appId, launch]);
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {
-            return <App key={id} id={id}>
-                <Component />
-            </App>
+            return <Node key={id}>
+                <App id={id}>
+                    <Component />
+                </App>
+            </Node>;
         });
     }, [apps.list]);
     return <>
