@@ -6,6 +6,7 @@ import Button from "./Calculator/Button";
 import styles from "./Calculator.module.scss";
 
 import { PiPlusMinusBold, PiDivide } from "react-icons/pi";
+import Node from "src/Core/Base/Node";
 
 function useLayout() {
     const calculator = Calculator.State.useState();
@@ -199,7 +200,7 @@ export default function Calculator() {
         methods.clear();
     }, [methods]);
 
-    return <>
+    return <Node>
         <Window.Rect left={400} top={200} width={300} height={400} />
         <Window icon={icon} id="calculator" label="Calculator" fixed accentBackground="darkblue">
             <div className={styles.root}>
@@ -207,7 +208,7 @@ export default function Calculator() {
                 {elements}
             </div>
         </Window>
-    </>;
+    </Node>;
 }
 
 Calculator.State = createState("ListEditor.State");

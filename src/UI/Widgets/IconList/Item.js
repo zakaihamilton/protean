@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { useObjectState } from "src/Core/Base/State";
 import Drag from "src/Core/UI/Drag";
 import { useMoveDrag } from "src/Core/UI/Drag/Move";
-import { withNode } from "src/Core/Base/Node";
 import { DRAG_RANGE, ItemDrag } from "./Item/Drag";
 import { useItemPos } from "./Item/Pos";
 import { useContainerItem } from "src/UI/Util/Container";
@@ -60,4 +59,4 @@ function Item({ item, index }) {
     </div>;
 }
 
-export default withNode(Item);
+export default Item;

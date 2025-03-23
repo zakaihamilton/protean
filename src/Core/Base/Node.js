@@ -53,19 +53,3 @@ export function nodeSetProperty(node, id, value) {
 export function nodeGetId(node) {
     return node && node.id;
 }
-
-export function withNode(Component) {
-    if (!Component) {
-        throw new Error("Component is required");
-    }
-    const displayName = Component.displayName || Component.name || "";
-    function WrappedNode({ children, ...props }) {
-        return <Node id={displayName}>
-            <Component {...props}>
-                {children}
-            </Component>
-        </Node>;
-    }
-    Object.setPrototypeOf(WrappedNode, Component);
-    return WrappedNode;
-}

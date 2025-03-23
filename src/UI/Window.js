@@ -12,7 +12,6 @@ import { useElement } from "src/Core/Base/Element";
 import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Window/Menu";
 import { createRegion } from "src/Core/UI/Region";
-import { withNode } from "src/Core/Base/Node";
 import App from "src/Core/UI/Apps/App";
 
 function Window({ children }) {
@@ -67,4 +66,4 @@ Window.Rect = createState("Window.Rect");
 Window.Region = createRegion("Window.Region");
 Window.Actions = createState("Window.Actions");
 
-export default withNode(withState(Window));
+export default withState(Window);
