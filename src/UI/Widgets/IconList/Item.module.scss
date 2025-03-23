@@ -13,10 +13,13 @@
     user-select: none;
     border-radius: 6px;
     height: 38px;
-    position: absolute;
+    position: relative;
     left: var(--left);
     top: var(--top);
-    transform: var(--transform);
+}
+
+.root.absolute {
+    position: absolute;
 }
 
 .root:not(.vertical) {

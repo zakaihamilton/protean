@@ -11,12 +11,12 @@ import IconList from "../IconList";
 import { IconContext } from "react-icons";
 
 function Item({ item, index }) {
-    const { vertical, wrap, layout } = IconList.State.useState();
+    const { vertical = false, wrap, layout } = IconList.State.useState();
     const classes = useClasses(styles);
     const { id, label, focus, minimize, icon } = useObjectState(item) || {};
     const drag = Drag.useState({ nodeId: null });
     const ref = useMoveDrag(true);
-    useContainerItem(index, ref.current);
+    const [mounted] = useContainerItem(index, ref.current);
     let inRange = false;
     if (layout === "big-icons") {
         inRange = (Math.abs(drag?.dragged?.x) > DRAG_RANGE || Math.abs(drag?.dragged?.y) > DRAG_RANGE);
@@ -34,6 +34,7 @@ function Item({ item, index }) {
             "--top": top + "px"
         };
     }, [left, top]);
+    const absolute = mounted;
     const className = classes({
         root: true,
         focus,
@@ -41,6 +42,7 @@ function Item({ item, index }) {
         target,
         moving: drag.moving && inRange,
         vertical,
+        absolute,
         [layout]: true
     });
     const iconValue = useMemo(() => {
