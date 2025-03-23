@@ -1,5 +1,4 @@
 import styles from "./Content.module.scss";
-import { withTheme } from "../../Core/UI/Theme";
 import { createRegion } from "src/Core/UI/Region";
 import { useElement } from "src/Core/Base/Element";
 import Window from "../Window";
@@ -18,6 +17,6 @@ function Content({ children }) {
     );
 }
 
-export default withTheme(Content);
+export default Content;
 
 Content.Region = createRegion("Content.Region");

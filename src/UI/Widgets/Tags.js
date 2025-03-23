@@ -1,6 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tags.module.scss";
-import { withTheme } from "src/Core/UI/Theme";
 import { useMemo } from "react";
 
 function Tags({ tags, vertical, border, title }) {
@@ -41,4 +40,4 @@ function Tags({ tags, vertical, border, title }) {
     </div>;
 }
 
-export default withTheme(Tags);
+export default Tags;

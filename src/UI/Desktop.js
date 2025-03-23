@@ -1,4 +1,3 @@
-import { withTheme } from "../Core/UI/Theme";
 import Background from "./Desktop/Background";
 import Taskbar from "./Desktop/Taskbar";
 import styles from "./Desktop.module.scss";
@@ -20,4 +19,4 @@ function Desktop({ children }) {
 
 Desktop.Region = createRegion("Desktop.Region");
 
-export default withTheme(Desktop);
+export default Desktop;

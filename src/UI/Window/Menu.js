@@ -1,7 +1,6 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Menu.module.scss";
 import { createState } from "src/Core/Base/State";
-import { withTheme } from "src/Core/UI/Theme";
 import React, { useCallback, useMemo } from "react";
 import Item from "./Menu/Item";
 
@@ -42,4 +41,4 @@ function Menu() {
 Menu.State = createState("Menu.State");
 Menu.Item = Item;
 
-export default withTheme(Menu);
+export default Menu;

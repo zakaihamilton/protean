@@ -4,7 +4,6 @@ import Windows from "src/Core/UI/Windows";
 import { useClasses } from "src/Core/Util/Styles";
 import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
-import { withTheme } from "src/Core/UI/Theme";
 import { withNode } from "src/Core/Base/Node";
 import IconList from "../Widgets/IconList";
 
@@ -38,4 +37,4 @@ function Taskbar() {
     </div>;
 }
 
-export default withTheme(withNode(withState(Taskbar)));
+export default withNode(withState(Taskbar));

@@ -1,4 +1,3 @@
-import { withTheme } from "src/Core/UI/Theme";
 import styles from "./Item.module.scss";
 import { useClasses } from "src/Core/Util/Styles";
 import { useMemo } from "react";
@@ -61,4 +60,4 @@ function Item({ item, index }) {
     </div>;
 }
 
-export default withNode(withTheme(Item));
+export default withNode(Item);

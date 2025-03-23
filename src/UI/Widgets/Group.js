@@ -1,6 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Group.module.scss";
-import { withTheme } from "src/Core/UI/Theme";
 
 function Group({ vertical, wrap, flex, children }) {
     const classes = useClasses(styles);
@@ -15,4 +14,4 @@ function Group({ vertical, wrap, flex, children }) {
     </div>;
 }
 
-export default withTheme(Group);
+export default Group;

@@ -1,7 +1,6 @@
 import React from "react";
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Button.module.scss";
-import { withTheme } from "../../Core/UI/Theme";
 
 function Button({ border, label, selected, children, ...props }) {
     const classes = useClasses(styles);
@@ -18,4 +17,4 @@ function Button({ border, label, selected, children, ...props }) {
     </div>;
 }
 
-export default withTheme(Button);
+export default Button;

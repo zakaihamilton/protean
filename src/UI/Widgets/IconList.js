@@ -1,4 +1,3 @@
-import { withTheme } from "src/Core/UI/Theme"
 import styles from "./IconList.module.scss";
 import Item from "./IconList/Item";
 import { useMemo } from "react";
@@ -25,4 +24,4 @@ function IconList({ list, vertical, flex, wrap }) {
     </div>
 }
 
-export default withTheme(withState(IconList));
+export default withState(IconList);

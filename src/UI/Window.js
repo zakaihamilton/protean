@@ -65,6 +65,6 @@ function Window({ children }) {
 
 Window.Rect = createState("Window.Rect");
 Window.Region = createRegion("Window.Region");
-Window.Actions = createState("Windnow.Actions");
+Window.Actions = createState("Window.Actions");
 
 export default withNode(withState(Window));

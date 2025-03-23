@@ -1,6 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tooltip.module.scss";
-import { withTheme } from "src/Core/UI/Theme";
 
 import { useCallback, useMemo, useEffect } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
@@ -127,4 +126,4 @@ function Tooltip({ title, description, enabled = true }) {
 
 Tooltip.State = createState("Tooltip.State");
 
-export default withTheme(Tooltip);
+export default Tooltip;

@@ -1,4 +1,3 @@
-import { withTheme } from "src/Core/UI/Theme"
 import styles from "./Search.module.scss";
 import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
@@ -26,4 +25,4 @@ function Search({ flex, placeholder = "Search...", dynamic }) {
     </div>
 }
 
-export default withTheme(withState(Search));
+export default withState(Search);

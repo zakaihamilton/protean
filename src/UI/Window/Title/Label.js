@@ -1,6 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Label.module.scss";
-import { withTheme } from "src/Core/UI/Theme";
 import Window from "src/UI/Window";
 import Drag from "src/Core/UI/Drag";
 import { useMoveDrag } from "src/Core/UI/Drag/Move";
@@ -43,4 +42,4 @@ function Label() {
     )
 }
 
-export default withTheme(Label);
+export default Label;

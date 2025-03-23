@@ -1,6 +1,5 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Title.module.scss";
-import { withTheme } from "../../Core/UI/Theme";
 import Label from "./Title/Label";
 import Window from "../Window";
 import Actions from "./Title/Actions";
@@ -23,4 +22,4 @@ function Title() {
     )
 }
 
-export default withTheme(Title);
+export default Title;
