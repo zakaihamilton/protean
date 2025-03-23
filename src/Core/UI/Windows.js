@@ -24,14 +24,14 @@ function Windows({ children }) {
     </>;
 }
 
-export function useWindowsItem(window, target, enabled) {
+export function useWindowsItem(window, target, open) {
     const windows = Windows.State.useState();
 
     useEffect(() => {
         if (!window || !target) {
             return;
         }
-        if (enabled) {
+        if (open) {
             windows.list = [...windows.list || [], window];
             windows.focus = [...windows.focus || [], window];
         }
@@ -64,7 +64,7 @@ export function useWindowsItem(window, target, enabled) {
             windows.closed = windows.closed?.filter(item => item !== window);
             windows.updateFocus();
         }
-    }, [target, window, windows, enabled]);
+    }, [target, window, windows, open]);
 }
 
 Windows.State = createState("Windows.State");
