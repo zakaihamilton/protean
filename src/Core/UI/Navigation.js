@@ -33,7 +33,7 @@ function Navigation() {
         }
         if (windowsId) {
             windows.forceFocusId = windowsId;
-            windows.updateFocus();
+            windows.focusId = windowsId;
         }
     }, [navigation.hash, window?.location, windows, apps]);
 

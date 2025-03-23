@@ -26,7 +26,7 @@ function Taskbar() {
         }
         else {
             item.minimize = false;
-            windows.updateFocus(item?.id);
+            windows.focusId = item?.id;
         }
     }, [windows]);
 

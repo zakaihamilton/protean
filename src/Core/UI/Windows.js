@@ -4,10 +4,10 @@ import { useEventListener } from "./EventListener";
 
 function Windows({ children }) {
     const windows = Windows.State.useState();
-    const updateFocus = useCallback((focusId) => {
+    useEffect(() => {
         const available = windows.focus?.filter(item => !item.minimize);
         let focused = available?.[available?.length - 1];
-        focusId = focusId || windows.forceFocusId;
+        const focusId = windows.focusId || windows.forceFocusId;
         if (focusId) {
             focused = windows.list?.find(item => item.id === focusId);
         }
@@ -18,11 +18,8 @@ function Windows({ children }) {
             item.index = index;
         });
         windows.current = focused;
-    }, [windows]);
-    return <>
-        <Windows.State updateFocus={updateFocus} />
-        {children}
-    </>;
+    }, [windows, windows.focusId, windows.list]);
+    return children;
 }
 
 export function useWindowsItem(window, target) {
@@ -31,18 +28,16 @@ export function useWindowsItem(window, target) {
     useEffect(() => {
         if (window.minimize) {
             windows.forceFocusId = null;
-            windows.updateFocus();
+            windows.focusId = null;
         }
         else {
-            windows.updateFocus(window.id);
+            windows.focusId = window.id;
         }
     }, [window.minimize, window.id, windows]);
 
     const handleMouseDown = useCallback(() => {
         windows.forceFocusId = null;
-        if (windows.current?.id !== window.id) {
-            windows.updateFocus(window.id);
-        }
+        windows.focusId = window.id;
     }, [window.id, windows]);
     useEventListener(target, "mousedown", handleMouseDown);
 
@@ -57,12 +52,10 @@ export function useWindowsItem(window, target) {
             windows.list = [...windows.list || [], window];
             windows.focus = [...windows.focus || [], window];
         }
-        windows.updateFocus();
         return () => {
             windows.list = windows.list?.filter(item => item !== window);
             windows.focus = windows.focus?.filter(item => item !== window);
             windows.closed = windows.closed?.filter(item => item !== window);
-            windows.updateFocus();
         }
     }, [window, windows, window?.close]);
 }

@@ -27,7 +27,7 @@ export default function Apps() {
             if (window) {
                 window.close = false;
             }
-            windows.updateFocus(windowId);
+            windows.focusId = windowId;
         }
         else if (Component) {
             apps.list = [...apps.list || [], { id, Component }];

@@ -19,7 +19,7 @@ export default function TaskManager() {
         }
         else {
             item.minimize = false;
-            windows.updateFocus(item?.id);
+            windows.focusId = item?.id;
         }
     }, [windows]);
 
