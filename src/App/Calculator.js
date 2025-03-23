@@ -202,7 +202,8 @@ export default function Calculator() {
 
     return <Node>
         <Window.Rect left={400} top={200} width={300} height={400} />
-        <Window icon={icon} id="calculator" label="Calculator" fixed accentBackground="darkblue">
+        <Window.State icon={icon} id="calculator" label="Calculator" fixed accentBackground="darkblue" />
+        <Window>
             <div className={styles.root}>
                 <div className={styles.input}>{calculator.input}</div>
                 {elements}

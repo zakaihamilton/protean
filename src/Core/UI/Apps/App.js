@@ -1,7 +1,9 @@
-import { withState } from "src/Core/Base/State";
+import { createState } from "src/Core/Base/State";
 
 function App({ children }) {
     return children;
 }
 
-export default withState(App);
+App.State = createState("App.State");
+
+export default App;

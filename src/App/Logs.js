@@ -21,7 +21,8 @@ export default function Logs() {
 
     return <Node>
         <Window.Rect left={200} top={100} width={400} height={600} />
-        <Window icon={icon} id="logs" label="Logs" accentBackground="darkorange">
+        <Window.State icon={icon} id="logs" label="Logs" accentBackground="darkorange" />
+        <Window>
             <Group vertical>
                 {elements}
             </Group>

@@ -2,9 +2,9 @@ import React, { useCallback } from "react";
 import styles from "./Taskbar.module.scss";
 import Windows from "src/Core/UI/Windows";
 import { useClasses } from "src/Core/Util/Styles";
-import { withState } from "src/Core/Base/State";
 import { useMonitor } from "src/Core/Base/Monitor";
 import IconList from "../Widgets/IconList";
+import { createState } from "src/Core/Base/State";
 
 function Taskbar() {
     const classes = useClasses(styles);
@@ -32,8 +32,11 @@ function Taskbar() {
 
     const className = classes({ root: true, visible: taskbar?.visible });
     return <div className={className}>
-        <IconList list={list} onClick={onClick} />
+        <IconList.State list={list} onClick={onClick} />
+        <IconList />
     </div>;
 }
 
-export default withState(Taskbar);
+Taskbar.State = createState("Taskbar.State");
+
+export default Taskbar;

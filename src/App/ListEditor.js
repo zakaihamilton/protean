@@ -23,7 +23,8 @@ export default function ListEditor() {
     return <Node>
         <Menu />
         <Window.Rect left={100} top={100} width={500} height={500} />
-        <Window icon={icon} id="list-editor" label="List Editor" maximize accentBackground="darkgreen">
+        <Window.State icon={icon} id="list-editor" label="List Editor" maximize accentBackground="darkgreen" />
+        <Window>
             <Group>
                 <Tags title="Content" tags={{ ...contentRegion }} border vertical />
                 <Tags title="Window" tags={{ ...windowRegion }} border vertical />

@@ -23,7 +23,8 @@ export default function Controls() {
 
     return <Node>
         <Window.Rect left={900} top={200} width={300} height={300} />
-        <Window icon={icon} id="controls" label="Controls" accentBackground="purple">
+        <Window.State icon={icon} id="controls" label="Controls" accentBackground="purple" />
+        <Window>
             <Group>
                 <Button selected={selected} onClick={onToggleTheme}>Toggle Dark Theme</Button>
             </Group>

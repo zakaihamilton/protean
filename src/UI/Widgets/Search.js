@@ -1,7 +1,6 @@
 import styles from "./Search.module.scss";
 import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
-import { withState } from "src/Core/Base/State";
 import { useCallback } from "react";
 
 function Search({ flex, placeholder = "Search...", dynamic }) {
@@ -25,4 +24,4 @@ function Search({ flex, placeholder = "Search...", dynamic }) {
     </div>
 }
 
-export default withState(Search);
+export default Search;

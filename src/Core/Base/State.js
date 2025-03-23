@@ -98,22 +98,3 @@ export function useObjectState(object, selector, id) {
     useObjectHandler(object, handler, id);
     return object;
 }
-
-export function withState(Component, baseProps = {}) {
-    if (!Component) {
-        throw new Error("Component is required");
-    }
-    const displayName = Component.displayName || Component.name || "";
-    const State = Component.State = createState(displayName + ".State");
-    function WrappedState({ children, ...props }) {
-        const state = State.useState();
-        return <>
-            <State {...baseProps}{...props} />
-            <Component {...baseProps}{...state}>
-                {children}
-            </Component>
-        </>;
-    }
-    Object.setPrototypeOf(WrappedState, Component);
-    return WrappedState;
-}

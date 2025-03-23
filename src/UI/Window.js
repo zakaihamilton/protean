@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { createState, withState } from "src/Core/Base/State";
+import { createState } from "src/Core/Base/State";
 import styles from "./Window.module.scss";
 import Content from "./Window/Content";
 import Title from "./Window/Title";
@@ -65,5 +65,6 @@ function Window({ children }) {
 Window.Rect = createState("Window.Rect");
 Window.Region = createRegion("Window.Region");
 Window.Actions = createState("Window.Actions");
+Window.State = createState("Window.State");
 
-export default withState(Window);
+export default Window;

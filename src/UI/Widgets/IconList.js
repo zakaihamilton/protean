@@ -3,10 +3,11 @@ import Item from "./IconList/Item";
 import { useMemo } from "react";
 import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
-import { withState } from "src/Core/Base/State";
 import Node from "src/Core/Base/Node";
+import { createState } from "src/Core/Base/State";
 
-function IconList({ list, vertical, flex, wrap }) {
+function IconList() {
+    const { list, vertical, flex, wrap } = IconList.State.useState();
     const classes = useClasses(styles);
 
     const elements = useMemo(() => {
@@ -27,4 +28,6 @@ function IconList({ list, vertical, flex, wrap }) {
     </div>
 }
 
-export default withState(IconList);
+IconList.State = createState("IconList.State");
+
+export default IconList;

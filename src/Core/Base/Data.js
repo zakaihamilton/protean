@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { withState } from "./State";
+import { createState } from "./State";
 import Fetch from "./Fetch";
 
 export function createData(displayName) {
@@ -35,5 +35,6 @@ export function createData(displayName) {
         const children = result(data.result);
         return children;
     }
-    return withState(Data, displayName);
+    Data.State = createState(displayName + ".State");
+    return Data;
 }

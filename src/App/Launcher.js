@@ -29,10 +29,12 @@ export default function Launcher() {
     return <Node>
         <Window.Rect left={100} top={200} width={300} height={300} />
         <Window.Actions close={false} />
-        <Window icon={icon} id="launcher" label="Launcher" accentBackground="purple">
+        <Window.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
+        <Window>
             <Group vertical flex>
                 <Search dynamic={searchDynamic} />
-                <IconList list={list} flex wrap onClick={onClick} layout="big-icons" />
+                <IconList.State list={list} flex wrap onClick={onClick} layout="big-icons" />
+                <IconList />
             </Group>
         </Window>
     </Node>;

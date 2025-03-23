@@ -25,9 +25,11 @@ export default function TaskManager() {
 
     return <Node>
         <Window.Rect left={50} top={300} width={300} height={300} />
-        <Window icon={icon} id="task-manager" label="Task Manager" accentBackground="gold" accentColor="black">
+        <Window.State icon={icon} id="task-manager" label="Task Manager" accentBackground="gold" accentColor="black" />
+        <Window>
             <Group vertical flex>
-                <IconList vertical list={list} onClick={onClick} />
+                <IconList.State vertical list={list} onClick={onClick} />
+                <IconList />
             </Group>
         </Window>
     </Node>;

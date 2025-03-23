@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { withState } from "../Base/State";
+import { createState } from "../Base/State";
 import { createConsole } from "../Base/Console";
 import Fetch from "../Base/Fetch";
 
@@ -43,4 +43,6 @@ Lang.useText = (packId = "common") => {
     return pack?.text;
 };
 
-export default withState(Lang, { packs: [] });
+Lang.State = createState("Lang.State");
+
+export default Lang;

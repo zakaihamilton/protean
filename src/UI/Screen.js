@@ -1,4 +1,4 @@
-import { withState } from "../Core/Base/State";
+import { createState } from "../Core/Base/State";
 import { useClasses } from "../Core/Util/Styles";
 import styles from "./Screen.module.scss";
 
@@ -13,4 +13,6 @@ function Screen({ children }) {
     )
 }
 
-export default withState(Screen);
+Screen.State = createState("Screen.State");
+
+export default Screen;
