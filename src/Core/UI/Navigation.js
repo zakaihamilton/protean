@@ -26,7 +26,7 @@ function Navigation() {
 
     useEffect(() => {
         window.location.hash = navigation.hash;
-        const segments = navigation.hash.replace("#", "").split("/");
+        const segments = navigation.hash?.replace("#", "").split("/") || [];
         const appId = segments[0], windowsId = segments[1] || segments[0];
         if (appId) {
             apps.appId = appId;

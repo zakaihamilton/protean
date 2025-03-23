@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { createState } from "src/Core/Base/State";
+import { useEventListener } from "./EventListener";
 
 function Windows({ children }) {
     const windows = Windows.State.useState();
@@ -24,47 +25,46 @@ function Windows({ children }) {
     </>;
 }
 
-export function useWindowsItem(window, target, open) {
+export function useWindowsItem(window, target) {
     const windows = Windows.State.useState();
 
     useEffect(() => {
-        if (!window || !target) {
+        if (window.minimize) {
+            windows.forceFocusId = null;
+            windows.updateFocus();
+        }
+        else {
+            windows.updateFocus(window.id);
+        }
+    }, [window.minimize, window.id, windows]);
+
+    const handleMouseDown = useCallback(() => {
+        windows.forceFocusId = null;
+        if (windows.current?.id !== window.id) {
+            windows.updateFocus(window.id);
+        }
+    }, [window.id, windows]);
+    useEventListener(target, "mousedown", handleMouseDown);
+
+    useEffect(() => {
+        if (!window) {
             return;
         }
-        if (open) {
+        if (window.close) {
+            windows.closed = [...windows.closed || [], window];
+        }
+        else {
             windows.list = [...windows.list || [], window];
             windows.focus = [...windows.focus || [], window];
         }
-        else {
-            windows.closed = [...windows.closed || [], window];
-        }
-        const minimize = (val) => {
-            if (val) {
-                windows.forceFocusId = null;
-                windows.updateFocus();
-            }
-            else {
-                windows.updateFocus(window.id);
-            }
-        };
-        window.__monitor("minimize", minimize);
         windows.updateFocus();
-        const handleMouseDown = () => {
-            windows.forceFocusId = null;
-            if (windows.current?.id !== window.id) {
-                windows.updateFocus(window.id);
-            }
-        };
-        target.addEventListener("mousedown", handleMouseDown);
         return () => {
-            window.__unmonitor("minimize", minimize);
-            target.removeEventListener("mousedown", handleMouseDown);
             windows.list = windows.list?.filter(item => item !== window);
             windows.focus = windows.focus?.filter(item => item !== window);
             windows.closed = windows.closed?.filter(item => item !== window);
             windows.updateFocus();
         }
-    }, [target, window, windows, open]);
+    }, [window, windows, window?.close]);
 }
 
 Windows.State = createState("Windows.State");

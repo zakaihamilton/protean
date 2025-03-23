@@ -25,7 +25,7 @@ function Window({ children }) {
         height: window?.min?.height || 200
     }), [window?.min]);
     const ref = useElement();
-    useWindowsItem(window, ref?.current, !window?.close);
+    useWindowsItem(window, ref?.current);
 
     const className = classes({
         root: true,

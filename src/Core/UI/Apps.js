@@ -20,7 +20,10 @@ export default function Apps() {
             if (!windowId) {
                 windowId = windows?.closed?.toReversed()?.find(item => item.appId === id)?.id;
             }
-            const window = windows?.closed?.find(item => item.id === id);
+            if (!windowId) {
+                windowId = id;
+            }
+            const window = windows?.closed?.find(item => item.id === windowId);
             if (window) {
                 window.close = false;
             }
