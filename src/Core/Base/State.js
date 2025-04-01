@@ -80,7 +80,7 @@ export function useObjectHandler(object, handler, id) {
             return;
         }
         object.__monitor(null, handler, id);
-        handler(null, null);
+        handler(null);
         return () => {
             object.__unmonitor(null, handler, id);
         };

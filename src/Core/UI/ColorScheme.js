@@ -14,7 +14,11 @@ function prefersColorScheme() {
 function ColorScheme() {
     const window = getClientWindow();
     const defaultColorScheme = prefersColorScheme();
-    const colorScheme = ColorScheme.State.useState({ id: "colorScheme", initial: { theme: defaultColorScheme } });
+    const colorScheme = ColorScheme.State.useState();
+
+    useEffect(() => {
+        colorScheme.theme = defaultColorScheme;
+    }, [colorScheme, defaultColorScheme]);
 
     useEffect(() => {
         let root = document.querySelector(":root");

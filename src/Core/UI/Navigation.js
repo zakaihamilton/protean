@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
@@ -10,14 +10,11 @@ function Navigation() {
     const windows = Windows.State.useState();
     const apps = Apps.State.useState();
     const current = windows.current;
-    const initial = useMemo(() => {
-        const hash = window?.location?.hash;
-        return {
-            hash
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    const navigation = Navigation.State.useState({ initial });
+    const navigation = Navigation.State.useState();
+
+    useEffect(() => {
+        navigation.hash = window?.location?.hash;
+    }, [navigation, window]);
 
     const onHashChange = useCallback(() => {
         navigation.hash = window?.location?.hash;
