@@ -10,38 +10,36 @@ export function createObject(props, id) {
     let counter = 0;
     let node = undefined;
     const unique = crypto.randomUUID();
-    const forward = (method, ...args) => {
-        const result = Reflect[method](...args);
+    const notify = (key) => {
         counter++;
         for (const item of monitor) {
-            const [, key, value] = args;
             if ((!item.key || key === item.key) && item.cb) {
                 item.counter++;
-                item.cb(value, key);
+                item.cb(key);
             }
         }
-        return result;
     }
     const proxy = new Proxy({ ...props }, {
-        set: function (target, key, value) {
-            if (target[key] === value) {
+        set: function (target, propertyKey, value, receiver) {
+            if (Reflect.get(target, propertyKey, receiver) === value) {
                 return true;
             }
-            return forward("set", target, key, value);
+            const result = Reflect.set(target, propertyKey, value, receiver);
+            notify(propertyKey);
+            return result;
         },
-        deleteProperty: function (target, key) {
-            if (!(key in target)) {
+        deleteProperty: function (target, propertyKey, receiver) {
+            if (!Reflect.has(target, propertyKey)) {
                 return true;
             }
-            return forward("deleteProperty", target, key);
-        },
-        defineProperty: function (target, key, descriptor) {
-            return forward("defineProperty", target, key, descriptor);
+            const result = Reflect.deleteProperty(target, propertyKey, receiver);
+            notify(propertyKey);
+            return result;
         }
     });
     Object.defineProperty(proxy, "__monitor", {
         value: (key, cb, id) => {
-            monitor.push({ id, key, cb, counter: 0 });
+            monitor.push({ key, cb, id, counter: 0 });
         },
         writable: false,
         enumerable: false
@@ -52,32 +50,25 @@ export function createObject(props, id) {
             if (index !== -1) {
                 monitor.splice(index, 1);
             }
-        },
-        writable: false,
-        enumerable: false
+        }
     });
     Object.defineProperty(proxy, "__monitored", {
-        get: () => monitor,
-        enumerable: false
+        get: () => monitor
     });
     Object.defineProperty(proxy, "__unique", {
-        get: () => unique,
-        enumerable: false
+        get: () => unique
     });
     Object.defineProperty(proxy, "__id", {
-        get: () => id,
-        enumerable: false
+        get: () => id
     });
     Object.defineProperty(proxy, "__counter", {
-        get: () => counter,
-        enumerable: false
+        get: () => counter
     });
     Object.defineProperty(proxy, "__node", {
         get: () => node,
         set: (value) => {
             node = value
-        },
-        enumerable: false
+        }
     });
     return proxy;
 }

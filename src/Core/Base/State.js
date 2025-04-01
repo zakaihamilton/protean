@@ -90,7 +90,7 @@ export function useObjectHandler(object, handler, id) {
 
 export function useObjectState(object, selector, id) {
     const [, setCounter] = useState(0);
-    const handler = useCallback((_value, key) => {
+    const handler = useCallback(key => {
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
