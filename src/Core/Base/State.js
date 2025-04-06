@@ -3,8 +3,8 @@ import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
-    function State({ nodeId = undefined, ...props }) {
-        const object = State.useState({ nodeId, initial: props });
+    function State({ ...props }) {
+        const object = State.useState([], props);
         const [updatedProps, setUpdatedProps] = useState({});
         const keysChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
@@ -30,9 +30,9 @@ export function createState(displayName) {
 
         return null;
     }
-    State.useState = ({ selector, nodeId, initial, id } = {}) => {
-        let node = Node.useNode(nodeId, State);
-        const lastNode = Node.useNode(nodeId);
+    State.useState = (selector, initial, id) => {
+        let node = Node.useNode(initial ? null : undefined, State);
+        const lastNode = Node.useNode(initial ? null : undefined);
         if (!node) {
             node = lastNode;
         }
@@ -90,10 +90,15 @@ export function useObjectHandler(object, handler, id) {
 
 export function useObjectState(object, selector, id) {
     const [, setCounter] = useState(0);
+    const selectorRef = useRef(selector);
     const handler = useCallback(key => {
+        const selector = selectorRef.current;
         if (!selector || isSelectorMatch(selector, key)) {
             setCounter(counter => counter + 1);
         }
+    }, []);
+    useEffect(() => {
+        selectorRef.current = selector;
     }, [selector]);
     useObjectHandler(object, handler, id);
     return object;

@@ -4,10 +4,9 @@ import { useMemo } from "react";
 import Group from "src/UI/Widgets/Group";
 import Logger from "src/Core/Base/Logger";
 import styles from "./Logs.module.scss";
-import Node from "src/Core/Base/Node";
 
 export default function Logs() {
-    const logger = Logger.State.useState({ id: "logs" });
+    const logger = Logger.State.useState();
     const icon = useMemo(() => <VscDebugAltSmall />, []);
 
     const elements = useMemo(() => {
@@ -19,7 +18,7 @@ export default function Logs() {
         return elements;
     }, [logger.items]);
 
-    return <Node>
+    return <>
         <Window.Rect left={200} top={100} width={400} height={600} />
         <Window.State icon={icon} id="logs" label="Logs" accentBackground="darkorange" />
         <Window>
@@ -27,5 +26,5 @@ export default function Logs() {
                 {elements}
             </Group>
         </Window>
-    </Node>;
+    </>;
 }

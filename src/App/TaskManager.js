@@ -4,7 +4,6 @@ import { BiWindows } from "react-icons/bi";
 import Group from "src/UI/Widgets/Group";
 import Windows from "src/Core/UI/Windows";
 import IconList from "src/UI/Widgets/IconList";
-import Node from "src/Core/Base/Node";
 
 export default function TaskManager() {
     const windows = Windows.State.useState();
@@ -23,7 +22,7 @@ export default function TaskManager() {
         }
     }, [windows]);
 
-    return <Node>
+    return <>
         <Window.Rect left={50} top={300} width={300} height={300} />
         <Window.State icon={icon} id="task-manager" label="Task Manager" accentBackground="gold" accentColor="black" />
         <Window>
@@ -32,5 +31,5 @@ export default function TaskManager() {
                 <IconList />
             </Group>
         </Window>
-    </Node>;
+    </>;
 }

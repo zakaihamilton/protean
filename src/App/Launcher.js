@@ -9,7 +9,6 @@ import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Base/Dynamic";
 import Windows from "src/Core/UI/Windows";
-import Node from "src/Core/Base/Node";
 
 export default function Launcher() {
     const windows = Windows.State.useState();
@@ -26,7 +25,7 @@ export default function Launcher() {
         apps.launch(item);
     }, [windows, apps]);
 
-    return <Node>
+    return <>
         <Window.Rect left={100} top={200} width={300} height={300} />
         <Window.Actions close={false} />
         <Window.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
@@ -37,7 +36,7 @@ export default function Launcher() {
                 <IconList />
             </Group>
         </Window>
-    </Node>;
+    </>;
 }
 
 Launcher.State = createState("Launcher.State");

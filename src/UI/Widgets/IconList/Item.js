@@ -14,7 +14,7 @@ function Item({ item, index }) {
     const { vertical = false, wrap, layout } = IconList.State.useState();
     const classes = useClasses(styles);
     const { id, label, focus, minimize, icon } = useObjectState(item) || {};
-    const drag = Drag.useState({ nodeId: null });
+    const drag = Drag.useState([], {});
     const ref = useMoveDrag(true);
     const [mounted] = useContainerItem(index, ref.current);
     let inRange = false;

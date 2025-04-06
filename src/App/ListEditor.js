@@ -7,7 +7,6 @@ import Storage from "./ListEditor/Storage";
 import Content from "src/UI/Window/Content";
 import Tags from "src/UI/Widgets/Tags";
 import { MdOutlineListAlt } from "react-icons/md";
-import Node from "src/Core/Base/Node";
 
 export default function ListEditor() {
     const listEditor = ListEditor.State.useState();
@@ -20,7 +19,7 @@ export default function ListEditor() {
 
     const icon = useMemo(() => <MdOutlineListAlt />, []);
 
-    return <Node>
+    return <>
         <Menu />
         <Window.Rect left={100} top={100} width={500} height={500} />
         <Window.State icon={icon} id="list-editor" label="List Editor" maximize accentBackground="darkgreen" />
@@ -30,7 +29,7 @@ export default function ListEditor() {
                 <Tags title="Window" tags={{ ...windowRegion }} border vertical />
             </Group>
         </Window>
-    </Node>;
+    </>;
 }
 
 ListEditor.State = createState("ListEditor.State");

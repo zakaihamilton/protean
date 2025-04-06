@@ -29,7 +29,9 @@ export default function Logger() {
         const update = (method, ...args) => {
             const message = args.join(' ');
             const item = { type: method, message };
-            logger.items = [...logger.items, item];
+            setTimeout(() => {
+                logger.items = [...logger.items, item];
+            }, 0);
         };
         return monitor(console, consoleMethodNames, update);
     }, [logger]);

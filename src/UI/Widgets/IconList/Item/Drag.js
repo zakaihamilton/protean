@@ -9,9 +9,9 @@ import IconList from "../../IconList";
 export const DRAG_RANGE = 12;
 
 export function ItemDrag({ item, inRange }) {
-    const iconList = IconList.State.useState();
-    const windows = Windows.State.useState({ selector: null });
-    const container = Container.State.useState();
+    const iconList = IconList.State.useState([]);
+    const windows = Windows.State.useState([]);
+    const container = Container.State.useState([]);
     const onDragStart = useCallback((state) => {
         state.clickable = true;
     }, []);

@@ -5,7 +5,6 @@ import Button from "src/UI/Widgets/Button";
 import ColorScheme from "src/Core/UI/ColorScheme";
 import Group from "src/UI/Widgets/Group";
 import Lang from "src/Core/UI/Lang";
-import Node from "src/Core/Base/Node";
 
 export default function Controls() {
     const icon = useMemo(() => <MdOutlineWidgets />, []);
@@ -21,7 +20,7 @@ export default function Controls() {
 
     const text = Lang.useText();
 
-    return <Node>
+    return <>
         <Window.Rect left={900} top={200} width={300} height={300} />
         <Window.State icon={icon} id="controls" label="Controls" accentBackground="purple" />
         <Window>
@@ -32,5 +31,5 @@ export default function Controls() {
                 <Button selected={selected} onClick={onToggleLanguage}>{text?.LANGAUGE}</Button>
             </Group>
         </Window>
-    </Node>;
+    </>;
 }
