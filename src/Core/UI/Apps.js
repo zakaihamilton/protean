@@ -24,9 +24,17 @@ export default function Apps() {
             if (!windowId) {
                 windowId = id;
             }
-            const window = windows?.closed?.find(item => item.id === windowId);
-            if (window) {
-                window.close = false;
+            {
+                const window = windows?.closed?.find(item => item.id === windowId);
+                if (window) {
+                    window.close = false;
+                }
+            }
+            {
+                const window = windows?.list?.find(item => item.id === windowId);
+                if (window) {
+                    window.minimize = false;
+                }
             }
             windows.focusId = windowId;
         }

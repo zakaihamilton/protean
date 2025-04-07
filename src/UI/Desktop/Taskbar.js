@@ -13,7 +13,7 @@ function Taskbar() {
     const taskbar = Taskbar.State.useState();
 
     const monitor = useCallback(() => {
-        const hidden = list.some(item => item.fullscreen && !item.minimize);
+        const hidden = list.some(item => item.fullscreen && !item.minimize && !item.close);
         taskbar.visible = !hidden;
     }, [taskbar, list]);
 

@@ -12,7 +12,7 @@ function IconList() {
 
     const elements = useMemo(() => {
         return list?.map((item, index) => {
-            return <Node key={item?.id || item?.label}>
+            return <Node key={item?.id || item?.label || index}>
                 <Item index={index} item={item} />
             </Node>;
         });

@@ -4,7 +4,7 @@ import { objectHasChanged, createObject } from "./Object";
 
 export function createState(displayName) {
     function State({ ...props }) {
-        const object = State.useState([], props);
+        const object = State.useState(null, props);
         const [updatedProps, setUpdatedProps] = useState({});
         const keysChanged = object && objectHasChanged(props, updatedProps);
         const changeRef = useRef(0);
@@ -55,22 +55,24 @@ export function createState(displayName) {
 }
 
 export function isSelectorMatch(selector, key) {
-    if (typeof selector === "object") {
-        if (Array.isArray(selector)) {
-            if (!selector.includes(key)) {
-                return false;
-            }
-        }
-        else if (!selector[key]) {
-            return false;
-        }
+    if (selector === undefined) {
+        return true;
     }
-    else if (typeof selector === "string") {
-        return selector === key;
-    }
-    else if (typeof selector === "function" && !selector(key)) {
+    if (!selector) {
         return false;
     }
+
+    const selectorType = typeof selector;
+    if (selectorType === 'string') {
+        return selector === key;
+    }
+    if (selectorType === 'function') {
+        return !!selector(key);
+    }
+    if (selectorType === 'object') {
+        return Array.isArray(selector) ? selector.includes(key) : selector[key];
+    }
+
     return true;
 }
 
