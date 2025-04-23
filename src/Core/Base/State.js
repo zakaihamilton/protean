@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectHasChanged, createObject } from "./Object";
+import { useBatchedRender } from "./Render";
 
 export function createState(displayName) {
     function State({ ...props }) {
@@ -91,14 +92,14 @@ export function useObjectHandler(object, handler, id) {
 }
 
 export function useObjectState(object, selector, id) {
-    const [, setCounter] = useState(0);
+    const render = useBatchedRender();
     const selectorRef = useRef(selector);
     const handler = useCallback(key => {
         const selector = selectorRef.current;
         if (!selector || isSelectorMatch(selector, key)) {
-            setCounter(counter => counter + 1);
+            render();
         }
-    }, []);
+    }, [render]);
     useEffect(() => {
         selectorRef.current = selector;
     }, [selector]);
