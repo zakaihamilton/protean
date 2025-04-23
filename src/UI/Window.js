@@ -8,7 +8,7 @@ import Resize from "./Window/Resize";
 import { useDock } from "./Window/Dock";
 import { useWindowsItem } from "../Core/UI/Windows";
 import Fullscreen from "./Window/Fullscreen";
-import { useElement } from "src/Core/Base/Element";
+import { useElement } from "src/Core/UI/Element";
 import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Window/Menu";
 import { createRegion } from "src/Core/UI/Region";

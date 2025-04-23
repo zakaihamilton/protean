@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createState } from "../Base/State";
-import { createConsole } from "../Base/Console";
-import Fetch from "../Base/Fetch";
+import { createConsole } from "../Util/Console";
+import Fetch from "../Data/Fetch";
 
 const console = createConsole("Lang");
 

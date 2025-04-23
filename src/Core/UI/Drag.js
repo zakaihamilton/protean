@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { createState } from "src/Core/Base/State";
 import { useEventListener } from "./EventListener";
 import { getClientDocument } from "../Util/Client";
-import { useElement } from "../Base/Element";
+import { useElement } from "./Element";
 
 const Drag = createState("Drag");
 

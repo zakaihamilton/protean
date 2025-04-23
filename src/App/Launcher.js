@@ -7,7 +7,7 @@ import IconList from "src/UI/Widgets/IconList";
 import SupportedApps from "src/Apps";
 import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
-import { useDynamic } from "src/Core/Base/Dynamic";
+import { useDynamic } from "src/Core/Util/Dynamic";
 import Windows from "src/Core/UI/Windows";
 
 export default function Launcher() {

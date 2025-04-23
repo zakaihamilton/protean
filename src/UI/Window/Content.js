@@ -1,6 +1,6 @@
 import styles from "./Content.module.scss";
 import { createRegion } from "src/Core/UI/Region";
-import { useElement } from "src/Core/Base/Element";
+import { useElement } from "src/Core/UI/Element";
 import Window from "../Window";
 
 function Content({ children }) {

@@ -4,7 +4,7 @@ import styles from "./Tooltip.module.scss";
 import { useCallback, useMemo, useEffect } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
 import Container from "../Util/Container";
-import { useElement } from "src/Core/Base/Element";
+import { useElement } from "src/Core/UI/Element";
 import { createState } from "src/Core/Base/State";
 
 export function getTooltipPos(tooltip, element) {

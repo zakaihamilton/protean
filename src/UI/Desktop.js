@@ -2,7 +2,7 @@ import Background from "./Desktop/Background";
 import Taskbar from "./Desktop/Taskbar";
 import styles from "./Desktop.module.scss";
 import { createRegion } from "../Core/UI/Region";
-import { useElement } from "src/Core/Base/Element";
+import { useElement } from "src/Core/UI/Element";
 import Node from "src/Core/Base/Node";
 
 function Desktop({ children }) {

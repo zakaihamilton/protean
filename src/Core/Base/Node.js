@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useRef } from "react";
 
-const root = { id: "root", parent: null, items: [] };
+const root = { id: "root", parent: null, items: new Map() };
 const Context = createContext(root);
 
 export default function Node({ id, children }) {
     const parent = Node.useNode();
-    const nodeRef = useRef({ id, parent, items: [] });
+    const nodeRef = useRef({ id, parent, items: null });
+    if (!nodeRef.current.items) {
+        nodeRef.current.items = new Map();
+    }
 
     return <Context.Provider value={nodeRef?.current}>
         {children}
@@ -36,17 +39,12 @@ export function nodeGetParent(node) {
 }
 
 export function nodeGetProperty(node, propId) {
-    const item = node?.items?.find(i => i.id === propId);
-    return item?.value;
+    return node?.items?.get(propId);
 }
 
 export function nodeSetProperty(node, id, value) {
-    const item = node?.items?.find(i => i.id === id);
-    if (item) {
-        item.value = value;
-    }
-    else if (node) {
-        node.items.push({ id, name: id?.displayName, value });
+    if (node?.items) {
+        node.items.set(id, value);
     }
 }
 

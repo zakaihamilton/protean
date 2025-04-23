@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { createState } from "./State";
-import Fetch from "./Fetch";
+import { createState } from "./Base/State";
+import Fetch from "./Base/Fetch";
 
 export function createData(displayName) {
     function Data({ children }) {

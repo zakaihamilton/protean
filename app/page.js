@@ -3,7 +3,7 @@
 import Windows from "src/Core/UI/Windows"
 import Desktop from "src/UI/Desktop"
 import ColorScheme from "src/Core/UI/ColorScheme"
-import Logger from "src/Core/Base/Logger"
+import Logger from "src/Core/Util/Logger"
 import Node from "src/Core/Base/Node"
 
 import Navigation from "src/Core/UI/Navigation"

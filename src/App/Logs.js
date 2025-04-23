@@ -2,7 +2,7 @@ import Window from "src/UI/Window";
 import { VscDebugAltSmall } from "react-icons/vsc";
 import { useMemo } from "react";
 import Group from "src/UI/Widgets/Group";
-import Logger from "src/Core/Base/Logger";
+import Logger from "src/Core/Util/Logger";
 import styles from "./Logs.module.scss";
 
 export default function Logs() {

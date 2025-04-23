@@ -3,7 +3,7 @@ import Container from "src/UI/Util/Container";
 import Windows from "src/Core/UI/Windows";
 import { useCallback } from "react";
 import { getHitTargets } from "src/Core/UI/Region";
-import { moveItem } from "src/Core/Base/Array";
+import { moveItem } from "src/Core/Util/Array";
 import IconList from "../../IconList";
 
 export const DRAG_RANGE = 12;

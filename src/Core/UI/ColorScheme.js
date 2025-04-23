@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { createState } from "../Base/State";
 import { useEventListener } from "./EventListener";
 import { getClientWindow } from "../Util/Client";
-import { createConsole } from "../Base/Console";
+import { createConsole } from "../Util/Console";
 
 const console = createConsole("ColorScheme");
 
