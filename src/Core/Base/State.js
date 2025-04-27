@@ -4,7 +4,7 @@ import { objectHasChanged, createObject } from "./Object";
 import { useBatchedRender } from "./Render";
 
 export function createState(displayName) {
-    function State({ ...props }) {
+    function State({ children, ...props }) {
         const object = State.useState(null, props);
         const [updatedProps, setUpdatedProps] = useState({});
         const keysChanged = object && objectHasChanged(props, updatedProps);
@@ -29,13 +29,21 @@ export function createState(displayName) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [changeRef.current]);
 
-        return null;
+        if (!children) {
+            return null;
+        }
+
+        if (typeof children === 'function') {
+            return children(object);
+        }
+
+        return <Node>{children}</Node>;
     }
     State.useState = (selector, initial, id) => {
-        let node = Node.useNode(initial ? null : undefined, State);
-        const lastNode = Node.useNode(initial ? null : undefined);
+        let node = Node.useNode(initial ? null : State);
+        const current = Node.useNode();
         if (!node) {
-            node = lastNode;
+            node = current;
         }
         let object = nodeGetProperty(node, State);
         if (!object && node) {
@@ -46,8 +54,8 @@ export function createState(displayName) {
         useObjectState(object, selector, id);
         return object;
     };
-    State.usePassiveState = (nodeId) => {
-        const node = Node.useNode(nodeId, State);
+    State.usePassiveState = () => {
+        const node = Node.useNode(State);
         const object = nodeGetProperty(node, State);
         return object;
     };

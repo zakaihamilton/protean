@@ -19,7 +19,7 @@ export function createObject(props, id) {
             }
         }
     }
-    const proxy = new Proxy({ ...props }, {
+    const proxy = new Proxy(props, {
         set: function (target, propertyKey, value, receiver) {
             if (Reflect.get(target, propertyKey, receiver) === value) {
                 return true;
