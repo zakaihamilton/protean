@@ -2,50 +2,50 @@ import { useCallback, useEffect } from "react";
 import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
-import Windows from "src/Core/UI/Windows";
+import Screens from "src/Core/UI/Screens";
 import Apps from "./Apps";
 
 function Navigation() {
-    const window = getClientWindow();
-    const windows = Windows.State.useState();
+    const screen = getClientWindow();
+    const screens = Screens.State.useState();
     const apps = Apps.State.useState();
-    const current = windows.current;
+    const current = screens.current;
     const navigation = Navigation.State.useState();
 
     useEffect(() => {
-        navigation.hash = window?.location?.hash;
-    }, [navigation, window]);
+        navigation.hash = screen?.location?.hash;
+    }, [navigation, screen]);
 
     const onHashChange = useCallback(() => {
-        navigation.hash = window?.location?.hash;
-    }, [navigation, window]);
-    useEventListener(window, "hashchange", onHashChange);
+        navigation.hash = screen?.location?.hash;
+    }, [navigation, screen]);
+    useEventListener(screen, "hashchange", onHashChange);
 
     useEffect(() => {
         window.location.hash = navigation.hash;
         const segments = navigation.hash?.replace("#", "").split("/") || [];
-        const appId = segments[0], windowsId = segments[1] || segments[0];
+        const appId = segments[0], screenId = segments[1] || segments[0];
         if (appId) {
             apps.appId = appId;
         }
-        if (windowsId) {
-            windows.forceFocusId = windowsId;
-            windows.focusId = windowsId;
+        if (screenId) {
+            screens.forceFocusId = screenId;
+            screens.focusId = screenId;
         }
-    }, [navigation.hash, window?.location, windows, apps]);
+    }, [navigation.hash, screen?.location, screens, apps]);
 
     useEffect(() => {
         if (!current) {
             return;
         }
         const appId = current.appId || current.id;
-        const windowsId = current.id;
+        const screenId = current.id;
         let hash = "";
-        if (windowsId === appId) {
+        if (screenId === appId) {
             hash = appId;
         }
         else {
-            hash = `${appId}/${windowsId}`;
+            hash = `${appId}/${screenId}`;
         }
         navigation.hash = hash;
     }, [navigation, current]);

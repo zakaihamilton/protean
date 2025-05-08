@@ -1,55 +1,58 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { createState } from "../Base/State";
-import Windows from "./Windows";
+import Screens from "./Screens";
 import SupportedApps from "src/Apps";
 import App from "./Apps/App";
 import Node from "../Base/Node";
 
 export default function Apps() {
     const apps = Apps.State.useState();
-    const windows = Windows.State.useState();
-    const launch = useCallback(({ id, Component }) => {
+    const screens = Screens.State.useState();
+    useEffect(() => {
+        if (!apps.appId) {
+            return;
+        }
+        const app = SupportedApps.find(item => item.id === apps.appId);
+        const { id, Component } = app || {};
         if (!id) {
             return;
         }
         const exists = apps.list?.find(item => item.id === id);
+        let screenId = id;
         if (exists) {
-            let windowId = windows?.forceFocusId;
-            if (!windowId) {
-                windowId = windows?.list?.toReversed()?.find(item => item.appId === id)?.id;
+            screenId = screens?.forceFocusId;
+            if (!screenId) {
+                screenId = screens?.list?.toReversed()?.find(item => item.appId === id)?.id;
             }
-            if (!windowId) {
-                windowId = windows?.closed?.toReversed()?.find(item => item.appId === id)?.id;
+            if (!screenId) {
+                screenId = screens?.closed?.toReversed()?.find(item => item.appId === id)?.id;
             }
-            if (!windowId) {
-                windowId = id;
+            if (!screenId) {
+                screenId = id;
             }
             {
-                const window = windows?.closed?.find(item => item.id === windowId);
-                if (window) {
-                    window.close = false;
+                const screen = screens?.closed?.find(item => item.id === screenId);
+                if (screen) {
+                    screen.close = false;
                 }
             }
             {
-                const window = windows?.list?.find(item => item.id === windowId);
-                if (window) {
-                    window.minimize = false;
+                const screen = screens?.list?.find(item => item.id === screenId);
+                if (screen) {
+                    screen.minimize = false;
                 }
             }
-            windows.focusId = windowId;
         }
         else if (Component) {
             apps.list = [...apps.list || [], { id, Component }];
         }
-    }, [apps, windows]);
-    useEffect(() => {
-        if (apps.appId) {
-            const app = SupportedApps.find(item => item.id === apps.appId);
-            if (app) {
-                launch(app);
-            }
+        if (id === screenId) {
+            window.location.hash = `#${id}`;
         }
-    }, [apps.appId, launch]);
+        else {
+            window.location.hash = `#${id}/${screenId}`;
+        }
+    }, [apps, apps.appId, screens]);
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {
             return <Node key={id}>
@@ -60,7 +63,7 @@ export default function Apps() {
         });
     }, [apps.list]);
     return <>
-        <Apps.State launch={launch} />
+        <Apps.State />
         {activeApps}
     </>;
 }

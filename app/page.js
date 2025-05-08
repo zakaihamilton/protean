@@ -1,6 +1,6 @@
 'use client'
 
-import Windows from "src/Core/UI/Windows"
+import Screens from "src/Core/UI/Screens"
 import Desktop from "src/UI/Desktop"
 import ColorScheme from "src/Core/UI/ColorScheme"
 import Logger from "src/Core/Util/Logger"
@@ -17,7 +17,7 @@ export default function Page({ children }) {
         <Lang />
         <ColorScheme />
         <Navigation />
-        <Windows>
+        <Screens>
             <Desktop>
                 <Apps />
                 <Node>
@@ -25,6 +25,6 @@ export default function Page({ children }) {
                 </Node>
                 {children}
             </Desktop>
-        </Windows>
+        </Screens>
     </Node>
 }

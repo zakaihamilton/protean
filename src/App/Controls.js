@@ -1,4 +1,4 @@
-import Window from "src/UI/Window";
+import Screen from "src/UI/Screen";
 import { useCallback, useMemo } from "react";
 import { MdOutlineWidgets } from "react-icons/md";
 import Button from "src/UI/Widgets/Button";
@@ -21,15 +21,15 @@ export default function Controls() {
     const text = Lang.useText();
 
     return <>
-        <Window.Rect left={900} top={200} width={300} height={300} />
-        <Window.State icon={icon} id="controls" label="Controls" accentBackground="purple" />
-        <Window>
+        <Screen.Rect left={900} top={200} width={300} height={300} />
+        <Screen.State icon={icon} id="controls" label="Controls" accentBackground="purple" />
+        <Screen>
             <Group>
                 <Button selected={selected} onClick={onToggleTheme}>Toggle Dark Theme</Button>
             </Group>
             <Group>
                 <Button selected={selected} onClick={onToggleLanguage}>{text?.LANGAUGE}</Button>
             </Group>
-        </Window>
+        </Screen>
     </>;
 }

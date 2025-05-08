@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import WindowMenu from "src/UI/Window/Menu";
+import ScreenMenu from "src/UI/Screen/Menu";
 import ListEditor from "../ListEditor";
 import Storage from "./Storage";
-import Item from "src/UI/Window/Menu/Item";
+import Item from "src/UI/Screen/Menu/Item";
 
 export default function Menu() {
     const listEditor = ListEditor.State.useState();
@@ -26,5 +26,5 @@ export default function Menu() {
             {storageItems}
         </Item>;
     }, [storageItems]);
-    return <WindowMenu.State visible={true} items={items} />;
+    return <ScreenMenu.State visible={true} items={items} />;
 }

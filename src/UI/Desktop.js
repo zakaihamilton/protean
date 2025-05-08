@@ -12,7 +12,7 @@ function Desktop({ children }) {
             <Background />
             <Taskbar.State visible={true} />
             <Desktop.Region target={ref?.current} />
-            <div ref={ref} className={styles.windows}>
+            <div ref={ref} className={styles.screens}>
                 {children}
             </div>
             <Node>

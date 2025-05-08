@@ -7,12 +7,12 @@ import { createConsole } from "../Util/Console";
 const console = createConsole("ColorScheme");
 
 function prefersColorScheme() {
-    const window = getClientWindow();
-    return window?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light";
+    const screen = getClientWindow();
+    return screen?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light";
 }
 
 function ColorScheme() {
-    const window = getClientWindow();
+    const screen = getClientWindow();
     const defaultColorScheme = prefersColorScheme();
     const colorScheme = ColorScheme.State.useState();
 
@@ -34,7 +34,7 @@ function ColorScheme() {
         colorScheme.theme = prefersColorScheme();
     }, [colorScheme]);
 
-    useEventListener(window?.matchMedia('(prefers-color-scheme: dark)'), "change", onColorSchemeChange);
+    useEventListener(screen?.matchMedia('(prefers-color-scheme: dark)'), "change", onColorSchemeChange);
 
     const toggle = useCallback(() => {
         colorScheme.theme = colorScheme.theme === "light" ? "dark" : "light";

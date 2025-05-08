@@ -1,42 +1,42 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Label.module.scss";
-import Window from "src/UI/Window";
+import Screen from "src/UI/Screen";
 import Drag from "src/Core/UI/Drag";
 import { useMoveDrag } from "src/Core/UI/Drag/Move";
 import { useCallback, useMemo } from "react";
 
 function Label() {
     const classes = useClasses(styles);
-    const window = Window.State.useState();
-    const disabled = window.center || window.maximize;
+    const screen = Screen.State.useState();
+    const disabled = screen.center || screen.maximize;
     const ref = useMoveDrag(!disabled);
     const drag = Drag.useState();
     const onClick = useCallback(e => {
         if (e.detail === 2 && !disabled) {
-            window.collapse = !window.collapse;
+            screen.collapse = !screen.collapse;
         }
-    }, [window, disabled]);
+    }, [screen, disabled]);
     const style = useMemo(() => {
         return {
-            "--accent-background": window.accentBackground || "darkblue",
-            "--accent-color": window.accentColor || "white"
+            "--accent-background": screen.accentBackground || "darkblue",
+            "--accent-color": screen.accentColor || "white"
         }
-    }, [window.accentBackground, window.accentColor]);
+    }, [screen.accentBackground, screen.accentColor]);
     const className = classes(
         {
             root: true,
             moving: drag.moving,
-            focus: window.focus,
+            focus: screen.focus,
             disabled
         }
     );
     return (
         <div ref={ref} className={className} style={style} onClick={onClick}>
             <div className={styles.icon}>
-                {window?.icon}
+                {screen?.icon}
             </div>
             <div className={styles.label}>
-                {window?.label}
+                {screen?.label}
             </div>
         </div>
     )

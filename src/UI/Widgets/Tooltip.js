@@ -25,8 +25,8 @@ export function getTooltipPos(tooltip, element) {
         arrowLeft = 0;
     }
 
-    if (left + tooltipWidth > window.innerWidth) {
-        left = window.innerWidth - (tooltipWidth) - 10;
+    if (left + tooltipWidth > screen.innerWidth) {
+        left = screen.innerWidth - (tooltipWidth) - 10;
         arrowLeft = 90;
     }
 
@@ -34,7 +34,7 @@ export function getTooltipPos(tooltip, element) {
         top = elementTop - (tooltipHeight / 2);
     }
 
-    if (top + tooltipHeight * 2 > window.innerHeight) {
+    if (top + tooltipHeight * 2 > screen.innerHeight) {
         top = elementTop - tooltipHeight;
     }
 

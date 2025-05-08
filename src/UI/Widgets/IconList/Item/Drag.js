@@ -1,6 +1,6 @@
 import Drag from "src/Core/UI/Drag";
 import Container from "src/UI/Util/Container";
-import Windows from "src/Core/UI/Windows";
+import Screens from "src/Core/UI/Screens";
 import { useCallback } from "react";
 import { getHitTargets } from "src/Core/UI/Region";
 import { moveItem } from "src/Core/Util/Array";
@@ -10,7 +10,7 @@ export const DRAG_RANGE = 12;
 
 export function ItemDrag({ item, inRange }) {
     const iconList = IconList.State.useState(null);
-    const windows = Windows.State.useState(null);
+    const screens = Screens.State.useState(null);
     const container = Container.State.useState(null);
     const onDragStart = useCallback((state) => {
         state.clickable = true;
@@ -35,10 +35,10 @@ export function ItemDrag({ item, inRange }) {
             if (hitTarget) {
                 const targetId = hitTarget.dataset.id;
                 if (targetId) {
-                    const sourceIndex = windows.list.findIndex(elem => elem.id === item.id);
-                    const targetIndex = windows.list.findIndex(elem => elem.id === targetId);
+                    const sourceIndex = screens.list.findIndex(elem => elem.id === item.id);
+                    const targetIndex = screens.list.findIndex(elem => elem.id === targetId);
                     if (targetIndex !== -1) {
-                        windows.list = moveItem(windows.list, sourceIndex, targetIndex, item);
+                        screens.list = moveItem(screens.list, sourceIndex, targetIndex, item);
                     }
                 }
             }
@@ -48,7 +48,7 @@ export function ItemDrag({ item, inRange }) {
             return;
         }
         iconList?.onClick(item);
-    }, [container, inRange, iconList, item, windows]);
+    }, [container, inRange, iconList, item, screens]);
 
     return <Drag
         onDragStart={onDragStart}

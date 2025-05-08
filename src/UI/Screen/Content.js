@@ -1,11 +1,11 @@
 import styles from "./Content.module.scss";
 import { createRegion } from "src/Core/UI/Region";
 import { useElement } from "src/Core/UI/Element";
-import Window from "../Window";
+import Screen from "../Screen";
 
 function Content({ children }) {
     const ref = useElement();
-    const rect = Window.Rect.useState();
+    const rect = Screen.Rect.useState();
 
     return (
         <>

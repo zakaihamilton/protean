@@ -1,4 +1,4 @@
-import Window from "src/UI/Window";
+import Screen from "src/UI/Screen";
 import { VscDebugAltSmall } from "react-icons/vsc";
 import { useMemo } from "react";
 import Group from "src/UI/Widgets/Group";
@@ -19,12 +19,12 @@ export default function Logs() {
     }, [logger.items]);
 
     return <>
-        <Window.Rect left={200} top={100} width={400} height={600} />
-        <Window.State icon={icon} id="logs" label="Logs" accentBackground="darkorange" />
-        <Window>
+        <Screen.Rect left={200} top={100} width={400} height={600} />
+        <Screen.State icon={icon} id="logs" label="Logs" accentBackground="darkorange" />
+        <Screen>
             <Group vertical>
                 {elements}
             </Group>
-        </Window>
+        </Screen>
     </>;
 }

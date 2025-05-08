@@ -1,6 +1,6 @@
 /**
  * Returns the current window object if it exists, otherwise returns null.
- * @returns {Window|null}
+ * @returns {Screen|null}
  */
 export function getClientWindow() {
     if (typeof window !== "undefined") {

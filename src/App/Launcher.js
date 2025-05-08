@@ -1,4 +1,4 @@
-import Window from "src/UI/Window";
+import Screen from "src/UI/Screen";
 import { useCallback, useMemo } from "react";
 import { SiLaunchpad } from "react-icons/si";
 import Group from "src/UI/Widgets/Group";
@@ -8,10 +8,10 @@ import SupportedApps from "src/Apps";
 import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Util/Dynamic";
-import Windows from "src/Core/UI/Windows";
+import Screens from "src/Core/UI/Screens";
 
 export default function Launcher() {
-    const windows = Windows.State.useState();
+    const screens = Screens.State.useState();
     const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
     const apps = Apps.State.useState();
@@ -21,21 +21,22 @@ export default function Launcher() {
     const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {
-        windows.forceFocusId = null;
-        apps.launch(item);
-    }, [windows, apps]);
+        screens.forceFocusId = null;
+        apps.appId = null;
+        apps.appId = item?.id;
+    }, [screens, apps]);
 
     return <>
-        <Window.Rect left={100} top={200} width={300} height={300} />
-        <Window.Actions close={false} />
-        <Window.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
-        <Window>
+        <Screen.Rect left={100} top={200} width={300} height={300} />
+        <Screen.Actions close={false} />
+        <Screen.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
+        <Screen>
             <Group vertical flex>
                 <Search dynamic={searchDynamic} />
                 <IconList.State list={list} flex wrap onClick={onClick} layout="big-icons" />
                 <IconList />
             </Group>
-        </Window>
+        </Screen>
     </>;
 }
 
