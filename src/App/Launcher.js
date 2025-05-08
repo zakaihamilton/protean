@@ -27,7 +27,7 @@ export default function Launcher() {
     }, [screens, apps]);
 
     return <>
-        <Screen.Rect left={100} top={200} width={300} height={300} />
+        <Screen.Rect left={100} top={200} width={300} height={400} />
         <Screen.Actions close={false} />
         <Screen.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
         <Screen>
