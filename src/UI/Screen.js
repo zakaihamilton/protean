@@ -6,22 +6,20 @@ import Title from "./Screen/Title";
 import Drag from "../Core/UI/Drag";
 import Resize from "./Screen/Resize";
 import { useDock } from "./Screen/Dock";
-import { useScreenItem } from "../Core/UI/Screens";
 import Fullscreen from "./Screen/Fullscreen";
 import { useElement } from "src/Core/UI/Element";
 import { useClasses } from "src/Core/Util/Styles";
 import Menu from "./Screen/Menu";
 import { createRegion } from "src/Core/UI/Region";
 import App from "src/Core/UI/Apps/App";
-import { useComponentEffect } from "src/Core/Util/Component";
 import { create } from "src/Core/Base/Util";
+import ScreenManager, { useScreenItem } from "./Screen/Manager";
 
 function Screen({ children }) {
     const classes = useClasses(styles);
     const rect = Screen.Rect.useState();
     const dockStyle = useDock();
     const screen = Screen.State.useState();
-    const screens = Screen.List.useState();
     const app = App.State.useState();
     const min = useMemo(() => ({
         width: screen?.min?.width || 200,
@@ -29,18 +27,6 @@ function Screen({ children }) {
     }), [screen?.min]);
     const ref = useElement();
     useScreenItem(screen, ref?.current);
-
-    useEffect(() => {
-        screens.list = [...(screens.list || []), screen].filter(Boolean);
-        return () => {
-            screens.list = screens.list.filter(item => item !== screen);
-        }
-    }, [screens, screen]);
-
-    useComponentEffect(screens, () => {
-        screens.open = screens.list?.filter(item => !item.close);
-        screens.visible = screens.list?.filter(item => !item.close && !item.minimize);
-    }, [screens, screens.list]);
 
     const className = classes({
         root: true,
@@ -84,5 +70,7 @@ create(Screen, "Screen", {
     State: createState,
     List: createState
 });
+
+Screen.Manager = ScreenManager;
 
 export default Screen;

@@ -1,16 +1,16 @@
 import Drag from "src/Core/UI/Drag";
 import Container from "src/UI/Util/Container";
-import Screens from "src/Core/UI/Screens";
 import { useCallback } from "react";
 import { getHitTargets } from "src/Core/UI/Region";
 import { moveItem } from "src/Core/Util/Array";
 import IconList from "../../IconList";
+import Screen from "src/UI/Screen";
 
 export const DRAG_RANGE = 12;
 
 export function ItemDrag({ item, inRange }) {
     const iconList = IconList.State.useState(null);
-    const screens = Screens.State.useState(null);
+    const screenManager = Screen.Manager.useManager(null);
     const container = Container.State.useState(null);
     const onDragStart = useCallback((state) => {
         state.clickable = true;
@@ -35,10 +35,10 @@ export function ItemDrag({ item, inRange }) {
             if (hitTarget) {
                 const targetId = hitTarget.dataset.id;
                 if (targetId) {
-                    const sourceIndex = screens.list.findIndex(elem => elem.id === item.id);
-                    const targetIndex = screens.list.findIndex(elem => elem.id === targetId);
+                    const sourceIndex = screenManager.list.findIndex(elem => elem.id === item.id);
+                    const targetIndex = screenManager.list.findIndex(elem => elem.id === targetId);
                     if (targetIndex !== -1) {
-                        screens.list = moveItem(screens.list, sourceIndex, targetIndex, item);
+                        screenManager.list = moveItem(screenManager.list, sourceIndex, targetIndex, item);
                     }
                 }
             }
@@ -48,7 +48,7 @@ export function ItemDrag({ item, inRange }) {
             return;
         }
         iconList?.onClick(item);
-    }, [container, inRange, iconList, item, screens]);
+    }, [container, inRange, iconList, item, screenManager]);
 
     return <Drag
         onDragStart={onDragStart}

@@ -8,10 +8,9 @@ import SupportedApps from "src/Apps";
 import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Util/Dynamic";
-import Screens from "src/Core/UI/Screens";
 
 export default function Launcher() {
-    const screens = Screens.State.useState();
+    const screenManager = Screen.Manager.useManager();
     const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
     const apps = Apps.State.useState();
@@ -21,10 +20,10 @@ export default function Launcher() {
     const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {
-        screens.forceFocusId = null;
+        screenManager.forceFocusId = null;
         apps.appId = null;
         apps.appId = item?.id;
-    }, [screens, apps]);
+    }, [screenManager, apps]);
 
     return <>
         <Screen.Rect left={100} top={200} width={300} height={400} />

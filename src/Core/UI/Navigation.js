@@ -2,14 +2,14 @@ import { useCallback, useEffect } from "react";
 import { getClientWindow } from "../Util/Client";
 import { useEventListener } from "./EventListener";
 import { createState } from "../Base/State";
-import Screens from "src/Core/UI/Screens";
 import Apps from "./Apps";
+import Screen from "src/UI/Screen";
 
 function Navigation() {
     const screen = getClientWindow();
-    const screens = Screens.State.useState();
+    const screenManager = Screen.Manager.useManager();
     const apps = Apps.State.useState();
-    const current = screens.current;
+    const current = screenManager.current;
     const navigation = Navigation.State.useState();
 
     useEffect(() => {
@@ -29,10 +29,10 @@ function Navigation() {
             apps.appId = appId;
         }
         if (screenId) {
-            screens.forceFocusId = screenId;
-            screens.focusId = screenId;
+            screenManager.forceFocusId = screenId;
+            screenManager.focusId = screenId;
         }
-    }, [navigation.hash, screen?.location, screens, apps]);
+    }, [navigation.hash, screen?.location, screenManager, apps]);
 
     useEffect(() => {
         if (!current) {

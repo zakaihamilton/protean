@@ -1,15 +1,14 @@
 'use client'
 
-import Screens from "src/Core/UI/Screens"
-import Desktop from "src/UI/Desktop"
-import ColorScheme from "src/Core/UI/ColorScheme"
-import Logger from "src/Core/Util/Logger"
 import Node from "src/Core/Base/Node"
-
+import Logger from "src/Core/Util/Logger"
+import Lang from "src/Core/UI/Lang"
+import ColorScheme from "src/Core/UI/ColorScheme"
 import Navigation from "src/Core/UI/Navigation"
+import Screen from "src/UI/Screen"
+import Desktop from "src/UI/Desktop"
 import Apps from "src/Core/UI/Apps"
 import Launcher from "src/App/Launcher"
-import Lang from "src/Core/UI/Lang"
 
 export default function Page({ children }) {
     return <Node>
@@ -17,7 +16,7 @@ export default function Page({ children }) {
         <Lang />
         <ColorScheme />
         <Navigation />
-        <Screens>
+        <Screen.Manager>
             <Desktop>
                 <Apps />
                 <Node>
@@ -25,6 +24,6 @@ export default function Page({ children }) {
                 </Node>
                 {children}
             </Desktop>
-        </Screens>
+        </Screen.Manager>
     </Node>
 }

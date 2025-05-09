@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { createState } from "../Base/State";
-import Screens from "./Screens";
 import SupportedApps from "src/Apps";
 import App from "./Apps/App";
 import Node from "../Base/Node";
+import Screen from "src/UI/Screen";
 
 export default function Apps() {
     const apps = Apps.State.useState();
-    const screens = Screens.State.useState();
+    const screenManager = Screen.Manager.useManager();
     useEffect(() => {
         if (!apps.appId) {
             return;
@@ -20,24 +20,24 @@ export default function Apps() {
         const exists = apps.list?.find(item => item.id === id);
         let screenId = id;
         if (exists) {
-            screenId = screens?.forceFocusId;
+            screenId = screenManager?.forceFocusId;
             if (!screenId) {
-                screenId = screens?.list?.toReversed()?.find(item => item.appId === id)?.id;
+                screenId = screenManager?.list?.toReversed()?.find(item => item.appId === id)?.id;
             }
             if (!screenId) {
-                screenId = screens?.closed?.toReversed()?.find(item => item.appId === id)?.id;
+                screenId = screenManager?.closed?.toReversed()?.find(item => item.appId === id)?.id;
             }
             if (!screenId) {
                 screenId = id;
             }
             {
-                const screen = screens?.closed?.find(item => item.id === screenId);
+                const screen = screenManager?.closed?.find(item => item.id === screenId);
                 if (screen) {
                     screen.close = false;
                 }
             }
             {
-                const screen = screens?.list?.find(item => item.id === screenId);
+                const screen = screenManager?.list?.find(item => item.id === screenId);
                 if (screen) {
                     screen.minimize = false;
                 }
@@ -52,7 +52,8 @@ export default function Apps() {
         else {
             window.location.hash = `#${id}/${screenId}`;
         }
-    }, [apps, apps.appId, screens]);
+    }, [apps, apps.appId, screenManager]);
+
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {
             return <Node key={id}>
