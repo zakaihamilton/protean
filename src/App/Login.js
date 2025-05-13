@@ -7,11 +7,13 @@ import { FaUserLock } from "react-icons/fa";
 import { ManagerUser } from "src/Manager/User";
 import { createState } from "src/Core/Base/State";
 import { useClasses } from "src/Core/Util/Styles";
+import Lang from "src/Core/UI/Lang";
 
 export default function Login() {
     const classes = useClasses(styles);
     const login = Login.State.useState();
     const managerUser = ManagerUser.State.useState();
+    const text = Lang.useText();
 
     useEffect(() => {
         if (managerUser.userId) {
@@ -41,9 +43,8 @@ export default function Login() {
             login.password = '';
 
         } catch (error) {
-            console.error('Login failed:', error);
             const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-            login.message = { type: 'error', text: `Login failed: ${errorMessage}` };
+            login.message = { type: 'error', text: `${errorMessage}` };
         } finally {
             login.loading = false;
         }
@@ -51,7 +52,7 @@ export default function Login() {
 
     const icon = useMemo(() => <FaUserLock />, []);
 
-    const submitText = login.loading ? 'Logging in...' : (managerUser.loggedIn ? 'Logout' : 'Login');
+    const submitText = login.loading ? text.LOGGING_IN : (managerUser.loggedIn ? text.LOGOUT : text.LOGIN);
 
     return (
         <>
@@ -60,29 +61,29 @@ export default function Login() {
             <Screen>
                 <ManagerUser.Ready>
                     <div className={classes("root")}>
-                        <h2 className={classes("title")}>Login</h2>
+                        <h2 className={classes("title")}>{text.LOGIN_TITLE}</h2>
                         <form onSubmit={onSubmit} className={classes("loginForm")}>
                             {login.message?.text && (
                                 <div className={classes("message", login.message.type)}>
-                                    {login.message.text}
+                                    {text?.[login.message.text]}
                                 </div>
                             )}
 
                             <div className={classes("inputGroup")}>
                                 <label htmlFor="loginUserId" className={classes("label")}>
-                                    User ID
+                                    {text.USER_ID}
                                 </label>
                                 <input
                                     id="loginUserId"
                                     type="text"
                                     value={login.userId || ''}
                                     onChange={(e) => login.userId = e.target.value}
-                                    placeholder="Enter your User ID"
+                                    placeholder={text.ENTER_USER_ID}
                                     required
                                     className={classes("input")}
                                     disabled={login.loading || managerUser.loggedIn}
                                 />
-                                <p className={classes("hint")}>Must be letters and numbers only.</p>
+                                <p className={classes("hint")}>{text.USER_ID_HINT}</p>
                             </div>
 
                             {!managerUser.loggedIn && <div className={classes("inputGroup")}>
@@ -94,7 +95,7 @@ export default function Login() {
                                     type="password"
                                     value={login.password || ''}
                                     onChange={(e) => login.password = e.target.value}
-                                    placeholder="Enter your Password"
+                                    placeholder={text.ENTER_PASSWORD}
                                     required={true}
                                     className={classes("input")}
                                     disabled={login.loading}

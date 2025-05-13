@@ -16,12 +16,16 @@ export function ManagerUser() {
         userId = userId.toLowerCase().replace(/[^a-z0-9]/g, '');
         managerUser.hash = null;
         try {
-            const hash = await login(userId, password);
+            const result = await login(userId, password);
+            const { hash, error } = result;
             if (hash) {
                 managerUser.userId = userId;
                 managerUser.hash = hash;
                 managerUser.loggedIn = true;
                 return;
+            }
+            if (error) {
+                throw new Error(error);
             }
         }
         catch (error) {
@@ -47,9 +51,10 @@ export function ManagerUser() {
             return;
         }
         managerUser.userId = userId;
-        login(userId, hash).then((resultHash) => {
+        login(userId, hash).then((result) => {
+            const { hash: resultHash } = result;
             if (resultHash !== hash) {
-                console.log("auto login failed");
+                console.log("auto login failed", result);
                 return;
             }
             console.log("auto login successful");

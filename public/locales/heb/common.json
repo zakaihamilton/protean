@@ -1,3 +1,17 @@
 {
-    "LANGAUGE": "שפה"
+    "LANGAUGE": "שפה",
+    "USER_NOT_FOUND": "משתמש לא נמצא",
+    "INCORRECT_PASSWORD": "סיסמה שגויה",
+    "PASSWORD_TOO_SHORT": "הסיסמה קצרה מדי",
+    "USER_ID": "מספר משתמש",
+    "PASSWORD": "סיסמה",
+    "LOGIN": "התחבר",
+    "LOGOUT": "התנתק",
+    "CHANGE_PASSWORD": "שנה סיסמה",
+    "ENTER_USER_ID": "הזן מספר משתמש",
+    "ENTER_PASSWORD": "הזן סיסמה",
+    "ENTER_NEW_PASSWORD": "הזן סיסמה חדשה",
+    "USER_ID_HINT": "המספר של המשתמש חייב להכיל רק אותיות (a-z) ומספרים (0-9).",
+    "LOGGING_IN": "מתחבר...",
+    "LOGIN_TITLE": "חיבור"
 }

@@ -5,6 +5,23 @@ import Fetch from "../Data/Fetch";
 
 const console = createConsole("Lang");
 
+const createTextProxy = (textObject) => {
+    if (!textObject || typeof textObject !== 'object') {
+        return textObject;
+    }
+
+    return new Proxy(textObject, {
+        get: (target, property, receiver) => {
+            if (Reflect.has(target, property)) {
+                const value = Reflect.get(target, property, receiver);
+                return value;
+            } else {
+                return property;
+            }
+        }
+    });
+};
+
 function Lang() {
     const lang = Lang.State.useState();
 
@@ -31,7 +48,7 @@ Lang.useText = (packId = "common") => {
                 if (pack) {
                     return;
                 }
-                lang.packs = [...lang?.packs || [], { id: itemId, text }];
+                lang.packs = [...lang?.packs || [], { id: itemId, text: createTextProxy(text) }];
             }
             catch (err) {
                 console.error(err);
@@ -40,7 +57,32 @@ Lang.useText = (packId = "common") => {
         getPack();
     }, [fetch, itemId, lang, langId, pack, packId, packs]);
 
-    return pack?.text;
+    useEffect(() => {
+        const direction = Lang.setDirection(langId);
+        lang.direction = direction;
+    }, [lang, langId]);
+
+    return pack?.text || {};
+};
+
+
+Lang.setDirection = (langId) => {
+    let direction = "ltr"; // Default to Left-to-Right
+
+    switch (langId) {
+        case "heb": // Hebrew
+        case "ara": // Arabic
+        case "fas": // Persian/Farsi
+        case "urd": // Urdu
+            direction = "rtl"; // Right-to-Left
+            break;
+        default:
+            direction = "ltr"; // Default for English and other LTR languages
+            break;
+    }
+    document.documentElement.setAttribute("dir", direction);
+    console.log(`Page direction set to ${direction} for language: ${langId}`);
+    return direction;
 };
 
 Lang.State = createState("Lang.State");

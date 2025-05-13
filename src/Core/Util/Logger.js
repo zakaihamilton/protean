@@ -27,7 +27,7 @@ export default function Logger() {
     useMemo(() => {
         logger.items = [];
         const update = (method, ...args) => {
-            const message = args.join(' ');
+            const message = args.filter(arg => typeof arg === 'string').join(' ');
             const item = { type: method, message };
             setTimeout(() => {
                 logger.items = [...logger.items, item];

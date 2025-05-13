@@ -3,13 +3,15 @@ import styles from "./Resize.module.scss";
 import Drag from "src/Core/UI/Drag";
 import { useResizeDrag } from "src/Core/UI/Drag/Resize";
 import Screen from "../Screen";
+import Lang from "src/Core/UI/Lang";
 
 function Resize() {
     const classes = useClasses(styles);
     const drag = Drag.useState();
     const screen = Screen.State.useState();
+    const lang = Lang.State.useState();
     const disabled = screen.center || screen.maximize;
-    const ref = useResizeDrag(!disabled);
+    const ref = useResizeDrag(!disabled, lang.direction);
     const className = classes({
         root: true,
         resizing: drag.resizing,

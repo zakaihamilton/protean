@@ -119,7 +119,9 @@ export async function login(rawUserId, passwordOrHash) {
     const userData = await getUserData(userId);
 
     if (userData === null) {
-        throw new Error('Login failed: Invalid user ID.');
+        return {
+            error: 'USER_NOT_FOUND'
+        };
     }
 
     const storedHash = userData.passwordHash;
@@ -137,9 +139,13 @@ export async function login(rawUserId, passwordOrHash) {
         }
 
         if (passwordsMatch) {
-            return storedHash;
+            return {
+                hash: storedHash
+            };
         } else {
-            throw new Error('Login failed: Incorrect password or hash.');
+            return {
+                error: 'INCORRECT_PASSWORD'
+            };
         }
     }
     else {
@@ -149,7 +155,9 @@ export async function login(rawUserId, passwordOrHash) {
 
         try {
             if (passwordOrHash.length < 8) {
-                throw new Error('Password must be at least 8 characters long.');
+                return {
+                    error: 'PASSWORD_TOO_SHORT'
+                };
             }
             const saltRounds = 10;
             const newPasswordHash = await bcrypt.hash(passwordOrHash, saltRounds);
@@ -163,7 +171,9 @@ export async function login(rawUserId, passwordOrHash) {
             const saved = await saveUserData(userId, dataToSave);
 
             if (saved) {
-                return newPasswordHash;
+                return {
+                    hash: newPasswordHash
+                };
             } else {
                 throw new Error('Failed to save initial password.');
             }
