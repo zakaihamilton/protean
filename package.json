@@ -22,6 +22,7 @@
     "eslint-config-next": "^15.3.2",
     "globals": "^16.1.0",
     "ioredis": "^5.6.1",
+    "js-cookie": "^3.0.5",
     "jsdom": "^26.1.0",
     "mongodb": "^6.16.0",
     "next": "^15.3.2",
@@ -49,5 +50,5 @@
     "yarn": "^1.22.22",
     "yarn-upgrade-all": "^0.7.5"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.9.1"
 }

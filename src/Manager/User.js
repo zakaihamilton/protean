@@ -2,11 +2,12 @@ import { useCallback, useEffect } from "react";
 import { login } from "server/login";
 import { createState } from "src/Core/Base/State";
 import { createConsole } from "src/Core/Util/Console";
+import Cookies from "js-cookie";
 
 const console = createConsole("ManagerUser");
 
-const LOCAL_STORAGE_KEY_USER_ID = 'userId';
-const LOCAL_STORAGE_KEY_AUTH_HASH = 'userHash';
+const STORAGE_KEY_USER_ID = 'userId';
+const STORAGE_KEY_AUTH_HASH = 'userHash';
 
 export function ManagerUser() {
     const managerUser = ManagerUser.State.useState();
@@ -39,9 +40,10 @@ export function ManagerUser() {
     useEffect(() => {
         managerUser.login = userLogin;
         managerUser.logout = userLogout;
-        const userId = localStorage.getItem(LOCAL_STORAGE_KEY_USER_ID);
-        const hash = localStorage.getItem(LOCAL_STORAGE_KEY_AUTH_HASH);
+        const userId = Cookies.get(STORAGE_KEY_USER_ID);
+        const hash = Cookies.get(STORAGE_KEY_AUTH_HASH);
         if (!userId || !hash) {
+            managerUser.loggedIn = false;
             return;
         }
         managerUser.userId = userId;
@@ -56,6 +58,7 @@ export function ManagerUser() {
         }).catch(() => {
             console.log("auto login failed");
             managerUser.hash = null;
+            managerUser.loggedIn = false;
         });
     }, [managerUser, userLogin, userLogout]);
 
@@ -63,23 +66,31 @@ export function ManagerUser() {
         const { userId, hash } = managerUser;
         if (typeof userId !== "undefined") {
             if (userId) {
-                localStorage.setItem(LOCAL_STORAGE_KEY_USER_ID, userId);
+                Cookies.set(STORAGE_KEY_USER_ID, userId);
             }
             else {
-                localStorage.removeItem(LOCAL_STORAGE_KEY_USER_ID);
+                Cookies.remove(STORAGE_KEY_USER_ID, { path: '' });
             }
         }
         if (typeof hash !== "undefined") {
             if (hash) {
-                localStorage.setItem(LOCAL_STORAGE_KEY_AUTH_HASH, hash);
+                Cookies.set(STORAGE_KEY_AUTH_HASH, hash);
             }
             else {
-                localStorage.removeItem(LOCAL_STORAGE_KEY_AUTH_HASH);
+                Cookies.remove(STORAGE_KEY_AUTH_HASH, { path: '' });
             }
         }
     }, [managerUser, managerUser.userId, managerUser.hash]);
 
     return null;
+}
+
+ManagerUser.Ready = function ManagerUserReady({ children }) {
+    const managerUser = ManagerUser.State.useState();
+    if (typeof managerUser.loggedIn === "undefined") {
+        return null;
+    }
+    return children;
 }
 
 ManagerUser.State = createState("ManagerUser.State");
