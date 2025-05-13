@@ -9,6 +9,7 @@ import Screen from "src/UI/Screen"
 import Desktop from "src/UI/Desktop"
 import Apps from "src/Core/UI/Apps"
 import Launcher from "src/App/Launcher"
+import { ManagerUser } from "src/Manager/User"
 
 export default function Page({ children }) {
     return <Node>
@@ -16,6 +17,7 @@ export default function Page({ children }) {
         <Lang />
         <ColorScheme />
         <Navigation />
+        <ManagerUser />
         <Screen.Manager>
             <Desktop>
                 <Apps />
