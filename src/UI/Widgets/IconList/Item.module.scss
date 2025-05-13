@@ -18,6 +18,11 @@
     top: var(--top);
 }
 
+[dir="rtl"] .root {
+    left: auto;
+    right: var(--left);
+}
+
 .root.absolute {
     position: absolute;
 }
@@ -96,6 +101,11 @@
     align-items: center;
     justify-content: center;
     padding-right: 5px;
+}
+
+[dir="rtl"] .icon {
+    padding-right: 0px;
+    padding-left: 5px;
 }
 
 .icon.big-icons {

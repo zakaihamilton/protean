@@ -7,6 +7,10 @@
     flex: 1;
 }
 
+.root:not(.vertical) {
+    width: 100%;
+}
+
 .root.vertical {
     flex-direction: column;
 }
@@ -29,4 +33,10 @@
 .items:not(.vertical) {
     margin-top: 4px;
     margin-left: 10px;
+}
+
+[dir="rtl"] .items:not(.vertical) {
+    margin-top: 4px;
+    margin-left: 0px;
+    margin-right: 10px;
 }
