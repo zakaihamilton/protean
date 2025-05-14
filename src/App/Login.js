@@ -53,11 +53,12 @@ export default function Login() {
     const icon = useMemo(() => <FaUserLock />, []);
 
     const submitText = login.loading ? text.LOGGING_IN : (managerUser.loggedIn ? text.LOGOUT : text.LOGIN);
+    const min = useMemo(() => ({ width: 300, height: 300 }), []);
 
     return (
         <>
             <Screen.Rect left={100} top={100} width={500} height={500} />
-            <Screen.State icon={icon} id="login" label="Login" maximize accentBackground="darkblue" />
+            <Screen.State icon={icon} id="login" label="Login" maximize accentBackground="darkblue" min={min} />
             <Screen>
                 <ManagerUser.Ready>
                     <div className={classes("root")}>
@@ -83,7 +84,6 @@ export default function Login() {
                                     className={classes("input")}
                                     disabled={login.loading || managerUser.loggedIn}
                                 />
-                                <p className={classes("hint")}>{text.USER_ID_HINT}</p>
                             </div>
 
                             {!managerUser.loggedIn && <div className={classes("inputGroup")}>

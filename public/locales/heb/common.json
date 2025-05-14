@@ -11,7 +11,6 @@
     "ENTER_USER_ID": "הזן מספר משתמש",
     "ENTER_PASSWORD": "הזן סיסמה",
     "ENTER_NEW_PASSWORD": "הזן סיסמה חדשה",
-    "USER_ID_HINT": "המספר של המשתמש חייב להכיל רק אותיות (a-z) ומספרים (0-9).",
     "LOGGING_IN": "מתחבר...",
     "LOGIN_TITLE": "חיבור"
 }

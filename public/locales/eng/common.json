@@ -11,7 +11,6 @@
     "ENTER_USER_ID": "Enter User ID",
     "ENTER_PASSWORD": "Enter Password",
     "ENTER_NEW_PASSWORD": "Enter New Password",
-    "USER_ID_HINT": "User ID must contain only letters (a-z) and numbers (0-9).",
     "LOGGING_IN": "Logging in...",
     "LOGIN_TITLE": "Login"
 }
