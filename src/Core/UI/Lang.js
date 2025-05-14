@@ -26,6 +26,23 @@ function Lang() {
     const lang = Lang.State.useState();
 
     useEffect(() => {
+        if (!lang.id) {
+            const language = localStorage.getItem("language");
+            if (language) {
+                lang.id = language;
+            }
+            else {
+                lang.id = "eng";
+            }
+        }
+    }, [lang]);
+
+    useEffect(() => {
+        const direction = Lang.setDirection(lang?.id);
+        lang.direction = direction;
+    }, [lang, lang?.id]);
+
+    useEffect(() => {
         console.log("lang:", lang?.id);
     }, [lang?.id]);
 }
@@ -56,11 +73,6 @@ Lang.useText = (packId = "common") => {
         }
         getPack();
     }, [fetch, itemId, lang, langId, pack, packId, packs]);
-
-    useEffect(() => {
-        const direction = Lang.setDirection(langId);
-        lang.direction = direction;
-    }, [lang, langId]);
 
     return pack?.text || {};
 };
