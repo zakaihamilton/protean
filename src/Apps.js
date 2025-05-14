@@ -17,37 +17,55 @@ import { BsFillPersonFill } from "react-icons/bs";
 const apps = [
     {
         id: "list-editor",
-        label: "List Editor",
+        label: {
+            eng: "List Editor",
+            heb: "ערוך רשימה"
+        },
         icon: <MdOutlineListAlt />,
         Component: ListEditor
     },
     {
         id: "calculator",
-        label: "Calculator",
+        label: {
+            eng: "Calculator",
+            heb: "מחשבון"
+        },
         icon: <FaCalculator />,
         Component: Calculator
     },
     {
         id: "controls",
-        label: "Controls",
+        label: {
+            eng: "Controls",
+            heb: "כלים"
+        },
         icon: <MdOutlineWidgets />,
         Component: Controls
     },
     {
         id: "task-manager",
-        label: "Task Manager",
+        label: {
+            eng: "Task Manager",
+            heb: "מנהל משימות"
+        },
         icon: <BiWindows />,
         Component: TaskManager
     },
     {
         id: "logs",
-        label: "Logs",
+        label: {
+            eng: "Logs",
+            heb: "יומן"
+        },
         icon: <VscDebugAltSmall />,
         Component: Logs
     },
     {
         id: "login",
-        label: "Login",
+        label: {
+            eng: "Login",
+            heb: "התחברות"
+        },
         icon: <BsFillPersonFill />,
         Component: Login
     }

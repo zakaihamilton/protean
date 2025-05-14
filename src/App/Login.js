@@ -7,13 +7,72 @@ import { FaUserLock } from "react-icons/fa";
 import { ManagerUser } from "src/Manager/User";
 import { createState } from "src/Core/Base/State";
 import { useClasses } from "src/Core/Util/Styles";
-import Lang from "src/Core/UI/Lang";
+import Resources from "src/Core/UI/Resources";
+
+const resources = {
+    TITLE: {
+        eng: "Login",
+        heb: "התחברות"
+    },
+    USER_NOT_FOUND: {
+        eng: "User not found",
+        heb: "משתמש לא נמצא"
+    },
+    INCORRECT_PASSWORD: {
+        eng: "Incorrect password",
+        heb: "סיסמה שגויה"
+    },
+    PASSWORD_TOO_SHORT: {
+        eng: "Password too short",
+        heb: "הסיסמה קצרה מדי"
+    },
+    USER_ID: {
+        eng: "User ID",
+        heb: "מזהה משתמש"
+    },
+    PASSWORD: {
+        eng: "Password",
+        heb: "סיסמה"
+    },
+    LOGIN: {
+        eng: "Login",
+        heb: "התחבר"
+    },
+    LOGOUT: {
+        eng: "Logout",
+        heb: "התנתק"
+    },
+    CHANGE_PASSWORD: {
+        eng: "Change Password",
+        heb: "שנה סיסמה"
+    },
+    ENTER_USER_ID: {
+        eng: "Enter User ID",
+        heb: "הזן מזהה משתמש"
+    },
+    ENTER_PASSWORD: {
+        eng: "Enter Password",
+        heb: "הזן סיסמה"
+    },
+    ENTER_NEW_PASSWORD: {
+        eng: "Enter New Password",
+        heb: "הזן סיסמה חדשה"
+    },
+    LOGGING_IN: {
+        eng: "Logging in...",
+        heb: "מתחבר..."
+    },
+    LOGIN_TITLE: {
+        eng: "Login",
+        heb: "התחברות"
+    }
+};
 
 export default function Login() {
+    const lookup = Resources.useLookup();
     const classes = useClasses(styles);
     const login = Login.State.useState();
     const managerUser = ManagerUser.State.useState();
-    const text = Lang.useText();
 
     useEffect(() => {
         if (managerUser.userId) {
@@ -52,34 +111,34 @@ export default function Login() {
 
     const icon = useMemo(() => <FaUserLock />, []);
 
-    const submitText = login.loading ? text.LOGGING_IN : (managerUser.loggedIn ? text.LOGOUT : text.LOGIN);
+    const submitText = login.loading ? lookup.LOGGING_IN : (managerUser.loggedIn ? lookup.LOGOUT : lookup.LOGIN);
     const min = useMemo(() => ({ width: 300, height: 300 }), []);
 
     return (
-        <>
+        <Resources resources={resources} lookup={lookup}>
             <Screen.Rect left={100} top={100} width={500} height={500} />
-            <Screen.State icon={icon} id="login" label="Login" maximize accentBackground="darkblue" min={min} />
+            <Screen.State icon={icon} id="login" label={lookup.TITLE} maximize accentBackground="darkblue" min={min} />
             <Screen>
                 <ManagerUser.Ready>
                     <div className={classes("root")}>
-                        <h2 className={classes("title")}>{text.LOGIN_TITLE}</h2>
+                        <h2 className={classes("title")}>{lookup.LOGIN_TITLE}</h2>
                         <form onSubmit={onSubmit} className={classes("loginForm")}>
                             {login.message?.text && (
                                 <div className={classes("message", login.message.type)}>
-                                    {text?.[login.message.text]}
+                                    {lookup?.[login.message.text]}
                                 </div>
                             )}
 
                             <div className={classes("inputGroup")}>
                                 <label htmlFor="loginUserId" className={classes("label")}>
-                                    {text.USER_ID}
+                                    {lookup.USER_ID}
                                 </label>
                                 <input
                                     id="loginUserId"
                                     type="text"
                                     value={login.userId || ''}
                                     onChange={(e) => login.userId = e.target.value}
-                                    placeholder={text.ENTER_USER_ID}
+                                    placeholder={lookup.ENTER_USER_ID}
                                     required
                                     className={classes("input")}
                                     disabled={login.loading || managerUser.loggedIn}
@@ -95,7 +154,7 @@ export default function Login() {
                                     type="password"
                                     value={login.password || ''}
                                     onChange={(e) => login.password = e.target.value}
-                                    placeholder={text.ENTER_PASSWORD}
+                                    placeholder={lookup.ENTER_PASSWORD}
                                     required={true}
                                     className={classes("input")}
                                     disabled={login.loading}
@@ -113,7 +172,7 @@ export default function Login() {
                     </div>
                 </ManagerUser.Ready>
             </Screen >
-        </>
+        </Resources>
     );
 }
 

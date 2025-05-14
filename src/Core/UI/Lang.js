@@ -1,84 +1,31 @@
 import { useEffect } from "react";
 import { createState } from "../Base/State";
-import { createConsole } from "../Util/Console";
-import Fetch from "../Data/Fetch";
 
-const console = createConsole("Lang");
-
-const createTextProxy = (textObject) => {
-    if (!textObject || typeof textObject !== 'object') {
-        return textObject;
-    }
-
-    return new Proxy(textObject, {
-        get: (target, property, receiver) => {
-            if (Reflect.has(target, property)) {
-                const value = Reflect.get(target, property, receiver);
-                return value;
-            } else {
-                return property;
-            }
-        }
-    });
-};
-
-function Lang() {
+function Lang({ id, direction, children }) {
     const lang = Lang.State.useState();
 
     useEffect(() => {
-        if (!lang.id) {
-            const language = localStorage.getItem("language");
-            if (language) {
-                lang.id = language;
-            }
-            else {
-                lang.id = "eng";
-            }
+        const language = localStorage.getItem("language");
+        if (language) {
+            lang.id = language;
         }
+        lang.ready = true;
     }, [lang]);
 
     useEffect(() => {
-        const direction = Lang.setDirection(lang?.id);
-        lang.direction = direction;
-    }, [lang, lang?.id]);
-
-    useEffect(() => {
-        console.log("lang:", lang?.id);
-    }, [lang?.id]);
-}
-
-Lang.useText = (packId = "common") => {
-    const fetch = Fetch.useFetch();
-    const lang = Lang.State.useState();
-    const packs = lang?.packs;
-    const langId = lang?.id || "eng";
-    const itemId = `${packId}.${langId}`;
-    const pack = packs?.find(item => item?.id === itemId);
-    useEffect(() => {
-        if (pack) {
+        if (!lang?.id) {
             return;
         }
-        const getPack = async () => {
-            try {
-                const text = await fetch(`/locales/${langId}/${packId}.json`);
-                const pack = packs?.find(item => item?.id === itemId);
-                if (pack) {
-                    return;
-                }
-                lang.packs = [...lang?.packs || [], { id: itemId, text: createTextProxy(text) }];
-            }
-            catch (err) {
-                console.error(err);
-            }
-        }
-        getPack();
-    }, [fetch, itemId, lang, langId, pack, packId, packs]);
+        lang.direction = Lang.getDirection(lang?.id);
+        localStorage.setItem("language", lang?.id);
+    }, [lang, lang?.id]);
 
-    return pack?.text || {};
-};
+    return <Lang.State id={id} direction={direction}>
+        {!!lang.id && !!lang.direction && children}
+    </Lang.State>;
+}
 
-
-Lang.setDirection = (langId) => {
+Lang.getDirection = (langId) => {
     let direction = "ltr"; // Default to Left-to-Right
 
     switch (langId) {
@@ -93,7 +40,6 @@ Lang.setDirection = (langId) => {
             break;
     }
     document.documentElement.setAttribute("dir", direction);
-    console.log(`Page direction set to ${direction} for language: ${langId}`);
     return direction;
 };
 

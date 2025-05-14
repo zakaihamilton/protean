@@ -8,8 +8,21 @@ import SupportedApps from "src/Apps";
 import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Util/Dynamic";
+import Resources from "src/Core/UI/Resources";
+
+const resources = {
+    TITLE: {
+        eng: "Launcher",
+        heb: "מנהל תוכניות"
+    },
+    SEARCH: {
+        eng: "Search",
+        heb: "חיפוש"
+    }
+};
 
 export default function Launcher() {
+    const lookup = Resources.useLookup();
     const screenManager = Screen.Manager.useManager();
     const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
@@ -25,18 +38,18 @@ export default function Launcher() {
         apps.appId = item?.id;
     }, [screenManager, apps]);
 
-    return <>
+    return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={100} top={200} width={300} height={400} />
         <Screen.Actions close={false} />
-        <Screen.State icon={icon} id="launcher" label="Launcher" accentBackground="purple" />
+        <Screen.State icon={icon} id="launcher" label={lookup?.TITLE} accentBackground="purple" />
         <Screen>
             <Group vertical flex>
-                <Search dynamic={searchDynamic} />
+                <Search dynamic={searchDynamic} placeholder={lookup?.SEARCH + "..."} />
                 <IconList.State list={list} flex wrap onClick={onClick} layout="big-icons" />
                 <IconList />
             </Group>
         </Screen>
-    </>;
+    </Resources>;
 }
 
 Launcher.State = createState("Launcher.State");

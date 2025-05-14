@@ -9,13 +9,15 @@ import { useItemPos } from "./Item/Pos";
 import { useContainerItem } from "src/UI/Util/Container";
 import IconList from "../IconList";
 import { IconContext } from "react-icons";
+import Lang from "src/Core/UI/Lang";
 
 function Item({ item, index }) {
+    const lang = Lang.State.useState();
     const { vertical = false, wrap, layout } = IconList.State.useState();
     const classes = useClasses(styles);
     const { id, label, focus, minimize, icon } = useObjectState(item) || {};
     const drag = Drag.useState(null, {});
-    const ref = useMoveDrag(true);
+    const ref = useMoveDrag(true, { horizontalLock: vertical, verticalLock: !vertical });
     const [mounted] = useContainerItem(index, ref.current);
     let inRange = false;
     if (layout === "big-icons") {
@@ -48,6 +50,7 @@ function Item({ item, index }) {
     const iconValue = useMemo(() => {
         return layout === "big-icons" ? { size: "2em" } : {};
     }, [layout]);
+    const labelText = typeof label === "string" ? label : label[lang?.id];
     return <div data-index={index} data-id={id} data-label={label} className={className} style={style} ref={ref}>
         <ItemDrag item={item} index={index} inRange={inRange} />
         <div className={classes({ icon: true, [layout]: true })}>
@@ -56,7 +59,7 @@ function Item({ item, index }) {
             </IconContext.Provider>
         </div>
         <div className={classes({ label: true, [layout]: true })}>
-            {label}
+            {labelText}
         </div>
     </div>;
 }

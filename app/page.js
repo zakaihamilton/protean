@@ -14,18 +14,19 @@ import { ManagerUser } from "src/Manager/User"
 export default function Page({ children }) {
     return <Node>
         <Logger />
-        <Lang />
-        <ColorScheme />
-        <Navigation />
-        <ManagerUser />
-        <Screen.Manager>
-            <Desktop>
-                <Apps />
-                <Node>
-                    <Launcher />
-                </Node>
-                {children}
-            </Desktop>
-        </Screen.Manager>
+        <Lang id="eng">
+            <ColorScheme />
+            <Navigation />
+            <ManagerUser />
+            <Screen.Manager>
+                <Desktop>
+                    <Apps />
+                    <Node>
+                        <Launcher />
+                    </Node>
+                    {children}
+                </Desktop>
+            </Screen.Manager>
+        </Lang>
     </Node>
 }

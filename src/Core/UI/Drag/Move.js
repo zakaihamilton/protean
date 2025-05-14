@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDrag } from "../Drag";
 import { getOffsetRect } from "../Region";
 
-export function useMoveDrag(enabled) {
+export function useMoveDrag(enabled = true, options = {}) {
     const initialCb = useCallback((e, state) => {
         const targetRect = getOffsetRect(state?.target);
         state.offset = {
@@ -23,16 +23,19 @@ export function useMoveDrag(enabled) {
         if (!state.rect) {
             state.rect = { ...targetRect };
         }
-        const left = Math.floor(e.clientX - state.offset.x);
-        const top = Math.floor(e.clientY - state.offset.y);
+        const left = options?.horizontalLock ? Math.floor(state.base.x - state.offset.x) : Math.floor(e.clientX - state.offset.x);
+        const top = options?.verticalLock ? Math.floor(state.base.y - state.offset.y) : Math.floor(e.clientY - state.offset.y);
         if (state.base.left !== left || state.base.top !== top) {
             state.rect = Object.assign(state.rect, { left, top });
-            state.dragged = { x: e.clientX - state.base.x, y: e.clientY - state.base.y };
+            state.dragged = {
+                x: options?.horizontalLock ? 0 : e.clientX - state.base.x,
+                y: options?.verticalLock ? 0 : e.clientY - state.base.y
+            };
         }
         else {
             state.dragged = null;
         }
         state.touch = { x: e.clientX, y: e.clientY };
-    }, []);
+    }, [options]);
     return useDrag(initialCb, moverCb, "moving", enabled);
 }

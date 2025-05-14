@@ -3,7 +3,7 @@ import Container from "src/UI/Util/Container";
 import { useClasses } from "src/Core/Util/Styles";
 import { useCallback } from "react";
 
-function Search({ flex, placeholder = "Search...", dynamic }) {
+function Search({ flex, placeholder = "", dynamic }) {
     const classes = useClasses(styles);
 
     const value = dynamic?.() ?? "";

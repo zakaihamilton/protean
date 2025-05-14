@@ -6,7 +6,21 @@ import ColorScheme from "src/Core/UI/ColorScheme";
 import Group from "src/UI/Widgets/Group";
 import Lang from "src/Core/UI/Lang";
 import Resources from "src/Core/UI/Resources";
-import resources from "./Controls/Resources";
+
+const resources = {
+    TITLE: {
+        eng: "Controls",
+        heb: "כלים"
+    },
+    LANGAUGE: {
+        eng: "Language",
+        heb: "שפה"
+    },
+    TOGGLE_THEME: {
+        eng: "Toggle Theme",
+        heb: "החלף ערכת נושא"
+    }
+};
 
 export default function Controls() {
     const lookup = Resources.useLookup();
