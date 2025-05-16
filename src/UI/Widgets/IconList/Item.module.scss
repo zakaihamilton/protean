@@ -18,11 +18,6 @@
     top: var(--top);
 }
 
-[dir="rtl"] .root {
-    left: auto;
-    right: var(--left);
-}
-
 .root.absolute {
     position: absolute;
 }

@@ -4,14 +4,14 @@ import Container from "src/UI/Util/Container";
 
 const PADDING = 6;
 
-export function useItemPos({ index, vertical, wrap, inRange }) {
+export function useItemPos({ index, vertical, wrap, inRange, direction }) {
     const drag = Drag.usePassiveState(null);
     const region = Container.Region.useRegion();
     const regionWidth = region?.width || 0;
     const container = Container.State.useState();
     const { left, top } = drag?.rect || {};
     return useMemo(() => {
-        let x = 0, y = 0;
+        let x = direction === "rtl" ? regionWidth : 0, y = 0;
         if (drag?.moving && inRange) {
             x = left;
             y = top;
@@ -35,9 +35,18 @@ export function useItemPos({ index, vertical, wrap, inRange }) {
             if (!item) {
                 continue;
             }
-            if (wrap && x + item.offsetWidth >= regionWidth) {
-                x = 0;
+            const overflow = direction === "rtl" ? (x - item.offsetWidth < 0) : (x + item.offsetWidth >= regionWidth);
+            if (wrap && overflow) {
+                if (direction === "rtl") {
+                    x = regionWidth - PADDING;
+                }
+                else {
+                    x = 0;
+                }
                 y += item.offsetHeight + PADDING;
+            }
+            if (direction === "rtl") {
+                x -= item.offsetWidth + PADDING;
             }
             if (i === index) {
                 break;
@@ -45,10 +54,10 @@ export function useItemPos({ index, vertical, wrap, inRange }) {
             if (vertical) {
                 y += item.offsetHeight + PADDING;
             }
-            else {
+            else if (direction === "ltr") {
                 x += item.offsetWidth + PADDING;
             }
         }
         return [x, y, dragged];
-    }, [container.items, container.target, drag?.moving, inRange, index, left, top, vertical, wrap, regionWidth]);
+    }, [container.items, container.target, drag?.moving, direction, inRange, index, left, top, vertical, wrap, regionWidth]);
 }

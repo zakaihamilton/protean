@@ -6,6 +6,14 @@ import Button from "./Calculator/Button";
 import styles from "./Calculator.module.scss";
 
 import { PiPlusMinusBold, PiDivide } from "react-icons/pi";
+import Resources from "src/Core/UI/Resources";
+
+const resources = {
+    TITLE: {
+        eng: "Calculator",
+        heb: "מחשבון"
+    }
+};
 
 function useLayout() {
     const calculator = Calculator.State.useState();
@@ -167,6 +175,7 @@ function useCalculatorMethods(calculator) {
 }
 
 export default function Calculator() {
+    const lookup = Resources.useLookup();
     const calculator = Calculator.State.useState();
     const icon = useMemo(() => <FaCalculator />, []);
     const layout = useLayout();
@@ -199,16 +208,16 @@ export default function Calculator() {
         methods.clear();
     }, [methods]);
 
-    return <>
+    return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={400} top={200} width={300} height={400} />
-        <Screen.State icon={icon} id="calculator" label="Calculator" fixed accentBackground="darkblue" />
+        <Screen.State icon={icon} id="calculator" label={lookup?.TITLE} fixed accentBackground="darkblue" />
         <Screen>
             <div className={styles.root}>
                 <div className={styles.input}>{calculator.input}</div>
                 {elements}
             </div>
         </Screen>
-    </>;
+    </Resources>;
 }
 
 Calculator.State = createState("ListEditor.State");

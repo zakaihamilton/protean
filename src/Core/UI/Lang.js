@@ -8,6 +8,7 @@ function Lang({ id, direction, children }) {
         const language = localStorage.getItem("language");
         if (language) {
             lang.id = language;
+            lang.direction = Lang.getDirection(language);
         }
         lang.ready = true;
     }, [lang]);
@@ -16,7 +17,6 @@ function Lang({ id, direction, children }) {
         if (!lang?.id) {
             return;
         }
-        lang.direction = Lang.getDirection(lang?.id);
         localStorage.setItem("language", lang?.id);
     }, [lang, lang?.id]);
 

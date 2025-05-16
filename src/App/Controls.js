@@ -33,6 +33,7 @@ export default function Controls() {
     const lang = Lang.State.useState();
     const onToggleLanguage = useCallback(() => {
         lang.id = lang.id === "heb" ? "eng" : "heb";
+        lang.direction = Lang.getDirection(lang.id);
     }, [lang]);
 
     return <Resources resources={resources} lookup={lookup}>

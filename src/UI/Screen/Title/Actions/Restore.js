@@ -4,8 +4,17 @@ import Screen from "src/UI/Screen";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
 import Container from "src/UI/Util/Container";
+import Resources from "src/Core/UI/Resources";
+
+const resources = {
+    RESTORE: {
+        eng: "Restore",
+        heb: "שחזר"
+    }
+};
 
 function Restore() {
+    const lookup = Resources.useLookup();
     const classes = useClasses(styles);
     const actions = Screen.Actions.useState();
     const screen = Screen.State.useState();
@@ -17,12 +26,12 @@ function Restore() {
     const onClick = useCallback(() => {
         screen.maximize = false;
     }, [screen]);
-    return (
+    return <Resources resources={resources} lookup={lookup}>
         <Container>
             <div onClick={onClick} className={className} />
-            <Tooltip title="Restore" enabled={screen.focus} />
+            <Tooltip title={lookup?.RESTORE} enabled={screen.focus} />
         </Container>
-    )
+    </Resources>;
 }
 
 export default Restore;

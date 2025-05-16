@@ -29,7 +29,7 @@ function Item({ item, index }) {
     else {
         inRange = (Math.abs(drag?.dragged?.x) > DRAG_RANGE);
     }
-    const [left, top, target] = useItemPos({ index, vertical, inRange, wrap });
+    const [left, top, target] = useItemPos({ index, vertical, inRange, wrap, direction: lang?.direction });
     const style = useMemo(() => {
         return {
             "--left": left + "px",
@@ -51,7 +51,7 @@ function Item({ item, index }) {
         return layout === "big-icons" ? { size: "2em" } : {};
     }, [layout]);
     const labelText = typeof label === "string" ? label : label[lang?.id];
-    return <div data-index={index} data-id={id} data-label={label} className={className} style={style} ref={ref}>
+    return <div data-index={index} data-id={id} data-label={labelText} className={className} style={style} ref={ref}>
         <ItemDrag item={item} index={index} inRange={inRange} />
         <div className={classes({ icon: true, [layout]: true })}>
             <IconContext.Provider value={iconValue}>

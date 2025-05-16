@@ -4,8 +4,17 @@ import Screen from "src/UI/Screen";
 import { useCallback } from "react";
 import Tooltip from "src/UI/Widgets/Tooltip";
 import Container from "src/UI/Util/Container";
+import Resources from "src/Core/UI/Resources";
+
+const resources = {
+    CLOSE: {
+        eng: "Close",
+        heb: "סגור"
+    }
+};
 
 function Close() {
+    const lookup = Resources.useLookup();
     const classes = useClasses(styles);
     const actions = Screen.Actions.useState();
     const screen = Screen.State.useState();
@@ -17,14 +26,14 @@ function Close() {
     const onClick = useCallback(() => {
         screen.close = true;
     }, [screen]);
-    return (
+    return <Resources resources={resources} lookup={lookup}>
         <Container>
             <div onClick={onClick} className={className}>
                 <div className={styles.close} />
             </div>
-            <Tooltip title="Close" enabled={screen.focus} />
+            <Tooltip title={lookup?.CLOSE} enabled={screen.focus} />
         </Container>
-    )
+    </Resources>;
 }
 
 export default Close;
