@@ -20,6 +20,10 @@ function Lang({ id, direction, children }) {
         localStorage.setItem("language", lang?.id);
     }, [lang, lang?.id]);
 
+    useEffect(() => {
+        document.documentElement.setAttribute("dir", lang.direction);
+    }, [lang.direction]);
+
     return <Lang.State id={id} direction={direction}>
         {!!lang.id && !!lang.direction && children}
     </Lang.State>;
@@ -39,7 +43,6 @@ Lang.getDirection = (langId) => {
             direction = "ltr"; // Default for English and other LTR languages
             break;
     }
-    document.documentElement.setAttribute("dir", direction);
     return direction;
 };
 

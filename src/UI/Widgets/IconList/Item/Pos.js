@@ -11,7 +11,7 @@ export function useItemPos({ index, vertical, wrap, inRange, direction }) {
     const container = Container.State.useState();
     const { left, top } = drag?.rect || {};
     return useMemo(() => {
-        let x = direction === "rtl" ? regionWidth : 0, y = 0;
+        let x = direction === "rtl" ? regionWidth - PADDING : 0, y = 0;
         if (drag?.moving && inRange) {
             x = left;
             y = top;

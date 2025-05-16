@@ -32,12 +32,13 @@ export default function Controls() {
     }, [colorSceme]);
     const lang = Lang.State.useState();
     const onToggleLanguage = useCallback(() => {
-        lang.id = lang.id === "heb" ? "eng" : "heb";
-        lang.direction = Lang.getDirection(lang.id);
+        const id = lang.id === "heb" ? "eng" : "heb";
+        lang.id = id;
+        lang.direction = Lang.getDirection(id);
     }, [lang]);
 
     return <Resources resources={resources} lookup={lookup}>
-        <Screen.Rect left={900} top={200} width={300} height={300} />
+        <Screen.Rect left={500} top={200} width={300} height={300} />
         <Screen.State icon={icon} id="controls" label={lookup?.TITLE} accentBackground="purple" />
         <Screen>
             <Group>
