@@ -16,7 +16,7 @@ export function useDrag(initialCb, moverCb, prop, enabled) {
         drag[prop] = true;
         initialCb(e, drag);
         drag.onDragStart && drag.onDragStart(drag, handle);
-    }, [drag, handle, initialCb, moverCb, prop]);
+    }, [drag, handle, initialCb, prop]);
     const handlePointerMove = useCallback((e) => {
         if (drag.target && drag[prop]) {
             moverCb(e, drag);
