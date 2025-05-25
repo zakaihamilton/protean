@@ -29,7 +29,7 @@ export default function Logs() {
 
     return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={200} top={100} width={400} height={600} />
-        <Screen.State icon={icon} id="logs" label={lookup?.TITLE} accentBackground="darkorange" />
+        <Screen.State icon={icon} id="logs" label={lookup?.TITLE} assetColor="darkorange" />
         <Screen>
             <Group vertical>
                 {elements}

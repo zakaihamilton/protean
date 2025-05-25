@@ -210,7 +210,7 @@ export default function Calculator() {
 
     return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={400} top={200} width={300} height={400} />
-        <Screen.State icon={icon} id="calculator" label={lookup?.TITLE} fixed accentBackground="darkblue" />
+        <Screen.State icon={icon} id="calculator" label={lookup?.TITLE} fixed assetColor="darkblue" />
         <Screen>
             <div className={styles.root}>
                 <div className={styles.input}>{calculator.input}</div>

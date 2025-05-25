@@ -39,7 +39,7 @@ export default function Controls() {
 
     return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={500} top={200} width={300} height={300} />
-        <Screen.State icon={icon} id="controls" label={lookup?.TITLE} accentBackground="purple" />
+        <Screen.State icon={icon} id="controls" label={lookup?.TITLE} assetColor="purple" />
         <Screen>
             <Group>
                 <Button selected={selected} onClick={onToggleTheme}>{lookup?.TOGGLE_THEME}</Button>

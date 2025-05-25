@@ -13,7 +13,7 @@
 }
 
 .root.focus {
-    border: 1px solid light-dark(black, lightgray);
+    border: 1px solid var(--accent-color);
 }
 
 .root.collapse {

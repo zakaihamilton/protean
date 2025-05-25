@@ -50,7 +50,7 @@ function Item({ item, index }) {
     const iconValue = useMemo(() => {
         return layout === "big-icons" ? { size: "2em" } : {};
     }, [layout]);
-    const labelText = typeof label === "string" ? label : label[lang?.id];
+    const labelText = typeof label === "string" ? label : label?.[lang?.id];
     return <div data-index={index} data-id={id} data-label={labelText} className={className} style={style} ref={ref}>
         <ItemDrag item={item} index={index} inRange={inRange} />
         <div className={classes({ icon: true, [layout]: true })}>

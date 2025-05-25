@@ -22,7 +22,7 @@ export default function ListEditor() {
     return <>
         <Menu />
         <Screen.Rect left={100} top={100} width={500} height={500} />
-        <Screen.State icon={icon} id="list-editor" label="List Editor" maximize accentBackground="darkgreen" />
+        <Screen.State icon={icon} id="list-editor" label="List Editor" maximize assetColor="darkgreen" />
         <Screen>
             <Group>
                 <Tags title="Content" tags={{ ...contentRegion }} border vertical />

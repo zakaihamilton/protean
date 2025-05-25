@@ -35,8 +35,12 @@ function Screen({ children }) {
     });
 
     const style = useMemo(() => {
-        return { ...dockStyle, zIndex: screen.index };
-    }, [dockStyle, screen.index]);
+        return {
+            ...dockStyle,
+            zIndex: screen.index,
+            "--accent-color": screen.assetColor || "darkblue"
+        };
+    }, [dockStyle, screen.index, screen.assetColor]);
 
     useEffect(() => {
         if (screen) {

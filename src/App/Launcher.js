@@ -41,7 +41,7 @@ export default function Launcher() {
     return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={100} top={200} width={300} height={400} />
         <Screen.Actions close={false} />
-        <Screen.State icon={icon} id="launcher" label={lookup?.TITLE} accentBackground="purple" />
+        <Screen.State icon={icon} id="launcher" label={lookup?.TITLE} assetColor="purple" />
         <Screen>
             <Group vertical flex>
                 <Search dynamic={searchDynamic} placeholder={lookup?.SEARCH + "..."} />

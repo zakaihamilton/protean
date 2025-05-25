@@ -32,7 +32,7 @@ export default function TaskManager() {
 
     return <Resources resources={resources} lookup={lookup}>
         <Screen.Rect left={50} top={300} width={300} height={300} />
-        <Screen.State icon={icon} id="task-manager" label={lookup?.TITLE} accentBackground="gold" accentColor="black" />
+        <Screen.State icon={icon} id="task-manager" label={lookup?.TITLE} assetColor="gold" assetTextColor="black" />
         <Screen>
             <Group vertical flex>
                 <IconList.State vertical list={list} onClick={onClick} />

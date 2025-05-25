@@ -117,7 +117,7 @@ export default function Login() {
     return (
         <Resources resources={resources} lookup={lookup}>
             <Screen.Rect left={100} top={100} width={500} height={500} />
-            <Screen.State icon={icon} id="login" label={lookup.TITLE} maximize accentBackground="darkblue" min={min} />
+            <Screen.State icon={icon} id="login" label={lookup.TITLE} maximize assetColor="darkblue" min={min} />
             <Screen>
                 <ManagerUser.Ready>
                     <div className={classes("root")}>
