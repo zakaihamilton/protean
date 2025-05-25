@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useElement } from "src/Core/UI/Element";
 import { createState } from "src/Core/Base/State";
 import styles from "./Container.module.scss";
-import { createRegion } from "src/Core/UI/Region";
+import { createRegion, useMonitorSizeOfElements } from "src/Core/UI/Region";
 import Node from "src/Core/Base/Node";
 
 function Container({ children, ...props }) {
@@ -20,6 +20,10 @@ Container.Item = function ContainerItem({ children, ...props }) {
     useEffect(() => {
         container.element = element || undefined;
     }, [container, element]);
+    const sizeCounter = useMonitorSizeOfElements(container.items);
+    useEffect(() => {
+        container.sizeCounter = sizeCounter;
+    }, [container, sizeCounter]);
     return <>
         <div ref={ref} className={styles.root} {...props}>
             <Container.Region target={ref?.current} />
@@ -31,22 +35,26 @@ Container.Item = function ContainerItem({ children, ...props }) {
 export function useContainerItem(index, item) {
     const container = Container.State.useState();
     const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
         if (item) {
-            const items = Object.assign({}, container.items);
-            items[index] = item;
-            container.items = items;
+            container.items = (container.items || []).toSpliced(index, 0, item);
             setMounted(true);
         }
+
         return () => {
             if (item) {
-                const items = Object.assign({}, container.items);
-                delete items[index];
-                container.items = items;
+                const currentItems = container.items || [];
+                const itemIndexToRemove = currentItems.indexOf(item);
+                if (itemIndexToRemove !== -1) {
+                    container.items = currentItems.toSpliced(itemIndexToRemove, 1);
+                }
+
                 setMounted(false);
             }
-        }
+        };
     }, [container, index, item]);
+
     return [mounted, container];
 }
 

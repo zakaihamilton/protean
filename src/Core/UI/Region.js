@@ -1,6 +1,71 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useLayoutEffect, useRef } from "react";
 import { createState } from "src/Core/Base/State";
 
+export function useMonitorSizeOfElements(elements) {
+    const [counter, setCounter] = useState(0);
+    const observedElementsMapRef = useRef(new Map());
+    const resizeObserverRef = useRef(null);
+
+    useEffect(() => {
+        resizeObserverRef.current = new ResizeObserver(entries => {
+            let hasDimensionChanged = false;
+            const currentMap = observedElementsMapRef.current;
+
+            for (const entry of entries) {
+                const element = entry.target; // element is a DOM element from ResizeObserver
+                if (currentMap.has(element)) {
+                    const rect = element.getBoundingClientRect();
+                    const newDimensions = {
+                        width: Math.round(rect.width),
+                        height: Math.round(rect.height),
+                    };
+                    const lastKnownDimensions = currentMap.get(element);
+
+                    if (lastKnownDimensions.width !== newDimensions.width ||
+                        lastKnownDimensions.height !== newDimensions.height) {
+                        currentMap.set(element, newDimensions);
+                        hasDimensionChanged = true;
+                    }
+                }
+            }
+
+            if (hasDimensionChanged) {
+                setCounter(counter => counter + 1);
+            }
+        });
+
+        return () => {
+            if (resizeObserverRef.current) {
+                resizeObserverRef.current.disconnect();
+                resizeObserverRef.current = null;
+            }
+        };
+    }, []);
+
+    useLayoutEffect(() => {
+        const observer = resizeObserverRef.current;
+        if (!observer) return;
+
+        observedElementsMapRef.current.forEach((_, element) => {
+            observer.unobserve(element);
+        });
+        observedElementsMapRef.current.clear();
+
+        const validElementsToObserve = (elements || []).filter(el => el);
+
+        validElementsToObserve.forEach(element => {
+            const rect = element.getBoundingClientRect();
+            const initialDimensions = {
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+            };
+            observedElementsMapRef.current.set(element, initialDimensions);
+            observer.observe(element);
+        });
+    }, [elements]);
+
+    return counter;
+}
 
 function findIntersectingElements(element, elements) {
     const intersectingElements = [];

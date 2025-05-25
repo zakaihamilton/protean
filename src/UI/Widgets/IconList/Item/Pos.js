@@ -19,10 +19,10 @@ export function useItemPos({ index, vertical, wrap, inRange, direction }) {
         }
         let dragged = false;
         const items = container.items;
-        if (!items) {
+        if (!items || container.sizeCounter < 0) {
             return [x, y, false];
         }
-        for (let i = 0; i < Object.keys(items).length; i++) {
+        for (let i = 0; i < items.length; i++) {
             const item = items[i];
             const target = container.target;
             if (target) {
@@ -35,7 +35,8 @@ export function useItemPos({ index, vertical, wrap, inRange, direction }) {
             if (!item) {
                 continue;
             }
-            const overflow = direction === "rtl" ? (x - item.offsetWidth < 0) : (x + item.offsetWidth >= regionWidth);
+            const { width, height } = item.getBoundingClientRect();
+            const overflow = direction === "rtl" ? (x - width < 0) : (x + width >= regionWidth);
             if (wrap && overflow) {
                 if (direction === "rtl") {
                     x = regionWidth - PADDING;
@@ -43,21 +44,21 @@ export function useItemPos({ index, vertical, wrap, inRange, direction }) {
                 else {
                     x = 0;
                 }
-                y += item.offsetHeight + PADDING;
+                y += height + PADDING;
             }
             if (direction === "rtl") {
-                x -= item.offsetWidth + PADDING;
+                x -= width + PADDING;
             }
             if (i === index) {
                 break;
             }
             if (vertical) {
-                y += item.offsetHeight + PADDING;
+                y += height + PADDING;
             }
             else if (direction === "ltr") {
-                x += item.offsetWidth + PADDING;
+                x += width + PADDING;
             }
         }
         return [x, y, dragged];
-    }, [container.items, container.target, drag?.moving, direction, inRange, index, left, top, vertical, wrap, regionWidth]);
+    }, [container.items, container.sizeCounter, container.target, drag?.moving, direction, inRange, index, left, top, vertical, wrap, regionWidth]);
 }
