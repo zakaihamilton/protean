@@ -8,14 +8,15 @@ import { useCallback, useMemo } from "react";
 function Label() {
     const classes = useClasses(styles);
     const screen = Screen.State.useState();
-    const disabled = screen.center || screen.maximize;
-    const ref = useMoveDrag(!disabled);
+    const dragDisabled = screen.center || screen.fixed || screen.maximize;
+    const clickDisabled = screen.center || screen.fixed || screen.dock;
+    const ref = useMoveDrag(!dragDisabled);
     const drag = Drag.useState();
     const onClick = useCallback(e => {
-        if (e.detail === 2 && !disabled) {
-            screen.collapse = !screen.collapse;
+        if (e.detail === 2 && !clickDisabled) {
+            screen.maximize = !screen.maximize;
         }
-    }, [screen, disabled]);
+    }, [screen, clickDisabled]);
     const style = useMemo(() => {
         return {
             "--accent-background": screen.accentBackground || "darkblue",
@@ -27,7 +28,7 @@ function Label() {
             root: true,
             moving: drag.moving,
             focus: screen.focus,
-            disabled
+            disabled: dragDisabled
         }
     );
     return (
