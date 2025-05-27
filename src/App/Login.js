@@ -65,6 +65,18 @@ const resources = {
     LOGIN_TITLE: {
         eng: "Login",
         heb: "התחברות"
+    },
+    LOGIN_SUCCESS: {
+        eng: "Login successful",
+        heb: "התחברות בוצעה בהצלחה"
+    },
+    ENTER_USER_ID_AND_PASSWORD: {
+        eng: "Please enter your User ID and Password",
+        heb: "אנא הזן מזהה משתמש וסיסמה"
+    },
+    UNKNOWN_ERROR: {
+        eng: "An unknown error occurred",
+        heb: "אירעה שגיאה לא ידועה"
     }
 };
 
@@ -90,7 +102,7 @@ export default function Login() {
         login.message = { type: '', text: '' };
 
         if (!login.userId || !login.password) {
-            login.message = { type: 'error', text: 'Please enter User ID and Password.' };
+            login.message = { type: 'error', text: lookup.ENTER_USER_ID_AND_PASSWORD };
             login.loading = false;
             return;
         }
@@ -98,11 +110,11 @@ export default function Login() {
         try {
             await managerUser.login(login.userId, login.password);
 
-            login.message = { type: 'success', text: 'Login successful!' };
+            login.message = { type: 'success', text: lookup.LOGIN_SUCCESS };
             login.password = '';
 
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+            const errorMessage = error instanceof Error ? error.message : lookup.UNKNOWN_ERROR;
             login.message = { type: 'error', text: `${errorMessage}` };
         } finally {
             login.loading = false;
