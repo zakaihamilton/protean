@@ -119,7 +119,7 @@ export default function Login() {
         } finally {
             login.loading = false;
         }
-    }, [managerUser, login]);
+    }, [managerUser, login, lookup]);
 
     const icon = useMemo(() => <FaUserLock />, []);
 
