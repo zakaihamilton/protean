@@ -1,0 +1,57 @@
+.iconWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.sunIcon,
+.moonIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.1em;
+    height: 1.1em;
+    stroke-width: 2;
+    stroke: currentColor;
+    transition: opacity 0.25s ease-in-out, transform 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.text {
+    line-height: 1;
+}
+
+.iconVisible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+.iconHiddenOutgoing {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-90deg);
+}
+
+:global(.darkModeState) .moonIcon.iconHiddenOutgoing {
+    transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
+}
+
+.iconHiddenIncoming {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
+}
+
+:global(.darkModeState) .sunIcon.iconHiddenIncoming {
+    transform: translate(-50%, -50%) scale(0.5) rotate(-90deg);
+}
+
+.iconHiddenSun {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-90deg);
+}
+
+.iconHiddenMoon {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
+}

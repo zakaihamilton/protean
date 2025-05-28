@@ -6,6 +6,7 @@ import ColorScheme from "src/Core/UI/ColorScheme";
 import Group from "src/UI/Widgets/Group";
 import Lang from "src/Core/UI/Lang";
 import Resources from "src/Core/UI/Resources";
+import ThemeToggleButton from "./Controls/ThemeToggleButton";
 
 const resources = {
     TITLE: {
@@ -42,10 +43,10 @@ export default function Controls() {
         <Screen.State icon={icon} id="controls" label={lookup?.TITLE} assetColor="purple" />
         <Screen>
             <Group>
-                <Button selected={selected} onClick={onToggleTheme}>{lookup?.TOGGLE_THEME}</Button>
+                <ThemeToggleButton isDarkMode={selected} onClick={onToggleTheme}>{lookup?.TOGGLE_THEME}</ThemeToggleButton>
             </Group>
             <Group>
-                <Button selected={selected} onClick={onToggleLanguage}>{lookup?.LANGAUGE}</Button>
+                <Button selected={lang.id === "heb"} onClick={onToggleLanguage}>{lookup?.LANGAUGE}</Button>
             </Group>
         </Screen>
     </Resources>;

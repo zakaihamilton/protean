@@ -1,20 +1,31 @@
-import React from "react";
+// components/Button/Button.js
+import React from 'react';
+// Make sure this path is correct for your project structure
 import { useClasses } from "src/Core/Util/Styles";
-import styles from "./Button.module.scss";
+import styles from './Button.module.scss';
 
-function Button({ border, label, selected, children, ...props }) {
+const Button = ({
+    children,
+    onClick,
+    isDarkMode,
+    type = 'button', // Default button type
+    disabled = false,
+    variant = 'primary',
+    size = 'medium', // e.g., 'small', 'medium', 'large'
+    className = '', // Allow custom classes to be passed
+    ...props // Spread any other native button props
+}) => {
     const classes = useClasses(styles);
-    const className = classes({
-        root: true,
-        border,
-        selected
-    });
-    return <div className={className} {...props}>
-        <div className={styles.label}>
-            {label}
-        </div>
+
+    return <button
+        className={classes("root", variant, size, { dark: isDarkMode, disabled }, className)}
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+        {...props}
+    >
         {children}
-    </div>;
-}
+    </button>;
+};
 
 export default Button;
