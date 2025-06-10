@@ -5,6 +5,26 @@ export function objectHasChanged(a, b) {
     return aKeys.filter((key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]));
 }
 
+export function getCircularReplacer(object) {
+    const keys = Object.keys(object);
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (key && !keys.includes(key)) {
+            return;
+        }
+        if (typeof value === "function") {
+            return;
+        }
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+}
+
 export function createObject(props, id) {
     const monitor = [];
     let counter = 0;
@@ -64,6 +84,11 @@ export function createObject(props, id) {
     Object.defineProperty(proxy, "__counter", {
         get: () => counter
     });
+    Object.defineProperty(proxy, "__string", {
+        get: () => {
+            return JSON.stringify(proxy, getCircularReplacer(proxy), 2);
+        }
+    })
     Object.defineProperty(proxy, "__node", {
         get: () => node,
         set: (value) => {

@@ -14,6 +14,7 @@ import { createRegion } from "src/Core/UI/Region";
 import App from "src/Core/UI/Apps/App";
 import { create } from "src/Core/Base/Util";
 import ScreenManager, { useScreenItem } from "./Screen/Manager";
+import { useAnimate } from "src/Core/UI/Animate";
 
 function Screen({ children }) {
     const classes = useClasses(styles);
@@ -25,13 +26,15 @@ function Screen({ children }) {
         width: screen?.min?.width || 200,
         height: screen?.min?.height || 200
     }), [screen?.min]);
+    const animate = useAnimate(screen?.__counter, 200);
     const ref = useElement();
     useScreenItem(screen, ref?.current);
 
     const className = classes({
         root: true,
         ...screen,
-        [screen.dock]: screen.dock
+        [screen.dock]: screen.dock,
+        animate
     });
 
     const style = useMemo(() => {
