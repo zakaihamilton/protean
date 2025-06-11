@@ -57,14 +57,12 @@ function Screen({ children }) {
             <Screen.Region target={ref?.current} counter={rect.__counter} />
             <div ref={ref} className={className} style={style}>
                 <Title />
-                {!screen.collapse && <>
-                    <Menu />
-                    <Content>
-                        {children}
-                    </Content>
-                    <Fullscreen />
-                    <Resize />
-                </>}
+                <Menu />
+                <Content>
+                    {children}
+                </Content>
+                <Fullscreen />
+                <Resize />
             </div>
         </>
     )

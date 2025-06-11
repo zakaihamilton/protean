@@ -31,7 +31,7 @@ export default function Launcher() {
     const apps = Apps.State.useState();
     const list = useMemo(() => {
         return SupportedApps.filter(app => !launcher.search || app?.label[lang?.id]?.toLowerCase()?.includes(launcher.search?.toLowerCase()));
-    }, [launcher?.search]);
+    }, [launcher?.search, lang?.id]);
     const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {

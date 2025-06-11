@@ -86,11 +86,11 @@ const ThemeToggleButton = ({ isDarkMode, onClick }) => {
             >
                 <div className={classes("iconWrapper")}>
                     <SunIcon
-                        className={`${classes("sunIcon")} ${isDarkMode ? classes("iconVisible") : classes("iconHiddenOutgoing")
+                        className={`${classes("sunIcon")} ${isDarkMode ? classes("iconHiddenOutgoing") : classes("iconVisible")
                             }`}
                     />
                     <MoonIcon
-                        className={`${classes("moonIcon")} ${isDarkMode ? classes("iconHiddenIncoming") : classes("iconVisible")
+                        className={`${classes("moonIcon")} ${isDarkMode ? classes("iconVisible") : classes("iconHiddenIncoming")
                             }`}
                     />
                 </div>

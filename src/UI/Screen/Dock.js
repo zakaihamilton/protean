@@ -32,10 +32,7 @@ export function useDock() {
     }, [rect?.__counter, drag?.moving, screen?.dock]);
     const style = useMemo(() => {
         let { left, top, width, height } = rect;
-        if (screen.collapse) {
-            return { left, top };
-        }
-        else if (screen.fullscreen || screen.maximize) {
+        if (screen.fullscreen || screen.maximize) {
             left = 0;
             top = 0;
             width = "100%";

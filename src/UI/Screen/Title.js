@@ -14,10 +14,8 @@ function Title() {
     return (
         <div className={className}>
             <Label />
-            {!screen.collapse && <>
-                <div className={styles.separator} />
-                <Actions />
-            </>}
+            <div className={styles.separator} />
+            <Actions />
         </div>
     )
 }

@@ -8,6 +8,7 @@ import { ManagerUser } from "src/Manager/User";
 import { createState } from "src/Core/Base/State";
 import { useClasses } from "src/Core/Util/Styles";
 import Resources from "src/Core/UI/Resources";
+import Button from "src/UI/Widgets/Button";
 
 const resources = {
     TITLE: {
@@ -173,13 +174,13 @@ export default function Login() {
                                 />
                             </div>}
 
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={login.loading}
                                 className={classes("submitButton")}
                             >
                                 {submitText}
-                            </button>
+                            </Button>
                         </form>
                     </div>
                 </ManagerUser.Ready>
