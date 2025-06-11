@@ -9,6 +9,7 @@ import Search from "src/UI/Widgets/Search";
 import { createState } from "src/Core/Base/State";
 import { useDynamic } from "src/Core/Util/Dynamic";
 import Resources from "src/Core/UI/Resources";
+import Lang from "src/Core/UI/Lang";
 
 const resources = {
     TITLE: {
@@ -22,13 +23,14 @@ const resources = {
 };
 
 export default function Launcher() {
+    const lang = Lang.State.useState();
     const lookup = Resources.useLookup();
     const screenManager = Screen.Manager.useManager();
     const launcher = Launcher.State.useState();
     const icon = useMemo(() => <SiLaunchpad />, []);
     const apps = Apps.State.useState();
     const list = useMemo(() => {
-        return SupportedApps.filter(app => !launcher.search || app?.label?.toLowerCase()?.includes(launcher.search?.toLowerCase()));
+        return SupportedApps.filter(app => !launcher.search || app?.label[lang?.id]?.toLowerCase()?.includes(launcher.search?.toLowerCase()));
     }, [launcher?.search]);
     const searchDynamic = useDynamic(launcher, "search");
 
