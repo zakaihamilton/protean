@@ -15,7 +15,11 @@ function getInstance(storageId) {
         return instances[storageId];
     }
     console.log(process.env["STORAGE_" + storageId])
-    const storage = process.env["STORAGE_" + storageId];
+    const storageString = process.env["STORAGE_" + storageId];
+    if (!storageString) {
+        throw new Error(`Storage configuration for ${storageId} not found in environment variables.`);
+    }
+    const storage = JSON.parse(storageString);
     if (!storage) {
         throw new Error(`Storage ${storageId} not found`);
     }
