@@ -56,7 +56,7 @@ class StorageS3 extends StorageInterface {
 
     async get(key) {
         if (!this.client) {
-            throw "Client not connected";
+            throw new Error("Client not connected");
         }
 
         const command = new GetObjectCommand({
