@@ -15,16 +15,19 @@ async function getInstance(storageId) {
         return instances[storageId];
     }
     console.log(process.env["STORAGE_" + storageId])
-    const storage = process.env["STORAGE_" + storageId];
-    if (!storage) {
+    const storageEnv = process.env["STORAGE_" + storageId];
+    if (!storageEnv) {
         throw new Error(`Storage ${storageId} not found`);
     }
-    const Interface = interfaces[storage.api];
+    if (storageEnv.use === "server") {
+        throw new Error(`Storage ${storageId} not accessible from client`);
+    }
+    const Interface = interfaces[storageEnv.api];
     if (!Interface) {
-        throw new Error(`Storage ${storageId} api ${storage.api} not found`);
+        throw new Error(`Storage ${storageId} api ${storageEnv.api} not found`);
     }
     const instance = new Interface();
-    await instance.connect(storage);
+    await instance.connect(storageEnv);
     instances[storageId] = instance;
     return instance;
 }
