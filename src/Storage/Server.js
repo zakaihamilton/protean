@@ -10,16 +10,12 @@ const interfaces = {
 
 const instances = {};
 
-function getInstance(storageId) {
+async function getInstance(storageId) {
     if (instances[storageId]) {
         return instances[storageId];
     }
     console.log(process.env["STORAGE_" + storageId])
-    const storageString = process.env["STORAGE_" + storageId];
-    if (!storageString) {
-        throw new Error(`Storage configuration for ${storageId} not found in environment variables.`);
-    }
-    const storage = JSON.parse(storageString);
+    const storage = process.env["STORAGE_" + storageId];
     if (!storage) {
         throw new Error(`Storage ${storageId} not found`);
     }
@@ -28,22 +24,22 @@ function getInstance(storageId) {
         throw new Error(`Storage ${storageId} api ${storage.api} not found`);
     }
     const instance = new Interface();
-    instance.connect(storage);
+    await instance.connect(storage);
     instances[storageId] = instance;
     return instance;
 }
 
-export function storageGet(storageId, key) {
-    const instance = getInstance(storageId);
+export async function storageGet(storageId, key) {
+    const instance = await getInstance(storageId);
     return instance.get(key);
 }
 
+export async function storageSet(storageId, key, value) {
     const instance = await getInstance(storageId);
-    const instance = getInstance(storageId);
     return instance.set(key, value);
 }
 
+export async function storageKeys(storageId, filter) {
     const instance = await getInstance(storageId);
-    const instance = getInstance(storageId);
     return instance.keys(filter);
 }
