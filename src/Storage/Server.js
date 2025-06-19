@@ -38,7 +38,7 @@ export function storageGet(storageId, key) {
     return instance.get(key);
 }
 
-export function storageSet(storageId, key, value) {
+    const instance = await getInstance(storageId);
     const instance = getInstance(storageId);
     return instance.set(key, value);
 }
