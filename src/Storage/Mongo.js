@@ -51,7 +51,7 @@ class StorageMongo extends StorageInterface {
     }
     async set(key, value) {
         if (!this.client) {
-            throw "Client not connected";
+            throw new Error("Client not connected");
         }
 
         const url = this.storage.path + key;
