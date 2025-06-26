@@ -18,11 +18,12 @@ async function getInstance(storageId) {
     if (instances[storageId]) {
         return instances[storageId];
     }
-    console.log(process.env["STORAGE_" + storageId])
-    const storageEnv = process.env["STORAGE_" + storageId];
+    let storageEnv = process.env["STORAGE_" + storageId];
+    console.log("storage:", storageId, storageEnv);
     if (!storageEnv) {
         throw new Error(`Storage ${storageId} not found`);
     }
+    storageEnv = JSON.parse(storageEnv);
     if (storageEnv.use === "server") {
         throw new Error(`Storage ${storageId} not accessible from client`);
     }
