@@ -1,7 +1,7 @@
 'use server';
 
-import StorageS3 from "./S3";
-import StorageMongo from "./Mongo";
+import StorageS3 from "./Service/S3";
+import StorageMongo from "./Service/Mongo";
 
 const interfaces = {
     s3: StorageS3,
@@ -11,6 +11,10 @@ const interfaces = {
 const instances = {};
 
 async function getInstance(storageId) {
+    if (!storageId) {
+        return;
+    }
+    storageId = storageId.trim().toUpperCase();
     if (instances[storageId]) {
         return instances[storageId];
     }
@@ -32,17 +36,17 @@ async function getInstance(storageId) {
     return instance;
 }
 
-export async function storageGet(storageId, key) {
+export async function storageServerGet(storageId, key) {
     const instance = await getInstance(storageId);
     return instance.get(key);
 }
 
-export async function storageSet(storageId, key, value) {
+export async function storageServerSet(storageId, key, value) {
     const instance = await getInstance(storageId);
     return instance.set(key, value);
 }
 
-export async function storageKeys(storageId, filter) {
+export async function storageServerKeys(storageId, filter) {
     const instance = await getInstance(storageId);
     return instance.keys(filter);
 }

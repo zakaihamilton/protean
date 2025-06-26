@@ -1,7 +1,7 @@
 'use server';
 
 import bcrypt from 'bcryptjs';
-import StorageS3 from "src/Storage/S3";
+import StorageS3 from "src/Storage/Service/S3";
 
 let storage = null;
 

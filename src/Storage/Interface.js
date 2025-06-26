@@ -5,6 +5,9 @@ class StorageInterface {
     async disconnect() {
         throw new Error("Method 'disconnect()' must be implemented.");
     }
+    isSupported() {
+        throw new Error("Method 'isSupported()' must be implemented.");
+    }
     isConnected() {
         throw new Error("Method 'isConnected()' must be implemented.");
     }

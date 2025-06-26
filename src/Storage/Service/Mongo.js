@@ -1,4 +1,4 @@
-import StorageInterface from "./Interface";
+import StorageInterface from "../Interface";
 import { MongoClient } from "mongodb";
 
 class StorageMongo extends StorageInterface {
@@ -15,6 +15,10 @@ class StorageMongo extends StorageInterface {
         if (this.client) {
             await this.client.close();
         }
+    }
+
+    isSupported() {
+        return this.storage.connect;
     }
 
     isConnected() {

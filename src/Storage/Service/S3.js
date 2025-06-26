@@ -1,4 +1,4 @@
-import StorageInterface from "./Interface";
+import StorageInterface from "../Interface";
 import {
     S3Client,
     GetObjectCommand,
@@ -22,6 +22,10 @@ class StorageS3 extends StorageInterface {
         if (this.client) {
             this.client.destroy();
         }
+    }
+
+    isSupported() {
+        return this.storage.connect;
     }
 
     isConnected() {
