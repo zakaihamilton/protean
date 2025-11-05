@@ -6,6 +6,9 @@ function monitor(obj, methodNames, handler) {
     const originals = methodNames.map(method => obj[method]);
     for (let index = 0; index < methodNames.length; index++) {
         const methodName = methodNames[index];
+        if (methodName === "warn") {
+            return;
+        }
         obj[methodName] = function (...args) {
             const original = originals[index];
             const result = original(...args);
@@ -27,7 +30,7 @@ export default function Logger() {
     useMemo(() => {
         logger.items = [];
         const update = (method, ...args) => {
-            const message = args.filter(arg => typeof arg === 'string').join(' ');
+            const message = args.filter(arg => typeof arg === 'string' && !arg.startsWith('\x1B')).join(' ');
             const item = { type: method, message };
             setTimeout(() => {
                 logger.items = [...logger.items, item];

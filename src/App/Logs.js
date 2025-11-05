@@ -22,7 +22,7 @@ export default function Logs() {
         let elements = [];
         elements.push(...logger.items?.map((item, index) => {
             const { type, message } = item;
-            return <div className={styles.item} key={index}>{type}: {message}</div>;
+            return <div className={styles.item} key={index}><div className={styles.type}>{type}</div>{message}</div>;
         }) || []);
         return elements;
     }, [logger.items]);

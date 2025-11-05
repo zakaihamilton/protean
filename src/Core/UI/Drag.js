@@ -7,16 +7,15 @@ import { useElement } from "./Element";
 const Drag = createState("Drag");
 
 export function useDrag(initialCb, moverCb, prop, enabled) {
-    const ref = useElement();
+    const [node, element] = useElement();
     const drag = Drag.useState();
-    const handle = ref.current;
     const handlePointerDown = useCallback((e) => {
         drag.dragged = null;
-        drag.target = handle;
+        drag.target = node;
         drag[prop] = true;
         initialCb(e, drag);
-        drag.onDragStart && drag.onDragStart(drag, handle);
-    }, [drag, handle, initialCb, prop]);
+        drag.onDragStart && drag.onDragStart(drag, node);
+    }, [drag, node, initialCb, prop]);
     const handlePointerMove = useCallback((e) => {
         if (drag.target && drag[prop]) {
             moverCb(e, drag);
@@ -36,11 +35,11 @@ export function useDrag(initialCb, moverCb, prop, enabled) {
     }, [drag, prop]);
 
     const document = getClientDocument();
-    useEventListener(!!enabled && handle, "pointerdown", handlePointerDown, { passive: true });
+    useEventListener(!!enabled && node, "pointerdown", handlePointerDown, { passive: true });
     useEventListener(!!enabled && document, "pointermove", handlePointerMove, { passive: true });
     useEventListener(!!enabled && document, "pointerup", handlePointerUp, { passive: true });
 
-    return ref;
+    return [node,element];
 }
 
 export default Drag;

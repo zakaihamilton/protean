@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 
 export function useEventListener(target, eventName, listener, options = {}) {
+    if (target && !target?.addEventListener) {
+        debugger;
+    }
     useEffect(() => {
         if (!target || !listener) {
             return;

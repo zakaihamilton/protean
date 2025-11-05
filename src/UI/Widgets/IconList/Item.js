@@ -17,8 +17,8 @@ function Item({ item, index }) {
     const classes = useClasses(styles);
     const { id, label, focus, minimize, icon } = useObjectState(item) || {};
     const drag = Drag.useState(null, {});
-    const ref = useMoveDrag(true, { horizontalLock: vertical, verticalLock: !vertical });
-    const [mounted] = useContainerItem(index, ref.current);
+    const [node, element] = useMoveDrag(true, { horizontalLock: vertical, verticalLock: !vertical });
+    const [mounted] = useContainerItem(index, node);
     let inRange = false;
     if (layout === "big-icons") {
         inRange = (Math.abs(drag?.dragged?.x) > DRAG_RANGE || Math.abs(drag?.dragged?.y) > DRAG_RANGE);
@@ -51,7 +51,7 @@ function Item({ item, index }) {
         return layout === "big-icons" ? { size: "2em" } : {};
     }, [layout]);
     const labelText = typeof label === "string" ? label : label?.[lang?.id];
-    return <div data-index={index} data-id={id} data-label={labelText} className={className} style={style} ref={ref}>
+    return <div data-index={index} data-id={id} data-label={labelText} className={className} style={style} ref={element}>
         <ItemDrag item={item} index={index} inRange={inRange} />
         <div className={classes({ icon: true, [layout]: true })}>
             <IconContext.Provider value={iconValue}>

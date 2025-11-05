@@ -4,13 +4,13 @@ import { useElement } from "src/Core/UI/Element";
 import Screen from "../Screen";
 
 function Content({ children }) {
-    const ref = useElement();
+    const [node, element] = useElement();
     const rect = Screen.Rect.useState();
 
     return (
         <>
-            <Content.Region target={ref?.current} counter={rect.__counter} />
-            <div ref={ref} className={styles.root}>
+            <Content.Region target={node} counter={rect.__counter} />
+            <div ref={element} className={styles.root}>
                 {children}
             </div>
         </>

@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 /**
  * Checks if the functionality is supported.
  *

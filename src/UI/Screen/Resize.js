@@ -11,7 +11,7 @@ function Resize() {
     const screen = Screen.State.useState();
     const lang = Lang.State.useState();
     const disabled = screen.center || screen.maximize;
-    const ref = useResizeDrag(!disabled, lang.direction);
+    const [,element] = useResizeDrag(!disabled, lang.direction);
     const className = classes({
         root: true,
         resizing: drag.resizing,
@@ -21,7 +21,7 @@ function Resize() {
         fixed: screen.fixed || screen.center
     });
     return (
-        <div ref={ref} className={className}>
+        <div ref={element} className={className}>
             <div className={styles.glyph} />
         </div>
     )

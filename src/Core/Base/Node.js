@@ -1,16 +1,21 @@
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 
 const root = { id: "root", parent: null, items: new Map() };
 const Context = createContext(root);
 
 export default function Node({ id, children }) {
     const parent = Node.useNode();
-    const nodeRef = useRef({ id, parent, items: null });
-    if (!nodeRef.current.items) {
-        nodeRef.current.items = new Map();
-    }
 
-    return <Context.Provider value={nodeRef?.current}>
+    // Use useMemo to create a stable node object that
+    // correctly updates if the id or parent changes.
+    const node = useMemo(() => ({
+        id,
+        parent,
+        items: new Map(), // Initialize items directly
+    }), [id, parent]); // Dependencies
+
+    // Pass the memoized 'node' object to the provider
+    return <Context.Provider value={node}>
         {children}
     </Context.Provider>;
 }

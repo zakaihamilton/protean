@@ -27,8 +27,8 @@ function Screen({ children }) {
         height: screen?.min?.height || 200
     }), [screen?.min]);
     const animate = useAnimate(screen?.__counter, 200);
-    const ref = useElement();
-    useScreenItem(screen, ref?.current);
+    const [node, element] = useElement();
+    useScreenItem(screen, node);
 
     const className = classes({
         root: true,
@@ -54,8 +54,8 @@ function Screen({ children }) {
     return (
         <>
             <Drag rect={rect} min={min} />
-            <Screen.Region target={ref?.current} counter={rect.__counter} />
-            <div ref={ref} className={className} style={style}>
+            <Screen.Region target={element?.current} counter={rect.__counter} />
+            <div ref={element} className={className} style={style}>
                 <Title />
                 <Menu />
                 <Content>

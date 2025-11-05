@@ -1,46 +1,22 @@
 'use server';
 
-import {
-    S3Client,
-    GetObjectCommand,
-    PutObjectCommand,
-    NoSuchKey,
-} from '@aws-sdk/client-s3';
 import bcrypt from 'bcryptjs';
+import StorageS3 from "src/Storage/Service/S3";
 
-const s3ClientConfigString = process.env.AWS_S3_CLIENT;
-const bucketName = process.env.AWS_S3_BUCKET;
+let storage = null;
 
-if (!s3ClientConfigString || !bucketName) {
-    throw new Error(
-        'Missing required environment variables: AWS_S3_CLIENT (JSON string) and AWS_S3_BUCKET are required.'
-    );
-}
-
-let s3ClientConfig;
-
-try {
-    const cleanedString = s3ClientConfigString
-        .replace(/,\s*}/g, '}')
-        .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
-
-    s3ClientConfig = JSON.parse(cleanedString);
-
-    if (!s3ClientConfig.region) {
-        throw new Error("Parsed AWS_S3_CLIENT JSON must include a 'region' property.");
+async function getStorageInstance() {
+    if (storage) {
+        return storage;
     }
-    if (!s3ClientConfig.credentials || !s3ClientConfig.credentials.accessKeyId || !s3ClientConfig.credentials.secretAccessKey) {
-        throw new Error("Parsed AWS_S3_CLIENT JSON must include 'credentials' with 'accessKeyId' and 'secretAccessKey'.");
+    const storageEnv = process.env["STORAGE_USERS"];
+    if (!storageEnv) {
+        throw new Error("Storage users not found");
     }
-
-} catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown parsing error';
-    throw new Error(
-        `Failed to parse AWS_S3_CLIENT environment variable. Ensure it's valid JSON. Error: ${errorMessage}`
-    );
+    const instance = new StorageS3();
+    await instance.connect(JSON.parse(storageEnv));
+    return instance;
 }
-
-const s3Client = new S3Client(s3ClientConfig);
 
 function normalizeAndValidateUserId(rawUserId) {
     if (!rawUserId || typeof rawUserId !== 'string') {
@@ -53,61 +29,20 @@ function normalizeAndValidateUserId(rawUserId) {
     return normalizedId;
 }
 
-
 async function getUserData(rawUserId) {
     const userId = normalizeAndValidateUserId(rawUserId);
-    const key = `users/${userId}.json`;
+    const key = `${userId}.json`;
 
-    const command = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-    });
-
-    try {
-        const { Body } = await s3Client.send(command);
-        if (!Body) {
-            return null;
-        }
-        const bodyContents = await Body.transformToString('utf-8');
-
-        if (!bodyContents || bodyContents.trim() === '') {
-            return {};
-        }
-
-        try {
-            const parsedData = JSON.parse(bodyContents);
-            return parsedData;
-        } catch (jsonError) {
-            return null;
-        }
-
-    } catch (error) {
-        if (error instanceof NoSuchKey) {
-            return null;
-        } else {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown S3 error';
-            throw new Error(`Failed to fetch user data for ${userId}. Reason: ${errorMessage}`);
-        }
-    }
+    const instance = await getStorageInstance();
+    return await instance.get(key);
 }
 
 async function saveUserData(rawUserId, data) {
     const userId = normalizeAndValidateUserId(rawUserId);
     const key = `users/${userId}.json`;
 
-    const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-        Body: JSON.stringify(data, null, 2),
-        ContentType: 'application/json',
-    });
-
-    try {
-        await s3Client.send(command);
-        return true;
-    } catch (error) {
-        return false;
-    }
+    const instance = await getStorageInstance();
+    return await instance.set(key, data);
 }
 
 export async function login(rawUserId, passwordOrHash) {
