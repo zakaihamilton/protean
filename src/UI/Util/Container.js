@@ -14,19 +14,18 @@ function Container({ children, ...props }) {
 }
 
 Container.Item = function ContainerItem({ children, ...props }) {
-    const ref = useElement();
+    const [node, element] = useElement();
     const container = Container.State.useState();
-    const element = ref?.current;
     useEffect(() => {
-        container.element = element || undefined;
-    }, [container, element]);
+        container.element = node || undefined;
+    }, [container, node]);
     const sizeCounter = useMonitorSizeOfElements(container.items);
     useEffect(() => {
         container.sizeCounter = sizeCounter;
     }, [container, sizeCounter]);
     return <>
-        <div ref={ref} className={styles.root} {...props}>
-            <Container.Region target={ref?.current} />
+        <div ref={element} className={styles.root} {...props}>
+            <Container.Region target={node} />
             {children}
         </div>
     </>;

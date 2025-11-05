@@ -1,14 +1,13 @@
-
 const version = require("./package.json").version;
-console.log("version", version);
+const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
-  publicRuntimeConfig: {
-    version
+  turbopack: {
+    root: path.join(__dirname, '..'),
   },
-  eslint: {
-    dirs: ['pages', 'src']
+  env: {
+    NEXT_PUBLIC_APP_VERSION: version
   },
   sassOptions: {
     silenceDeprecations: ["legacy-js-api"]

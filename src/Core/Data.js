@@ -17,7 +17,7 @@ export function createData(displayName) {
                 data.error = err;
                 data.loading = false;
             });
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+             
         }, [url, counter, data, fetch]);
 
         return children;

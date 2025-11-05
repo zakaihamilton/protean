@@ -9,7 +9,7 @@ export function createConsole(id) {
             console.log(`${methodName} is not a console method`);
         }
         object[methodName] = (...args) => {
-            return console[methodName](id + ":", ...args);
+            return console[methodName].call(id + ":", ...args);
         };
     });
     return object;

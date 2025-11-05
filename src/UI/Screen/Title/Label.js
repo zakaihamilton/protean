@@ -10,7 +10,7 @@ function Label() {
     const screen = Screen.State.useState();
     const dragDisabled = screen.center || screen.maximize;
     const clickDisabled = screen.center || screen.fixed || screen.dock;
-    const ref = useMoveDrag(!dragDisabled);
+    const [, element] = useMoveDrag(!dragDisabled);
     const drag = Drag.useState();
     const onClick = useCallback(e => {
         if (e.detail === 2 && !clickDisabled) {
@@ -32,7 +32,7 @@ function Label() {
         }
     );
     return (
-        <div ref={ref} className={className} style={style} onClick={onClick}>
+        <div ref={element} className={className} style={style} onClick={onClick}>
             <div className={styles.icon}>
                 {screen?.icon}
             </div>

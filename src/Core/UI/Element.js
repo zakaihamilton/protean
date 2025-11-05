@@ -5,10 +5,8 @@ export function useElement() {
     const callback = useCallback(node => {
         setNode(node);
     }, []);
-    useMemo(() => {
-        callback.current = node;
-    }, [callback, node]);
-    return callback;
+
+    return [node, callback];
 }
 
 export function useElementConstructor(element, constructor) {
