@@ -9,7 +9,7 @@ export default function Apps() {
     const apps = Apps.State.useState();
     const screenManager = Screen.Manager.useManager();
     useEffect(() => {
-        if (!apps.appId) {
+        if (!apps.appId || apps.relaunchCounter === undefined) {
             return;
         }
         const app = SupportedApps.find(item => item.id === apps.appId);
@@ -54,7 +54,7 @@ export default function Apps() {
         else {
             window.location.hash = `#${id}/${screenId}`;
         }
-    }, [apps, apps.appId, screenManager]);
+    }, [apps, apps.relaunchCounter, screenManager]);
 
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {

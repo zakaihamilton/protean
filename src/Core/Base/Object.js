@@ -40,7 +40,7 @@ export function createObject(props, id) {
             }
         }
     };
-    const target = () => {};
+    const target = () => { };
     const proxy = new Proxy(target, {
         get: function (target, propertyKey, receiver) {
             if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
@@ -50,7 +50,7 @@ export function createObject(props, id) {
         },
         set: function (target, propertyKey, value, receiver) {
             if (typeof propertyKey === 'string' && propertyKey.startsWith('__')) {
-                 return Reflect.set(target, propertyKey, value, receiver);
+                return Reflect.set(target, propertyKey, value, receiver);
             }
 
             if (internalState[propertyKey] === value) {
@@ -71,7 +71,30 @@ export function createObject(props, id) {
         apply(_, thisArg, argumentsList) {
             const cb = argumentsList[0];
             if (typeof cb === "function") {
-                cb.call(thisArg, proxy);
+                const draft = { ...internalState };
+                cb.call(thisArg, draft);
+
+                const oldKeys = new Set(Object.keys(internalState));
+                const newKeys = new Set(Object.keys(draft));
+                let hasChanged = false;
+
+                for (const key of newKeys) {
+                    if (!oldKeys.has(key) || internalState[key] !== draft[key]) {
+                        internalState[key] = draft[key];
+                        hasChanged = true;
+                    }
+                }
+
+                for (const key of oldKeys) {
+                    if (!newKeys.has(key)) {
+                        delete internalState[key];
+                        hasChanged = true;
+                    }
+                }
+
+                if (hasChanged) {
+                    notify(null);
+                }
             }
         },
         ownKeys: function (target) {
@@ -102,7 +125,7 @@ export function createObject(props, id) {
         writable: false,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__unmonitor", {
         value: (key, cb, id) => {
             const index = monitor.findIndex(item => item.key === key && item.cb === cb && item.id === id);
@@ -113,39 +136,39 @@ export function createObject(props, id) {
         writable: false,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__monitored", {
         get: () => monitor,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__unique", {
         get: () => unique,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__id", {
         get: () => id,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__object", {
         get: () => internalState,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__counter", {
         get: () => counter,
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__string", {
         get: () => {
             return JSON.stringify(internalState, getCircularReplacer(internalState), 2);
         },
         enumerable: false
     });
-    
+
     Object.defineProperty(proxy, "__node", {
         get: () => node,
         set: (value) => {
