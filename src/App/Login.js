@@ -99,7 +99,6 @@ export default function Login() {
             managerUser.logout();
             return;
         }
-        login.loading = true;
         login(state => {
             state.loading = true;
             state.message = { type: '', text: '' };
