@@ -34,9 +34,11 @@ export default function Logger() {
         const update = (method, ...args) => {
             const message = args.filter(arg => typeof arg === 'string' && !arg.startsWith('\x1B')).join(' ');
             const item = { type: method, message };
-            logger(state => {
-                state.items = [...state.items, item];
-            });
+            setTimeout(() => {
+                logger(state => {
+                    state.items = [...state.items, item];
+                });
+            }, 0);
         };
         return monitor(console, consoleMethodNames, update);
     }, [logger]);

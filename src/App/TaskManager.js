@@ -23,10 +23,9 @@ export default function TaskManager() {
         screenManager(state => {
             state.forceFocusId = null;
             if (item?.focus) {
-                item(i => { i.minimize = true; });
-            }
-            else {
-                item(i => { i.minimize = false; });
+                item.minimize = true;
+            } else {
+                item.minimize = false;
                 state.focusId = item?.id;
             }
         });

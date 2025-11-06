@@ -27,10 +27,8 @@ function ScreenManager({ children }) {
                 state.focus = [...state.focus?.filter(item => item !== focused) || [], focused].filter(Boolean);
                 state.focus.forEach((item, index) => {
                     const isFocused = !!(item === focused);
-                    item(i => {
-                        i.focus = isFocused;
-                        i.index = index;
-                    });
+                    item.focus = isFocused;
+                    item.index = index;
                 });
                 state.current = focused;
             });

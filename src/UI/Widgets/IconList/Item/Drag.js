@@ -41,13 +41,13 @@ export function ItemDrag({ item, inRange }) {
             if (hitTarget) {
                 const targetId = hitTarget.dataset.id;
                 if (targetId) {
-                    const sourceIndex = screenManager.list.findIndex(elem => elem.id === item.id);
-                    const targetIndex = screenManager.list.findIndex(elem => elem.id === targetId);
-                    if (targetIndex !== -1) {
-                        screenManager(state => {
+                    screenManager(state => {
+                        const sourceIndex = state.list.findIndex(elem => elem.id === item.id);
+                        const targetIndex = state.list.findIndex(elem => elem.id === targetId);
+                        if (targetIndex !== -1) {
                             state.list = moveItem(state.list, sourceIndex, targetIndex, item);
-                        });
-                    }
+                        }
+                    });
                 }
             }
             return;

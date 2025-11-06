@@ -53,11 +53,10 @@ export function useTooltip(ref, element, enabled) {
 
     const handleMouseEnter = useCallback(() => {
         clearTimeout(tooltip.timer);
-        const timer = setTimeout(() => {
-            tooltip(state => { state.visible = true; });
-        }, 500);
         tooltip(state => {
-            state.timer = timer;
+            state.timer = setTimeout(() => {
+                tooltip(s => { s.visible = true; });
+            }, 500);
         });
     }, [tooltip]);
 
