@@ -54,9 +54,9 @@ function Item({ item, index }) {
     return <div data-index={index} data-id={id} data-label={labelText} className={className} style={style} ref={element}>
         <ItemDrag item={item} index={index} inRange={inRange} />
         <div className={classes({ icon: true, [layout]: true })}>
-            <IconContext.Provider value={iconValue}>
+            <IconContext value={iconValue}>
                 {icon}
-            </IconContext.Provider>
+            </IconContext>
         </div>
         <div className={classes({ label: true, [layout]: true })}>
             {labelText}

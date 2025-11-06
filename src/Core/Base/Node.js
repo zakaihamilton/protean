@@ -15,9 +15,9 @@ export default function Node({ id, children }) {
     }), [id, parent]); // Dependencies
 
     // Pass the memoized 'node' object to the provider
-    return <Context.Provider value={node}>
+    return <Context value={node}>
         {children}
-    </Context.Provider>;
+    </Context>;
 }
 
 Node.useNode = (propId) => {
