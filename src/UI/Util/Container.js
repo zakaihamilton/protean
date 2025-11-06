@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useElement } from "src/Core/UI/Element";
 import { createState } from "src/Core/Base/State";
 import styles from "./Container.module.scss";
@@ -44,13 +44,12 @@ export function useContainerItem(index, item) {
 
         return () => {
             if (item) {
-                const currentItems = container.items || [];
-                const itemIndexToRemove = currentItems.indexOf(item);
-                if (itemIndexToRemove !== -1) {
-                    container(state => {
-                        state.items = currentItems.toSpliced(itemIndexToRemove, 1);
-                    });
-                }
+                container(state => {
+                    const itemIndexToRemove = state.items?.indexOf(item) ?? -1;
+                    if (itemIndexToRemove !== -1) {
+                        state.items = state.items.toSpliced(itemIndexToRemove, 1);
+                    }
+                });
             }
         };
     }, [container, index, item]);

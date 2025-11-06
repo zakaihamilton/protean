@@ -9,7 +9,7 @@ export default function Apps() {
     const apps = Apps.State.useState();
     const screenManager = Screen.Manager.useManager();
     useEffect(() => {
-        if (!apps.appId || apps.relaunchCounter === undefined) {
+        if (!apps.appId && apps.relaunchCounter === undefined) {
             return;
         }
         const app = SupportedApps.find(item => item.id === apps.appId);

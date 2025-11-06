@@ -1,7 +1,7 @@
 import { useClasses } from "src/Core/Util/Styles";
 import styles from "./Tooltip.module.scss";
 
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect, useRef } from 'react';
 import { useEventListener } from "src/Core/UI/EventListener";
 import Container from "../Util/Container";
 import { useElement } from "src/Core/UI/Element";
@@ -43,36 +43,35 @@ export function getTooltipPos(tooltip, element) {
 
 export function useTooltip(ref, element, enabled) {
     const tooltip = Tooltip.State.useState();
+    const timerRef = useRef(null);
 
     const handleMouseUp = useCallback(() => {
-        clearTimeout(tooltip.timer);
+        clearTimeout(timerRef.current);
         tooltip(state => {
             state.visible = false;
         });
     }, [tooltip]);
 
     const handleMouseEnter = useCallback(() => {
-        clearTimeout(tooltip.timer);
-        tooltip(state => {
-            state.timer = setTimeout(() => {
-                tooltip(s => { s.visible = true; });
-            }, 500);
-        });
+        clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => {
+            tooltip(state => {
+                state.visible = true;
+            });
+        }, 500);
     }, [tooltip]);
 
     const handleMouseLeave = useCallback(() => {
-        clearTimeout(tooltip.timer);
+        clearTimeout(timerRef.current);
         tooltip(state => {
-            state.timer = null;
             state.visible = false;
         });
     }, [tooltip]);
 
     useEffect(() => {
         if (!enabled && tooltip.visible) {
-            clearTimeout(tooltip.timer);
+            clearTimeout(timerRef.current);
             tooltip(state => {
-                state.timer = null;
                 state.visible = false;
             });
         }
