@@ -39,7 +39,6 @@ export default function Launcher() {
             state.forceFocusId = null;
         });
         apps(state => {
-            state.appId = null;
             state.appId = item?.id;
         });
     }, [screenManager, apps]);
