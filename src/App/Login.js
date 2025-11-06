@@ -99,26 +99,36 @@ export default function Login() {
             managerUser.logout();
             return;
         }
-        login.loading = true;
-        login.message = { type: '', text: '' };
+        login(state => {
+            state.loading = true;
+            state.message = { type: '', text: '' };
+        });
 
         if (!login.userId || !login.password) {
-            login.message = { type: 'error', text: lookup.ENTER_USER_ID_AND_PASSWORD };
-            login.loading = false;
+            login(state => {
+                state.message = { type: 'error', text: lookup.ENTER_USER_ID_AND_PASSWORD };
+                state.loading = false;
+            });
             return;
         }
 
         try {
             await managerUser.login(login.userId, login.password);
 
-            login.message = { type: 'success', text: lookup.LOGIN_SUCCESS };
-            login.password = '';
+            login(state => {
+                state.message = { type: 'success', text: lookup.LOGIN_SUCCESS };
+                state.password = '';
+            });
 
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : lookup.UNKNOWN_ERROR;
-            login.message = { type: 'error', text: `${errorMessage}` };
+            login(state => {
+                state.message = { type: 'error', text: `${errorMessage}` };
+            });
         } finally {
-            login.loading = false;
+            login(state => {
+                state.loading = false;
+            });
         }
     }, [managerUser, login, lookup]);
 
@@ -150,7 +160,9 @@ export default function Login() {
                                     id="loginUserId"
                                     type="text"
                                     value={login.userId || ''}
-                                    onChange={(e) => login.userId = e.target.value}
+                                    onChange={(e) => login(state => {
+                                        state.userId = e.target.value;
+                                    })}
                                     placeholder={lookup.ENTER_USER_ID}
                                     required
                                     className={classes("input")}
@@ -166,7 +178,9 @@ export default function Login() {
                                     id="loginPassword"
                                     type="password"
                                     value={login.password || ''}
-                                    onChange={(e) => login.password = e.target.value}
+                                    onChange={(e) => login(state => {
+                                        state.password = e.target.value;
+                                    })}
                                     placeholder={lookup.ENTER_PASSWORD}
                                     required={true}
                                     className={classes("input")}

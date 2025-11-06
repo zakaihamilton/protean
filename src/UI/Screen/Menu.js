@@ -28,7 +28,9 @@ function Menu() {
         });
     }, [menu.items]);
     const onPopupClick = useCallback(() => {
-        menu.selected = [];
+        menu(state => {
+            state.selected = [];
+        });
     }, [menu]);
     return <div className={styles.root}>
         <div className={popupClassName} onClick={onPopupClick} />

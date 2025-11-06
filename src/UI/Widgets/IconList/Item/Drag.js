@@ -20,26 +20,34 @@ export function ItemDrag({ item, inRange }) {
             const hitTargets = getHitTargets(container.element, handle);
             const hitTarget = hitTargets?.[hitTargets?.length - 1];
             if (hitTarget) {
-                container.target = hitTarget;
+                container(state => {
+                    state.target = hitTarget;
+                });
             }
             state.clickable = false;
         }
         else {
-            container.target = null;
+            container(state => {
+                state.target = null;
+            });
         }
     }, [inRange, container]);
     const onDragEnd = useCallback((state) => {
         const hitTarget = container.target;
-        container.target = null;
+        container(s => {
+            s.target = null;
+        });
         if (inRange) {
             if (hitTarget) {
                 const targetId = hitTarget.dataset.id;
                 if (targetId) {
-                    const sourceIndex = screenManager.list.findIndex(elem => elem.id === item.id);
-                    const targetIndex = screenManager.list.findIndex(elem => elem.id === targetId);
-                    if (targetIndex !== -1) {
-                        screenManager.list = moveItem(screenManager.list, sourceIndex, targetIndex, item);
-                    }
+                    screenManager(state => {
+                        const sourceIndex = state.list.findIndex(elem => elem.id === item.id);
+                        const targetIndex = state.list.findIndex(elem => elem.id === targetId);
+                        if (targetIndex !== -1) {
+                            state.list = moveItem(state.list, sourceIndex, targetIndex, item);
+                        }
+                    });
                 }
             }
             return;

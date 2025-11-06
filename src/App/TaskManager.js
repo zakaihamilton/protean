@@ -20,14 +20,15 @@ export default function TaskManager() {
     }, [screenManager.list]);
     const icon = useMemo(() => <BiWindows />, []);
     const onClick = useCallback(item => {
-        screenManager.forceFocusId = null;
-        if (item?.focus) {
-            item.minimize = true;
-        }
-        else {
-            item.minimize = false;
-            screenManager.focusId = item?.id;
-        }
+        screenManager(state => {
+            state.forceFocusId = null;
+            if (item?.focus) {
+                item.minimize = true;
+            } else {
+                item.minimize = false;
+                state.focusId = item?.id;
+            }
+        });
     }, [screenManager]);
 
     return <Resources resources={resources} lookup={lookup}>

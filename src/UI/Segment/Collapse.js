@@ -7,7 +7,9 @@ export default function Collapse() {
     const classes = useClasses(styles);
     const segment = Segment.State.useState();
     const onClick = useCallback(() => {
-        segment.collapse = !segment.collapse;
+        segment(state => {
+            state.collapse = !state.collapse;
+        });
     }, [segment]);
     const className = classes({ root: true, active: segment.collapse });
     return <div className={className} onClick={onClick}>

@@ -28,12 +28,16 @@ export default function Logger() {
     const logger = Logger.State.useState();
 
     useMemo(() => {
-        logger.items = [];
+        logger(state => {
+            state.items = [];
+        });
         const update = (method, ...args) => {
             const message = args.filter(arg => typeof arg === 'string' && !arg.startsWith('\x1B')).join(' ');
             const item = { type: method, message };
             setTimeout(() => {
-                logger.items = [...logger.items, item];
+                logger(state => {
+                    state.items = [...state.items, item];
+                });
             }, 0);
         };
         return monitor(console, consoleMethodNames, update);

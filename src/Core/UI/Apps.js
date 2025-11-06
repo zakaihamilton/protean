@@ -9,7 +9,7 @@ export default function Apps() {
     const apps = Apps.State.useState();
     const screenManager = Screen.Manager.useManager();
     useEffect(() => {
-        if (!apps.appId) {
+        if (!apps.appId && apps.relaunchCounter === undefined) {
             return;
         }
         const app = SupportedApps.find(item => item.id === apps.appId);
@@ -44,7 +44,9 @@ export default function Apps() {
             }
         }
         else if (Component) {
-            apps.list = [...apps.list || [], { id, Component }];
+            apps(state => {
+                state.list = [...state.list || [], { id, Component }];
+            });
         }
         if (id === screenId) {
             window.location.hash = `#${id}`;
@@ -52,7 +54,7 @@ export default function Apps() {
         else {
             window.location.hash = `#${id}/${screenId}`;
         }
-    }, [apps, apps.appId, screenManager]);
+    }, [apps, apps.appId, apps.relaunchCounter, screenManager]);
 
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {

@@ -7,10 +7,16 @@ function Lang({ id, direction, children }) {
     useEffect(() => {
         const language = localStorage.getItem("language");
         if (language) {
-            lang.id = language;
-            lang.direction = Lang.getDirection(language);
+            lang(state => {
+                state.id = language;
+                state.direction = Lang.getDirection(language);
+                state.ready = true;
+            });
+        } else {
+            lang(state => {
+                state.ready = true;
+            });
         }
-        lang.ready = true;
     }, [lang]);
 
     useEffect(() => {

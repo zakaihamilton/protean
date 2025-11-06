@@ -24,7 +24,9 @@ function Close() {
         visible: !screen.permanent && (actions.close ?? true)
     });
     const onClick = useCallback(() => {
-        screen.close = true;
+        screen(state => {
+            state.close = true;
+        });
     }, [screen]);
     return <Resources resources={resources} lookup={lookup}>
         <Container>

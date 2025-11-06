@@ -31,13 +31,17 @@ export default function Launcher() {
     const apps = Apps.State.useState();
     const list = useMemo(() => {
         return SupportedApps.filter(app => !launcher.search || app?.label[lang?.id]?.toLowerCase()?.includes(launcher.search?.toLowerCase()));
-    }, [launcher?.search, lang?.id]);
+    }, [launcher.search, lang?.id]);
     const searchDynamic = useDynamic(launcher, "search");
 
     const onClick = useCallback(item => {
-        screenManager.forceFocusId = null;
-        apps.appId = null;
-        apps.appId = item?.id;
+        screenManager(state => {
+            state.forceFocusId = null;
+        });
+        apps(state => {
+            state.appId = item?.id;
+            state.relaunchCounter = (state.relaunchCounter || 0) + 1;
+        });
     }, [screenManager, apps]);
 
     return <Resources resources={resources} lookup={lookup}>
