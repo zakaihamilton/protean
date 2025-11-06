@@ -6,15 +6,12 @@ const Context = createContext(root);
 export default function Node({ id, children }) {
     const parent = Node.useNode();
 
-    // Use useMemo to create a stable node object that
-    // correctly updates if the id or parent changes.
     const node = useMemo(() => ({
         id,
         parent,
-        items: new Map(), // Initialize items directly
-    }), [id, parent]); // Dependencies
+        items: new Map(),
+    }), [id, parent]);
 
-    // Pass the memoized 'node' object to the provider
     return <Context value={node}>
         {children}
     </Context>;
