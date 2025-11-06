@@ -10,11 +10,13 @@ function Lang({ id, direction, children }) {
             lang(state => {
                 state.id = language;
                 state.direction = Lang.getDirection(language);
+                state.ready = true;
+            });
+        } else {
+            lang(state => {
+                state.ready = true;
             });
         }
-        lang(state => {
-            state.ready = true;
-        });
     }, [lang]);
 
     useEffect(() => {
