@@ -54,7 +54,7 @@ export default function Apps() {
         else {
             window.location.hash = `#${id}/${screenId}`;
         }
-    }, [apps, apps.relaunchCounter, screenManager]);
+    }, [apps, apps.appId, apps.relaunchCounter, screenManager]);
 
     const activeApps = useMemo(() => {
         return apps.list?.map(({ Component, id }) => {
