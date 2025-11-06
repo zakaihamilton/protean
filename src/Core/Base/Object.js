@@ -141,7 +141,7 @@ export function createObject(props, id) {
     
     Object.defineProperty(proxy, "__string", {
         get: () => {
-            return JSON.stringify(internalState, getCircularReplacer(), 2);
+            return JSON.stringify(internalState, getCircularReplacer(internalState), 2);
         },
         enumerable: false
     });
