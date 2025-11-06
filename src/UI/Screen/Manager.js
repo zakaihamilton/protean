@@ -6,8 +6,10 @@ function ScreenManager({ children }) {
     const manager = ScreenManager.State.useState();
 
     useEffect(() => {
-        manager.open = manager.list?.filter(item => !item.close);
-        manager.visible = manager.list?.filter(item => !item.close && !item.minimize);
+        manager(state => {
+            state.open = state.list?.filter(item => !item.close);
+            state.visible = state.list?.filter(item => !item.close && !item.minimize);
+        });
     }, [manager, manager.list]);
 
     useEffect(() => {
@@ -21,13 +23,17 @@ function ScreenManager({ children }) {
             return;
         }
         const timer = setTimeout(() => {
-            manager.focus = [...manager.focus?.filter(item => item !== focused) || [], focused].filter(Boolean);
-            manager.focus.forEach((item, index) => {
-                const isFocused = !!(item === focused);
-                item.focus = isFocused;
-                item.index = index;
+            manager(state => {
+                state.focus = [...state.focus?.filter(item => item !== focused) || [], focused].filter(Boolean);
+                state.focus.forEach((item, index) => {
+                    const isFocused = !!(item === focused);
+                    item(i => {
+                        i.focus = isFocused;
+                        i.index = index;
+                    });
+                });
+                state.current = focused;
             });
-            manager.current = focused;
         }, 0);
         return () => clearTimeout(timer);
     }, [manager, manager.focusId, manager.list]);
@@ -42,19 +48,27 @@ export function useScreenItem(screen, target) {
             return;
         }
         if (screen.minimize || screen.close) {
-            manager.forceFocusId = null;
-            manager.focusId = null;
+            manager(state => {
+                state.forceFocusId = null;
+                state.focusId = null;
+            });
         }
         else {
-            manager.focusId = screen.id;
+            manager(state => {
+                state.focusId = screen.id;
+            });
         }
-        screen.minimized = screen.minimize;
-        screen.closed = screen.close;
+        screen(state => {
+            state.minimized = state.minimize;
+            state.closed = state.close;
+        });
     }, [screen.minimize, screen.close, screen.id, screen, manager]);
 
     const handleMouseDown = useCallback(() => {
-        manager.forceFocusId = null;
-        manager.focusId = screen.id;
+        manager(state => {
+            state.forceFocusId = null;
+            state.focusId = screen.id;
+        });
     }, [screen.id, manager]);
 
     useEventListener(target, "mousedown", handleMouseDown);
@@ -64,16 +78,22 @@ export function useScreenItem(screen, target) {
             return;
         }
         if (screen.close) {
-            manager.closed = [...manager.closed || [], screen];
+            manager(state => {
+                state.closed = [...state.closed || [], screen];
+            });
         }
         else {
-            manager.list = [...manager.list || [], screen];
-            manager.focus = [...manager.focus || [], screen];
+            manager(state => {
+                state.list = [...state.list || [], screen];
+                state.focus = [...state.focus || [], screen];
+            });
         }
         return () => {
-            manager.list = manager.list?.filter(item => item !== screen);
-            manager.focus = manager.focus?.filter(item => item !== screen);
-            manager.closed = manager.closed?.filter(item => item !== screen);
+            manager(state => {
+                state.list = state.list?.filter(item => item !== screen);
+                state.focus = state.focus?.filter(item => item !== screen);
+                state.closed = state.closed?.filter(item => item !== screen);
+            });
         }
     }, [screen, manager, screen?.close]);
 }

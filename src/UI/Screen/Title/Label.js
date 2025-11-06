@@ -14,7 +14,9 @@ function Label() {
     const drag = Drag.useState();
     const onClick = useCallback(e => {
         if (e.detail === 2 && !clickDisabled) {
-            screen.maximize = !screen.maximize;
+            screen(state => {
+                state.maximize = !state.maximize;
+            });
         }
     }, [screen, clickDisabled]);
     const style = useMemo(() => {

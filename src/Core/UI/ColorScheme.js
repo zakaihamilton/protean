@@ -17,7 +17,9 @@ function ColorScheme() {
     const colorScheme = ColorScheme.State.useState();
 
     useEffect(() => {
-        colorScheme.theme = defaultColorScheme;
+        colorScheme(state => {
+            state.theme = defaultColorScheme;
+        });
     }, [colorScheme, defaultColorScheme]);
 
     useEffect(() => {
@@ -31,13 +33,17 @@ function ColorScheme() {
     }, [colorScheme.theme]);
 
     const onColorSchemeChange = useCallback(() => {
-        colorScheme.theme = prefersColorScheme();
+        colorScheme(state => {
+            state.theme = prefersColorScheme();
+        });
     }, [colorScheme]);
 
     useEventListener(screen?.matchMedia('(prefers-color-scheme: dark)'), "change", onColorSchemeChange);
 
     const toggle = useCallback(() => {
-        colorScheme.theme = colorScheme.theme === "light" ? "dark" : "light";
+        colorScheme(state => {
+            state.theme = state.theme === "light" ? "dark" : "light";
+        });
     }, [colorScheme]);
 
     useEffect(() => {

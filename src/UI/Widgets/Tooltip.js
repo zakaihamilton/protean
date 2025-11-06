@@ -46,27 +46,36 @@ export function useTooltip(ref, element, enabled) {
 
     const handleMouseUp = useCallback(() => {
         clearTimeout(tooltip.timer);
-        tooltip.visible = false;
+        tooltip(state => {
+            state.visible = false;
+        });
     }, [tooltip]);
 
     const handleMouseEnter = useCallback(() => {
         clearTimeout(tooltip.timer);
-        tooltip.timer = setTimeout(() => {
-            tooltip.visible = true;
+        const timer = setTimeout(() => {
+            tooltip(state => { state.visible = true; });
         }, 500);
+        tooltip(state => {
+            state.timer = timer;
+        });
     }, [tooltip]);
 
     const handleMouseLeave = useCallback(() => {
         clearTimeout(tooltip.timer);
-        tooltip.timer = null;
-        tooltip.visible = false;
+        tooltip(state => {
+            state.timer = null;
+            state.visible = false;
+        });
     }, [tooltip]);
 
     useEffect(() => {
         if (!enabled && tooltip.visible) {
             clearTimeout(tooltip.timer);
-            tooltip.timer = null;
-            tooltip.visible = false;
+            tooltip(state => {
+                state.timer = null;
+                state.visible = false;
+            });
         }
     }, [enabled, tooltip]);
 
@@ -74,7 +83,9 @@ export function useTooltip(ref, element, enabled) {
         if (!ref || !element) {
             return;
         }
-        tooltip.position = getTooltipPos(ref, element);
+        tooltip(state => {
+            state.position = getTooltipPos(ref, element);
+        });
     }, [ref, element, tooltip]);
 
     useEventListener(element, "mouseup", enabled && handleMouseUp);

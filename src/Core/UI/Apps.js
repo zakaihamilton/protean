@@ -44,7 +44,9 @@ export default function Apps() {
             }
         }
         else if (Component) {
-            apps.list = [...apps.list || [], { id, Component }];
+            apps(state => {
+                state.list = [...state.list || [], { id, Component }];
+            });
         }
         if (id === screenId) {
             window.location.hash = `#${id}`;

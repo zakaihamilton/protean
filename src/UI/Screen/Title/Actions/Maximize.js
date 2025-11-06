@@ -24,7 +24,9 @@ function Maximize() {
         visible: !screen.maximize && !screen.center && !screen.dock && !screen.fixed && (actions.maximize ?? true)
     });
     const onClick = useCallback(() => {
-        screen.maximize = true;
+        screen(state => {
+            state.maximize = true;
+        });
     }, [screen]);
     return <Resources resources={resources} lookup={lookup}>
         <Container>

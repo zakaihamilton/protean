@@ -13,11 +13,15 @@ function Navigation() {
     const navigation = Navigation.State.useState();
 
     useEffect(() => {
-        navigation.hash = screen?.location?.hash;
+        navigation(state => {
+            state.hash = screen?.location?.hash;
+        });
     }, [navigation, screen]);
 
     const onHashChange = useCallback(() => {
-        navigation.hash = screen?.location?.hash;
+        navigation(state => {
+            state.hash = screen?.location?.hash;
+        });
     }, [navigation, screen]);
     useEventListener(screen, "hashchange", onHashChange);
 
@@ -25,13 +29,17 @@ function Navigation() {
         window.location.hash = navigation.hash;
         const segments = navigation.hash?.replace("#", "").split("/") || [];
         const appId = segments[0], screenId = segments[1] || segments[0];
-        if (appId) {
-            apps.appId = appId;
-        }
-        if (screenId) {
-            screenManager.forceFocusId = screenId;
-            screenManager.focusId = screenId;
-        }
+        apps(state => {
+            if (appId) {
+                state.appId = appId;
+            }
+        });
+        screenManager(state => {
+            if (screenId) {
+                state.forceFocusId = screenId;
+                state.focusId = screenId;
+            }
+        });
     }, [navigation.hash, screen?.location, screenManager, apps]);
 
     useEffect(() => {
@@ -47,7 +55,9 @@ function Navigation() {
         else {
             hash = `${appId}/${screenId}`;
         }
-        navigation.hash = hash;
+        navigation(state => {
+            state.hash = hash;
+        });
     }, [navigation, current]);
 }
 

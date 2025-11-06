@@ -93,38 +93,50 @@ function useCalculatorMethods(calculator) {
 
     const decimal = useCallback(() => {
         if (!calculator.input.includes('.')) {
-            calculator.input = calculator.input + '.';
+            calculator(state => {
+                state.input += '.';
+            })
         }
     }, [calculator]);
 
     const operation = useCallback(op => {
         if (calculator.input !== '0') {
-            calculator.operation = op;
-            calculator.previous = calculator.input;
-            calculator.input = '0';
+            calculator(state => {
+                state.operation = op;
+                state.previous = state.input;
+                state.input = '0';
+            });
         }
     }, [calculator]);
 
     const percent = useCallback(() => {
         if (calculator.input !== '0') {
-            calculator.input = (parseFloat(calculator.input) / 100).toString();
+            calculator(state => {
+                state.input = (parseFloat(state.input) / 100).toString();
+            });
         }
     }, [calculator]);
 
     const clear = useCallback(() => {
         if (calculator.input === '0') {
-            calculator.input = '0';
-            calculator.previous = null;
-            calculator.operation = null;
+            calculator(state => {
+                state.input = '0';
+                state.previous = null;
+                state.operation = null;
+            });
         }
         else {
-            calculator.input = '0';
+            calculator(state => {
+                state.input = '0';
+            });
         }
     }, [calculator]);
 
     const plusminus = useCallback(() => {
         if (calculator.input !== '0') {
-            calculator.input = (parseFloat(calculator.input) * -1).toString();
+            calculator(state => {
+                state.input = (parseFloat(state.input) * -1).toString();
+            });
         }
     }, [calculator]);
 
@@ -153,9 +165,11 @@ function useCalculatorMethods(calculator) {
                 default:
                     result = 'Error';
             }
-            calculator.input = result.toString();
-            calculator.previous = null;
-            calculator.operation = null;
+            calculator(state => {
+                state.input = result.toString();
+                state.previous = null;
+                state.operation = null;
+            });
         }
     }, [calculator]);
 
@@ -193,7 +207,9 @@ export default function Calculator() {
                     }
                     else {
                         const current = parseFloat(calculator.input);
-                        calculator.input = (current * 10 + value).toString();
+                        calculator(state => {
+                            state.input = (current * 10 + value).toString();
+                        });
                     }
                 };
                 elements.push(<Button key={item.id} row={rowIndex + 2} column={columnIndex} onClick={onClick} {...item} />);

@@ -6,7 +6,9 @@ export function useDynamic(state, id) {
             return state[id];
         }
         else {
-            state[id] = val;
+            state(draft => {
+                draft[id] = val;
+            });
         }
     }, [id, state]);
     return dynamic;

@@ -47,14 +47,16 @@ function Screen({ children }) {
 
     useEffect(() => {
         if (screen) {
-            screen.appId = app?.id;
+            screen(state => {
+                state.appId = app?.id;
+            });
         }
     }, [app?.id, screen]);
 
     return (
         <>
             <Drag rect={rect} min={min} />
-            <Screen.Region target={element?.current} counter={rect.__counter} />
+            <Screen.Region target={node} counter={rect.__counter} />
             <div ref={element} className={className} style={style}>
                 <Title />
                 <Menu />

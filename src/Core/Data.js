@@ -9,15 +9,21 @@ export function createData(displayName) {
         const { url, counter } = data;
 
         useEffect(() => {
-            data.loading = true;
-            fetch({ ...data }).then(result => {
-                data.result = result;
-                data.loading = false;
-            }).catch(err => {
-                data.error = err;
-                data.loading = false;
+            data(state => {
+                state.loading = true;
             });
-             
+            fetch({ ...data }).then(result => {
+                data(state => {
+                    state.result = result;
+                    state.loading = false;
+                });
+            }).catch(err => {
+                data(state => {
+                    state.error = err;
+                    state.loading = false;
+                });
+            });
+
         }, [url, counter, data, fetch]);
 
         return children;

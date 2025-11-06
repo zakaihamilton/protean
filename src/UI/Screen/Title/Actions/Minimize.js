@@ -24,7 +24,9 @@ function Minimize() {
         visible: actions.minimize ?? true
     });
     const onClick = useCallback(() => {
-        screen.minimize = !screen.minimize;
+        screen(state => {
+            state.minimize = !state.minimize;
+        });
     }, [screen]);
     return <Resources resources={resources} lookup={lookup}>
         <Container>

@@ -14,7 +14,9 @@ export default function ListEditor() {
     const screenRegion = Screen.Region.useRegion();
 
     useEffect(() => {
-        listEditor.storage = Storage[0].Component;
+        listEditor(state => {
+            state.storage = Storage[0].Component;
+        });
     }, [listEditor]);
 
     const icon = useMemo(() => <MdOutlineListAlt />, []);

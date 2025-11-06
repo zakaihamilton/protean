@@ -24,7 +24,9 @@ function Restore() {
         visible: screen.maximize && !screen.center && !screen.dock && !screen.fixed && (actions.restore ?? true)
     });
     const onClick = useCallback(() => {
-        screen.maximize = false;
+        screen(state => {
+            state.maximize = false;
+        });
     }, [screen]);
     return <Resources resources={resources} lookup={lookup}>
         <Container>

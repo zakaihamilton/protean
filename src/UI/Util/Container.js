@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useElement } from "src/Core/UI/Element";
 import { createState } from "src/Core/Base/State";
 import styles from "./Container.module.scss";
@@ -33,12 +33,13 @@ Container.Item = function ContainerItem({ children, ...props }) {
 
 export function useContainerItem(index, item) {
     const container = Container.State.useState();
-    const [mounted, setMounted] = useState(false);
+    const mounted = useMemo(() => !!(item && container.items?.includes(item)), [item, container.items]);
 
     useEffect(() => {
         if (item) {
-            container.items = (container.items || []).toSpliced(index, 0, item);
-            setMounted(true);
+            container(state => {
+                state.items = (state.items || []).toSpliced(index, 0, item);
+            });
         }
 
         return () => {
@@ -46,10 +47,10 @@ export function useContainerItem(index, item) {
                 const currentItems = container.items || [];
                 const itemIndexToRemove = currentItems.indexOf(item);
                 if (itemIndexToRemove !== -1) {
-                    container.items = currentItems.toSpliced(itemIndexToRemove, 1);
+                    container(state => {
+                        state.items = currentItems.toSpliced(itemIndexToRemove, 1);
+                    });
                 }
-
-                setMounted(false);
             }
         };
     }, [container, index, item]);

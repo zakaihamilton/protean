@@ -3,13 +3,6 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 
 const eslintConfig = defineConfig([
   ...nextVitals,
-
-  {
-    rules: {
-      'react-hooks/immutability': 'off',
-    },
-  },
-
   globalIgnores([
     '.next/**',
     'out/**',

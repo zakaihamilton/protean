@@ -10,7 +10,9 @@ export default function Fullscreen() {
     const screen = Screen.State.useState();
 
     const onClick = useCallback(() => {
-        screen.fullscreen = !screen.fullscreen;
+        screen(state => {
+            state.fullscreen = !state.fullscreen;
+        });
     }, [screen]);
 
     const className = classes({
