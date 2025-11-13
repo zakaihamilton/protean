@@ -50,5 +50,5 @@
     "yarn": "^1.22.22",
     "yarn-upgrade-all": "^0.7.5"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.11.0"
 }

@@ -6,12 +6,12 @@ import { useElement } from "src/Core/UI/Element";
 import Node from "src/Core/Base/Node";
 
 function Desktop({ children }) {
-    const [node, element] = useElement();
+    const [target, element] = useElement();
     return <>
         <div className={styles.root}>
             <Background />
             <Taskbar.State visible={true} />
-            <Desktop.Region target={node} />
+            <Desktop.Region target={target} />
             <div ref={element} className={styles.screens}>
                 {children}
             </div>

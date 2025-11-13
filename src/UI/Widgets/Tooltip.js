@@ -97,9 +97,9 @@ export function useTooltip(ref, element, enabled) {
 }
 
 function Tooltip({ title, description, enabled = true }) {
-    const [node, tooltip] = useElement();
+    const [target, tooltip] = useElement();
     let { element } = Container.State.useState() || {};
-    const { visible, position } = useTooltip(node, element, enabled);
+    const { visible, position } = useTooltip(target, element, enabled);
     const classes = useClasses(styles);
     const className = classes({
         root: true,

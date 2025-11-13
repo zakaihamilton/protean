@@ -5,14 +5,7 @@
 
 .root.vertical {
     flex-direction: column;
-}
-
-.root.vertical>* {
-    margin-bottom: 6px;
-}
-
-.root:not(.vertical)>* {
-    margin-right: 6px;
+    gap: 6px;
 }
 
 .root.wrap {

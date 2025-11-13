@@ -12,7 +12,7 @@ export function useMonitorSizeOfElements(elements) {
             const currentMap = observedElementsMapRef.current;
 
             for (const entry of entries) {
-                const element = entry.target; // element is a DOM element from ResizeObserver
+                const element = entry.target;
                 if (currentMap.has(element)) {
                     const rect = element.getBoundingClientRect();
                     const newDimensions = {
