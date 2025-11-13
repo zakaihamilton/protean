@@ -31,12 +31,12 @@ export function createObject(props, id) {
     let node = undefined;
     const unique = crypto.randomUUID();
     const internalState = { ...props };
-    const notify = (key) => {
+    const notify = (keys) => {
         counter++;
         for (const item of monitor) {
-            if ((!item.key || key === item.key) && item.cb) {
+            if ((!item.key || keys.includes(item.key)) && item.cb) {
                 item.counter++;
-                item.cb(key);
+                item.cb(item.key);
             }
         }
     };
@@ -57,13 +57,13 @@ export function createObject(props, id) {
                 return true;
             }
             internalState[propertyKey] = value;
-            notify(propertyKey);
+            notify([propertyKey]);
             return true;
         },
         deleteProperty: function (target, propertyKey) {
             if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
                 delete internalState[propertyKey];
-                notify(propertyKey);
+                notify([propertyKey]);
                 return true;
             }
             return false;
@@ -76,24 +76,24 @@ export function createObject(props, id) {
 
                 const oldKeys = new Set(Object.keys(internalState));
                 const newKeys = new Set(Object.keys(draft));
-                let hasChanged = false;
+                const changedKeys = [];
 
                 for (const key of newKeys) {
                     if (!oldKeys.has(key) || internalState[key] !== draft[key]) {
                         internalState[key] = draft[key];
-                        hasChanged = true;
+                        changedKeys.push(key);
                     }
                 }
 
                 for (const key of oldKeys) {
                     if (!newKeys.has(key)) {
                         delete internalState[key];
-                        hasChanged = true;
+                        changedKeys.push(key);
                     }
                 }
 
-                if (hasChanged) {
-                    notify(null);
+                if (changedKeys.length > 0) {
+                    notify(changedKeys);
                 }
             }
         },
