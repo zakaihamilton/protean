@@ -1,4 +1,4 @@
-export function objectHasChanged(a, b) {
+export function objectChangedKeys(a, b) {
     a = a || {};
     b = b || {};
     const aKeys = Object.keys(a), bKeys = Object.keys(b);
@@ -6,6 +6,9 @@ export function objectHasChanged(a, b) {
 }
 
 export function getCircularReplacer(object) {
+    if (typeof object !== "object" || object === null) {
+        return object;
+    }
     const keys = Object.keys(object);
     const seen = new WeakSet();
     return (key, value) => {
@@ -32,9 +35,12 @@ export function createObject(props, id) {
     const unique = crypto.randomUUID();
     const internalState = { ...props };
     const notify = (keys) => {
+        if (!Array.isArray(keys)) {
+            return;
+        }
         counter++;
         for (const item of monitor) {
-            if ((!item.key || keys.includes(item.key)) && item.cb) {
+            if ((!item.key || keys.includes(item.key)) && typeof item.cb === "function") {
                 item.counter++;
                 item.cb(item.key);
             }
@@ -60,7 +66,7 @@ export function createObject(props, id) {
             notify([propertyKey]);
             return true;
         },
-        deleteProperty: function (target, propertyKey) {
+        deleteProperty: function (_, propertyKey) {
             if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
                 delete internalState[propertyKey];
                 notify([propertyKey]);
@@ -186,12 +192,10 @@ export function filterObjectByKeys(obj, keysToFilter) {
     const leftover = {};
     const keysSet = new Set(keysToFilter);
 
-    for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            const target = keysSet.has(key) ? filtered : leftover;
-            target[key] = obj[key];
-        }
-    }
+    Object.entries(obj).forEach(([key, value]) => {
+        const target = keysSet.has(key) ? filtered : leftover;
+        target[key] = value;
+    });
 
     return [filtered, leftover];
 }

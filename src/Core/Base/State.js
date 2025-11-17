@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
-import { objectHasChanged, createObject } from "./Object";
+import { objectChangedKeys, createObject } from "./Object";
 import { useBatchedRender } from "./Render";
 
 export function createState(displayName) {
     function State({ children, ...props }) {
         const object = State.useState(null, props);
         const [updatedProps, setUpdatedProps] = useState({});
-        const keysChanged = object && objectHasChanged(props, updatedProps);
+        const keysChanged = object && objectChangedKeys(props, updatedProps);
         const changeRef = useRef(0);
         if (keysChanged.length) {
             changeRef.current++;
