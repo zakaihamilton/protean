@@ -32,3 +32,4 @@ yarn-error.log*
 .vercel
 .env.test
 dump.rdb
+.yarn/install-state.gz
