@@ -3,6 +3,11 @@ import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
 import { objectChangedKeys, createObject } from "./Object";
 import { useBatchedRender } from "./Render";
 
+const stateRegistry = (typeof window !== 'undefined' && window.__STATE_REGISTRY__) || {};
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    window.__STATE_REGISTRY__ = stateRegistry;
+}
+
 export function createState(displayName) {
     function State({ children, ...props }) {
         const object = State.useState(null, props);
@@ -40,6 +45,11 @@ export function createState(displayName) {
         return <Node>{children}</Node>;
     }
     State.useState = (selector, initial, id) => {
+        const [isMounted, setIsMounted] = useState(false);
+        useEffect(() => {
+            setIsMounted(true);
+        }, []);
+
         let node = Node.useNode(initial ? null : State);
         const current = Node.useNode();
         if (!node) {
@@ -47,7 +57,14 @@ export function createState(displayName) {
         }
         let object = nodeGetProperty(node, State);
         if (!object && node) {
-            object = createObject({ ...initial || {} }, displayName);
+            if (process.env.NODE_ENV === 'development' && isMounted && stateRegistry[displayName]) {
+                object = stateRegistry[displayName];
+            } else {
+                object = createObject({ ...initial || {} }, displayName);
+                if (process.env.NODE_ENV === 'development' && isMounted) {
+                    stateRegistry[displayName] = object;
+                }
+            }
             nodeSetProperty(node, State, object);
             object.__node = node;
         }
