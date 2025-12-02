@@ -4,7 +4,7 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   turbopack: {
-    root: path.join(__dirname, '..'),
+    root: __dirname,
   },
   env: {
     NEXT_PUBLIC_APP_VERSION: version

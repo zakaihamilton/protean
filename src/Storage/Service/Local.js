@@ -18,9 +18,6 @@ class StorageLocal extends StorageInterface {
     }
 
     async keys(filter) {
-        if (!this.client) {
-            throw "Client not connected";
-        }
         if (!filter) {
             return [];
         }
