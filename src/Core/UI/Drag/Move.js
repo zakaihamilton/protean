@@ -26,7 +26,8 @@ export function useMoveDrag(enabled = true, options = {}) {
         const left = options?.horizontalLock ? Math.floor(state.base.x - state.offset.x) : Math.floor(e.clientX - state.offset.x);
         const top = options?.verticalLock ? Math.floor(state.base.y - state.offset.y) : Math.floor(e.clientY - state.offset.y);
         if (state.base.left !== left || state.base.top !== top) {
-            state.rect = Object.assign(state.rect, { left, top });
+            state.rect.left = left;
+            state.rect.top = top;
             state.dragged = {
                 x: options?.horizontalLock ? 0 : e.clientX - state.base.x,
                 y: options?.verticalLock ? 0 : e.clientY - state.base.y
