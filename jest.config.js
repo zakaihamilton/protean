@@ -8,11 +8,15 @@ const customJestConfig = {
     testEnvironment: "jest-environment-jsdom",
     setupFiles: [
         "./jest.polyfills.js",
+        "./test-setup.js",
         "dotenv/config"
     ],
     moduleNameMapper: {
-        // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
-        "uuid": require.resolve('uuid')
+        "^bson$": require.resolve("bson"),
+        "^sinon$": require.resolve("sinon"),
     },
+    transformIgnorePatterns: [
+        "/node_modules/(?!(mongodb|bson)/)"
+    ],
 };
 module.exports = createJestConfig(customJestConfig);
