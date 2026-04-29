@@ -14,14 +14,18 @@ export function ManagerUser() {
 
     const userLogin = useCallback(async (userId, password) => {
         userId = userId.toLowerCase().replace(/[^a-z0-9]/g, '');
-        managerUser.hash = null;
+        managerUser((draft) => {
+            draft.hash = null;
+        });
         try {
             const result = await login(userId, password);
             const { hash, error } = result;
             if (hash) {
-                managerUser.userId = userId;
-                managerUser.hash = hash;
-                managerUser.loggedIn = true;
+                managerUser((draft) => {
+                    draft.userId = userId;
+                    draft.hash = hash;
+                    draft.loggedIn = true;
+                });
                 return;
             }
             if (error) {
@@ -29,28 +33,38 @@ export function ManagerUser() {
             }
         }
         catch (error) {
-            managerUser.loggedIn = false;
+            managerUser((draft) => {
+                draft.loggedIn = false;
+            });
             console.error(error);
             throw error;
         }
     }, [managerUser]);
 
     const userLogout = useCallback(() => {
-        managerUser.userId = null;
-        managerUser.hash = null;
-        managerUser.loggedIn = false;
+        managerUser((draft) => {
+            draft.userId = null;
+            draft.hash = null;
+            draft.loggedIn = false;
+        });
     }, [managerUser]);
 
     useEffect(() => {
-        managerUser.login = userLogin;
-        managerUser.logout = userLogout;
+        managerUser((draft) => {
+            draft.login = userLogin;
+            draft.logout = userLogout;
+        });
         const userId = Cookies.get(STORAGE_KEY_USER_ID);
         const hash = Cookies.get(STORAGE_KEY_AUTH_HASH);
         if (!userId || !hash) {
-            managerUser.loggedIn = false;
+            managerUser((draft) => {
+                draft.loggedIn = false;
+            });
             return;
         }
-        managerUser.userId = userId;
+        managerUser((draft) => {
+            draft.userId = userId;
+        });
         login(userId, hash).then((result) => {
             const { hash: resultHash } = result;
             if (resultHash !== hash) {
@@ -58,12 +72,16 @@ export function ManagerUser() {
                 return;
             }
             console.log("auto login successful");
-            managerUser.hash = hash;
-            managerUser.loggedIn = true;
+            managerUser((draft) => {
+                draft.hash = hash;
+                draft.loggedIn = true;
+            });
         }).catch(() => {
             console.log("auto login failed");
-            managerUser.hash = null;
-            managerUser.loggedIn = false;
+            managerUser((draft) => {
+                draft.hash = null;
+                draft.loggedIn = false;
+            });
         });
     }, [managerUser, userLogin, userLogout]);
 

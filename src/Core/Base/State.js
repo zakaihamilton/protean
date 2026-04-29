@@ -1,44 +1,36 @@
-import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
-import Node, { nodeGetProperty, nodeSetProperty } from "./Node";
-import { objectChangedKeys, createObject } from "./Object";
-import { useBatchedRender } from "./Render";
+import { useCallback, useEffect, useState, useSyncExternalStore, useRef } from "react";
+import Node, { nodeGetProperty, nodeSetProperty, subscribeToNode } from "./Node";
+import { createObject, objectChangedKeys } from "./Object";
 
 export function createState(displayName) {
     function State({ children, ...props }) {
         const object = State.useState(null, props);
-        const [updatedProps, setUpdatedProps] = useState({});
-        const keysChanged = object && objectChangedKeys(props, updatedProps);
-        const changeRef = useRef(0);
-        if (keysChanged.length) {
-            changeRef.current++;
-        }
-        useLayoutEffect(() => {
-            if (!changeRef.current) {
-                return;
+        const prevPropsRef = useRef({});
+
+        useEffect(() => {
+            if (!object) return;
+            const keysChanged = objectChangedKeys(props, prevPropsRef.current);
+            if (keysChanged && keysChanged.length > 0) {
+                prevPropsRef.current = props;
+                object((draft) => {
+                    for (const key of keysChanged) {
+                        draft[key] = props[key];
+                    }
+                });
             }
-            setUpdatedProps(previous => {
-                const result = { ...previous };
-                for (const key of keysChanged) {
-                    result[key] = props[key];
-                }
-                return result;
-            });
-            for (const key of keysChanged) {
-                object[key] = props[key];
-            }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [changeRef.current]);
+        }, [object, props]);
 
         if (!children) {
             return null;
         }
 
-        if (typeof children === 'function') {
+        if (typeof children === "function") {
             return children(object);
         }
 
-        return <Node>{children}</Node>;
+        return <Node id={displayName}>{children}</Node>;
     }
+
     State.useState = (selector, initial, id) => {
         let node = Node.useNode(initial ? null : State);
         const current = Node.useNode();
@@ -47,18 +39,70 @@ export function createState(displayName) {
         }
         let object = nodeGetProperty(node, State);
         if (!object && node) {
-            object = createObject({ ...initial || {} }, displayName);
+            object = createObject({ ...(initial || {}) }, displayName);
             nodeSetProperty(node, State, object);
             object.__node = node;
         }
+
+        if (object && initial && Object.keys(object).length === 0) {
+            queueMicrotask(() => {
+                if (Object.keys(object).length === 0) {
+                    Object.assign(object, initial);
+                }
+            });
+        }
+
         useObjectState(object, selector, id);
         return object;
     };
+
+    State.useFutureState = (selector, id) => {
+        const startNode = Node.useNode();
+        const foundObject = useRef(null);
+
+        const [object, setObject] = useState(() => {
+            let search = startNode;
+            while (search) {
+                const found = nodeGetProperty(search, State);
+                if (found) {
+                    foundObject.current = found;
+                    return found;
+                }
+                search = search.parent;
+            }
+            return null;
+        });
+
+        useEffect(() => {
+            if (object || foundObject.current) return;
+
+            const unsubscribe = subscribeToNode((changedNode, propId, newValue) => {
+                if (propId !== State) return;
+
+                let search = startNode;
+                while (search) {
+                    if (search === changedNode) {
+                        foundObject.current = newValue;
+                        setObject(newValue);
+                        return;
+                    }
+                    search = search.parent;
+                }
+            });
+
+            return unsubscribe;
+        }, [startNode, object]);
+
+        const activeObject = object || foundObject.current;
+        return useObjectState(activeObject, selector, id);
+    };
+
     State.usePassiveState = () => {
         const node = Node.useNode(State);
         const object = nodeGetProperty(node, State);
         return object;
     };
+
     State.displayName = displayName;
     return State;
 }
@@ -72,13 +116,13 @@ export function isSelectorMatch(selector, key) {
     }
 
     const selectorType = typeof selector;
-    if (selectorType === 'string') {
+    if (selectorType === "string") {
         return selector === key;
     }
-    if (selectorType === 'function') {
+    if (selectorType === "function") {
         return !!selector(key);
     }
-    if (selectorType === 'object') {
+    if (selectorType === "object") {
         return Array.isArray(selector) ? selector.includes(key) : selector[key];
     }
 
@@ -100,17 +144,46 @@ export function useObjectHandler(object, handler, id) {
 }
 
 export function useObjectState(object, selector, id) {
-    const render = useBatchedRender();
-    const selectorRef = useRef(selector);
-    const handler = useCallback(key => {
-        const selector = selectorRef.current;
-        if (!selector || isSelectorMatch(selector, key)) {
-            render();
+    const subscribe = useCallback(
+        (onStoreChange) => {
+            if (!object) return () => { };
+
+            if (typeof object.__monitor !== "function") {
+                return () => { };
+            }
+
+            const handler = (keys) => {
+                if (!selector || keys.some((key) => isSelectorMatch(selector, key))) {
+                    onStoreChange();
+                }
+            };
+
+            object.__monitor(null, handler, id);
+
+            return () => {
+                if (typeof object.__unmonitor === "function") {
+                    object.__unmonitor(null, handler, id);
+                }
+            };
+        },
+        [object, selector, id],
+    );
+
+    const getSnapshot = useCallback(() => {
+        if (!object) return null;
+
+        if (typeof object.__counter === "undefined") {
+            return typeof selector === "string" ? object[selector] : object;
         }
-    }, [render]);
-    useEffect(() => {
-        selectorRef.current = selector;
-    }, [selector]);
-    useObjectHandler(object, handler, id);
+
+        if (typeof selector === "string") {
+            return object[selector];
+        }
+
+        return object.__counter;
+    }, [object, selector]);
+
+    useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+
     return object;
 }

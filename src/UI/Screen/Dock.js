@@ -27,7 +27,9 @@ export function useDock() {
 
     useEffect(() => {
         const displayRegion = { left: 0, top: 0, width: globalThis.innerWidth, height: globalThis.innerHeight };
-        screen.dock = !screen?.fixed && dockInBorderRegion(displayRegion, drag?.touch);
+        screen((state) => {
+            state.dock = !state?.fixed && dockInBorderRegion(displayRegion, drag?.touch);
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rect?.__counter, drag?.moving, screen?.dock]);
     const style = useMemo(() => {

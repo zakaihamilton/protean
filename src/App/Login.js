@@ -19,7 +19,9 @@ export default function Login() {
 
     useEffect(() => {
         if (managerUser.userId) {
-            login.userId = managerUser.userId;
+            login(state => {
+                state.userId = managerUser.userId;
+            });
         }
     }, [login, managerUser.userId]);
 

@@ -1,20 +1,23 @@
-import React, { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 
 const root = { id: "root", parent: null, items: new Map() };
 const Context = createContext(root);
 
+const listeners = new Set();
+
 export default function Node({ id, children }) {
     const parent = Node.useNode();
 
-    const node = useMemo(() => ({
-        id,
-        parent,
-        items: new Map(),
-    }), [id, parent]);
+    const node = useMemo(
+        () => ({
+            id,
+            parent,
+            items: new Map(),
+        }),
+        [id, parent],
+    );
 
-    return <Context value={node}>
-        {children}
-    </Context>;
+    return <Context value={node}>{children}</Context>;
 }
 
 Node.useNode = (propId) => {
@@ -38,9 +41,17 @@ export function nodeGetProperty(node, propId) {
 export function nodeSetProperty(node, id, value) {
     if (node?.items) {
         node.items.set(id, value);
+        queueMicrotask(() => {
+            listeners.forEach((callback) => callback(node, id, value));
+        });
     }
 }
 
+export function subscribeToNode(callback) {
+    listeners.add(callback);
+    return () => listeners.delete(callback);
+}
+
 export function nodeGetId(node) {
-    return node && node.id;
+    return node?.id;
 }

@@ -1,26 +1,28 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 
 export function useAnimate(counter, duration) {
-    const [tick, setTick] = useState(0);
-    const prevCounterRef = useRef(counter);
+    const [prevCounter, setPrevCounter] = useState(counter);
+    const [lastCounter, setLastCounter] = useState(counter);
+
+    if (counter !== lastCounter) {
+        setLastCounter(counter);
+        if (!duration) {
+            setPrevCounter(counter);
+        }
+    }
 
     useEffect(() => {
-        if (!duration) {
-            return;
-        }
-        if (prevCounterRef.current !== counter) {
+        if (duration && prevCounter !== counter) {
             const timer = setTimeout(() => {
-                prevCounterRef.current = counter;
-                setTick(t => t + 1);
+                setPrevCounter(counter);
             }, duration);
             return () => clearTimeout(timer);
         }
-    }, [counter, duration]);
+    }, [counter, duration, prevCounter]);
 
     const animate = useMemo(() => {
-        return duration && prevCounterRef.current !== counter;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [counter, tick, duration]);
+        return !!(duration && prevCounter !== counter);
+    }, [counter, prevCounter, duration]);
 
     return animate;
 }

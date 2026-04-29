@@ -1,8 +1,11 @@
 export function objectChangedKeys(a, b) {
     a = a || {};
     b = b || {};
-    const aKeys = Object.keys(a), bKeys = Object.keys(b);
-    return aKeys.filter((key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]));
+    const aKeys = Object.keys(a),
+        bKeys = Object.keys(b);
+    return aKeys.filter(
+        (key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]),
+    );
 }
 
 export function getCircularReplacer(object) {
@@ -31,43 +34,50 @@ export function getCircularReplacer(object) {
 export function createObject(props, id) {
     const monitor = [];
     let counter = 0;
-    let node = undefined;
+    let node;
     const unique = crypto.randomUUID();
     const internalState = { ...props };
+
     const notify = (keys) => {
         if (!Array.isArray(keys)) {
             return;
         }
         counter++;
         for (const item of monitor) {
-            if ((!item.key || keys.includes(item.key)) && typeof item.cb === "function") {
+            if (
+                (!item.key || keys.includes(item.key)) &&
+                typeof item.cb === "function"
+            ) {
                 item.counter++;
-                item.cb(item.key);
+                item.cb([item.key, ...keys].filter(Boolean));
             }
         }
     };
+
     const target = () => { };
+
     const proxy = new Proxy(target, {
-        get: function (target, propertyKey, receiver) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
+        get: (target, propertyKey, receiver) => {
+            if (Object.hasOwn(internalState, propertyKey)) {
                 return internalState[propertyKey];
             }
             return Reflect.get(target, propertyKey, receiver);
         },
-        set: function (target, propertyKey, value, receiver) {
-            if (typeof propertyKey === 'string' && propertyKey.startsWith('__')) {
+        set: (target, propertyKey, value, receiver) => {
+            if (typeof propertyKey === "string" && propertyKey.startsWith("__")) {
                 return Reflect.set(target, propertyKey, value, receiver);
             }
 
             if (internalState[propertyKey] === value) {
                 return true;
             }
+
             internalState[propertyKey] = value;
             notify([propertyKey]);
             return true;
         },
-        deleteProperty: function (_, propertyKey) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
+        deleteProperty: (_, propertyKey) => {
+            if (Object.hasOwn(internalState, propertyKey)) {
                 delete internalState[propertyKey];
                 notify([propertyKey]);
                 return true;
@@ -103,16 +113,15 @@ export function createObject(props, id) {
                 }
             }
         },
-        ownKeys: function (target) {
+        ownKeys: (target) => {
             const stateKeys = Reflect.ownKeys(internalState);
             const targetKeys = Reflect.ownKeys(target);
             return Array.from(new Set([...stateKeys, ...targetKeys]));
         },
-        has: function (target, propertyKey) {
-            return propertyKey in internalState || Reflect.has(target, propertyKey);
-        },
+        has: (target, propertyKey) =>
+            propertyKey in internalState || Reflect.has(target, propertyKey),
         getOwnPropertyDescriptor(target, propertyKey) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
+            if (Object.hasOwn(internalState, propertyKey)) {
                 return {
                     value: internalState[propertyKey],
                     writable: true,
@@ -121,7 +130,7 @@ export function createObject(props, id) {
                 };
             }
             return Reflect.getOwnPropertyDescriptor(target, propertyKey);
-        }
+        },
     });
 
     Object.defineProperty(proxy, "__monitor", {
@@ -129,50 +138,56 @@ export function createObject(props, id) {
             monitor.push({ key, cb, id, counter: 0 });
         },
         writable: false,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__unmonitor", {
         value: (key, cb, id) => {
-            const index = monitor.findIndex(item => item.key === key && item.cb === cb && item.id === id);
+            const index = monitor.findIndex(
+                (item) => item.key === key && item.cb === cb && item.id === id,
+            );
             if (index !== -1) {
                 monitor.splice(index, 1);
             }
         },
         writable: false,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__monitored", {
         get: () => monitor,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__unique", {
         get: () => unique,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__id", {
         get: () => id,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__object", {
         get: () => internalState,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__counter", {
         get: () => counter,
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__string", {
         get: () => {
-            return JSON.stringify(internalState, getCircularReplacer(internalState), 2);
+            return JSON.stringify(
+                internalState,
+                getCircularReplacer(internalState),
+                2,
+            );
         },
-        enumerable: false
+        enumerable: false,
     });
 
     Object.defineProperty(proxy, "__node", {
@@ -181,7 +196,7 @@ export function createObject(props, id) {
             node = value;
         },
         enumerable: false,
-        configurable: true
+        configurable: true,
     });
 
     return proxy;
