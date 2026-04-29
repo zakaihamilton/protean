@@ -1,138 +1,161 @@
 'use client';
 
-import React, { useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { FaUserLock } from 'react-icons/fa';
+import { createState } from 'src/Core/Base/State';
+import Resources from 'src/Core/UI/Resources';
+import { useClasses } from 'src/Core/Util/Styles';
+import { ManagerUser } from 'src/Manager/User';
+import Screen from 'src/UI/Screen';
+import Button from 'src/UI/Widgets/Button';
 import styles from './Login.module.scss';
-import Screen from "src/UI/Screen";
-import { FaUserLock } from "react-icons/fa";
-import { ManagerUser } from "src/Manager/User";
-import { createState } from "src/Core/Base/State";
-import { useClasses } from "src/Core/Util/Styles";
-import Resources from "src/Core/UI/Resources";
-import Button from "src/UI/Widgets/Button";
 import resources from './Login.res';
 
 export default function Login() {
-    const lookup = Resources.useLookup();
-    const classes = useClasses(styles);
-    const login = Login.State.useState();
-    const managerUser = ManagerUser.State.useState();
+  const lookup = Resources.useLookup();
+  const classes = useClasses(styles);
+  const login = Login.State.useState();
+  const managerUser = ManagerUser.State.useState();
 
-    useEffect(() => {
-        if (managerUser.userId) {
-            login(state => {
-                state.userId = managerUser.userId;
-            });
-        }
-    }, [login, managerUser.userId]);
+  useEffect(() => {
+    if (managerUser.userId) {
+      login((state) => {
+        state.userId = managerUser.userId;
+      });
+    }
+  }, [login, managerUser.userId]);
 
-    const onSubmit = useCallback(async (event) => {
-        event.preventDefault();
-        if (managerUser.loggedIn) {
-            managerUser.logout();
-            return;
-        }
-        login(state => {
-            state.loading = true;
-            state.message = { type: '', text: '' };
+  const onSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (managerUser.loggedIn) {
+        managerUser.logout();
+        return;
+      }
+      login((state) => {
+        state.loading = true;
+        state.message = { type: '', text: '' };
+      });
+
+      if (!login.userId || !login.password) {
+        login((state) => {
+          state.message = {
+            type: 'error',
+            text: lookup.ENTER_USER_ID_AND_PASSWORD,
+          };
+          state.loading = false;
         });
+        return;
+      }
 
-        if (!login.userId || !login.password) {
-            login(state => {
-                state.message = { type: 'error', text: lookup.ENTER_USER_ID_AND_PASSWORD };
-                state.loading = false;
-            });
-            return;
-        }
+      try {
+        await managerUser.login(login.userId, login.password);
 
-        try {
-            await managerUser.login(login.userId, login.password);
+        login((state) => {
+          state.message = { type: 'success', text: lookup.LOGIN_SUCCESS };
+          state.password = '';
+        });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : lookup.UNKNOWN_ERROR;
+        login((state) => {
+          state.message = { type: 'error', text: `${errorMessage}` };
+        });
+      } finally {
+        login((state) => {
+          state.loading = false;
+        });
+      }
+    },
+    [managerUser, login, lookup],
+  );
 
-            login(state => {
-                state.message = { type: 'success', text: lookup.LOGIN_SUCCESS };
-                state.password = '';
-            });
+  const icon = useMemo(() => <FaUserLock />, []);
 
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : lookup.UNKNOWN_ERROR;
-            login(state => {
-                state.message = { type: 'error', text: `${errorMessage}` };
-            });
-        } finally {
-            login(state => {
-                state.loading = false;
-            });
-        }
-    }, [managerUser, login, lookup]);
+  const submitText = login.loading
+    ? lookup.LOGGING_IN
+    : managerUser.loggedIn
+      ? lookup.LOGOUT
+      : lookup.LOGIN;
+  const min = useMemo(() => ({ width: 300, height: 300 }), []);
 
-    const icon = useMemo(() => <FaUserLock />, []);
+  return (
+    <Resources resources={resources} lookup={lookup}>
+      <Screen.Rect left={100} top={100} width={500} height={500} />
+      <Screen.State
+        icon={icon}
+        id="login"
+        label={lookup.TITLE}
+        maximize
+        assetColor="darkblue"
+        min={min}
+      />
+      <Screen>
+        <ManagerUser.Ready>
+          <div className={classes('root')}>
+            <h2 className={classes('title')}>{lookup.LOGIN_TITLE}</h2>
+            <form onSubmit={onSubmit} className={classes('loginForm')}>
+              {login.message?.text && (
+                <div className={classes('message', login.message.type)}>
+                  {lookup?.[login.message.text]}
+                </div>
+              )}
 
-    const submitText = login.loading ? lookup.LOGGING_IN : (managerUser.loggedIn ? lookup.LOGOUT : lookup.LOGIN);
-    const min = useMemo(() => ({ width: 300, height: 300 }), []);
+              <div className={classes('inputGroup')}>
+                <label htmlFor="loginUserId" className={classes('label')}>
+                  {lookup.USER_ID}
+                </label>
+                <input
+                  id="loginUserId"
+                  type="text"
+                  value={login.userId || ''}
+                  onChange={(e) =>
+                    login((state) => {
+                      state.userId = e.target.value;
+                    })
+                  }
+                  placeholder={lookup.ENTER_USER_ID}
+                  required
+                  className={classes('input')}
+                  disabled={login.loading || managerUser.loggedIn}
+                />
+              </div>
 
-    return (
-        <Resources resources={resources} lookup={lookup}>
-            <Screen.Rect left={100} top={100} width={500} height={500} />
-            <Screen.State icon={icon} id="login" label={lookup.TITLE} maximize assetColor="darkblue" min={min} />
-            <Screen>
-                <ManagerUser.Ready>
-                    <div className={classes("root")}>
-                        <h2 className={classes("title")}>{lookup.LOGIN_TITLE}</h2>
-                        <form onSubmit={onSubmit} className={classes("loginForm")}>
-                            {login.message?.text && (
-                                <div className={classes("message", login.message.type)}>
-                                    {lookup?.[login.message.text]}
-                                </div>
-                            )}
+              {!managerUser.loggedIn && (
+                <div className={classes('inputGroup')}>
+                  <label htmlFor="loginPassword" className={classes('label')}>
+                    Password
+                  </label>
+                  <input
+                    id="loginPassword"
+                    type="password"
+                    value={login.password || ''}
+                    onChange={(e) =>
+                      login((state) => {
+                        state.password = e.target.value;
+                      })
+                    }
+                    placeholder={lookup.ENTER_PASSWORD}
+                    required={true}
+                    className={classes('input')}
+                    disabled={login.loading}
+                  />
+                </div>
+              )}
 
-                            <div className={classes("inputGroup")}>
-                                <label htmlFor="loginUserId" className={classes("label")}>
-                                    {lookup.USER_ID}
-                                </label>
-                                <input
-                                    id="loginUserId"
-                                    type="text"
-                                    value={login.userId || ''}
-                                    onChange={(e) => login(state => {
-                                        state.userId = e.target.value;
-                                    })}
-                                    placeholder={lookup.ENTER_USER_ID}
-                                    required
-                                    className={classes("input")}
-                                    disabled={login.loading || managerUser.loggedIn}
-                                />
-                            </div>
-
-                            {!managerUser.loggedIn && <div className={classes("inputGroup")}>
-                                <label htmlFor="loginPassword" className={classes("label")}>
-                                    Password
-                                </label>
-                                <input
-                                    id="loginPassword"
-                                    type="password"
-                                    value={login.password || ''}
-                                    onChange={(e) => login(state => {
-                                        state.password = e.target.value;
-                                    })}
-                                    placeholder={lookup.ENTER_PASSWORD}
-                                    required={true}
-                                    className={classes("input")}
-                                    disabled={login.loading}
-                                />
-                            </div>}
-
-                            <Button
-                                type="submit"
-                                disabled={login.loading}
-                                className={classes("submitButton")}
-                            >
-                                {submitText}
-                            </Button>
-                        </form>
-                    </div>
-                </ManagerUser.Ready>
-            </Screen >
-        </Resources>
-    );
+              <Button
+                type="submit"
+                disabled={login.loading}
+                className={classes('submitButton')}
+              >
+                {submitText}
+              </Button>
+            </form>
+          </div>
+        </ManagerUser.Ready>
+      </Screen>
+    </Resources>
+  );
 }
 
-Login.State = createState("Login.State");
+Login.State = createState('Login.State');

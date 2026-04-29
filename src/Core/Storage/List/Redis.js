@@ -1,6 +1,6 @@
-'use server'
+'use server';
 
-import Redis from "ioredis"
+import Redis from 'ioredis';
 
 let client = null;
 
@@ -8,9 +8,9 @@ let client = null;
  * Checks if the functionality is supported.
  *
  * @return {boolean} Returns true if the functionality is supported, false otherwise.
-*/
+ */
 export async function isSupported() {
-    return true;
+  return true;
 }
 
 /**
@@ -19,13 +19,13 @@ export async function isSupported() {
  * @return {Promise<void>} A promise that resolves when the storage is opened.
  */
 export async function open() {
-    if (client) {
-        throw new Error("Storage already opened");
-    }
-    if (!process.env.REDIS_URL) {
-        throw new Error("REDIS_URL environment variable is not set");
-    }
-    client = new Redis(process.env.REDIS_URL);
+  if (client) {
+    throw new Error('Storage already opened');
+  }
+  if (!process.env.REDIS_URL) {
+    throw new Error('REDIS_URL environment variable is not set');
+  }
+  client = new Redis(process.env.REDIS_URL);
 }
 
 /**
@@ -34,10 +34,10 @@ export async function open() {
  * @return {Promise<void>} A promise that resolves when the storage is closed.
  */
 export async function close() {
-    if (client) {
-        await client.quit();
-        client = null;
-    }
+  if (client) {
+    await client.quit();
+    client = null;
+  }
 }
 
 /**
@@ -47,10 +47,10 @@ export async function close() {
  * @return {type} The value associated with the given key.
  */
 export async function get(key) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    return client.get(key);
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  return client.get(key);
 }
 
 /**
@@ -61,33 +61,33 @@ export async function get(key) {
  * @return {Promise<void>} A promise that resolves when the value has been stored
  */
 export async function set(key, value) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    client.set(key, value);
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  client.set(key, value);
 }
 
 /**
  * Checks if the key exists
  */
 export async function exists(key) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    const result = client.exists(key);
-    return result;
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  const result = client.exists(key);
+  return result;
 }
 
-/**  
+/**
  * Deletes a key from the storage.
  * @param {string} key - the key to delete
  * @return {Promise<void>} A promise that resolves when the key has been deleted
  */
 export async function deleteKey(key) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    client.del(key);
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  client.del(key);
 }
 
 /**
@@ -96,7 +96,7 @@ export async function deleteKey(key) {
  * @return {Promise<type>} A promise that resolves with the list of keys
  */
 export async function keys() {
-    return await client.keys('*');
+  return await client.keys('*');
 }
 
 /**
@@ -104,5 +104,5 @@ export async function keys() {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset() {
-    await client.flushall();
+  await client.flushall();
 }

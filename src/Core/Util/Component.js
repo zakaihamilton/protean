@@ -19,52 +19,53 @@ const components = new Map();
  * while instances are mounted. If omitted, the effect runs only on first mount.
  */
 export function useComponentEffect(key, callback, dependencies = []) {
-    const callbackRef = useRef(callback);
-    const [instanceId] = useState(() => Symbol());
+  const callbackRef = useRef(callback);
+  const [instanceId] = useState(() => Symbol());
 
-    useEffect(() => {
-        callbackRef.current = callback;
-    });
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
 
-    useEffect(() => {
-        let component = components.get(key);
+  useEffect(() => {
+    let component = components.get(key);
 
-        if (!component) {
-            component = {
-                key,
-                instances: []
-            };
-            components.set(key, component);
-        }
+    if (!component) {
+      component = {
+        key,
+        instances: [],
+      };
+      components.set(key, component);
+    }
 
-        const exists = component.instances.find(item => item === instanceId);
-        if (!exists) {
-            component.instances.push(instanceId);
-            if (component.instances.length > 1) {
-                return;
-            }
-        }
+    const exists = component.instances.find((item) => item === instanceId);
+    if (!exists) {
+      component.instances.push(instanceId);
+      if (component.instances.length > 1) {
+        return;
+      }
+    }
 
-        if (component.cleanup) {
-            component.cleanup();
-            component.cleanup = null;
-        }
+    if (component.cleanup) {
+      component.cleanup();
+      component.cleanup = null;
+    }
 
-        const cleanup = callbackRef.current();
-        if (typeof cleanup === 'function') {
-            component.cleanup = cleanup;
-        } else {
-            component.cleanup = null;
-        }
-        return () => {
-            component.instances = component.instances.filter(item => item !== instanceId);
-            if (component.instances.length) {
-                return;
-            }
-            if (component.cleanup) {
-                component.cleanup();
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [key, instanceId, ...dependencies]);
+    const cleanup = callbackRef.current();
+    if (typeof cleanup === 'function') {
+      component.cleanup = cleanup;
+    } else {
+      component.cleanup = null;
+    }
+    return () => {
+      component.instances = component.instances.filter(
+        (item) => item !== instanceId,
+      );
+      if (component.instances.length) {
+        return;
+      }
+      if (component.cleanup) {
+        component.cleanup();
+      }
+    };
+  }, [key, instanceId, ...dependencies]);
 }

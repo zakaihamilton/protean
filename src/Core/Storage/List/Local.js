@@ -2,13 +2,13 @@
  * Checks if the functionality is supported.
  *
  * @return {boolean} Returns true if the functionality is supported, false otherwise.
-*/
+ */
 export async function isSupported() {
-    try {
-        return 'localStorage' in window;
-    } catch {
-        return false;
-    }
+  try {
+    return 'localStorage' in window;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -16,18 +16,14 @@ export async function isSupported() {
  *
  * @return {Promise<void>} A promise that resolves when the storage is opened.
  */
-export async function open() {
-
-}
+export async function open() {}
 
 /**
  * Closes the storage.
  *
  * @return {Promise<void>} A promise that resolves when the storage is closed.
  */
-export async function close() {
-
-}
+export async function close() {}
 
 /**
  * Retrieves the value for the given key.
@@ -36,10 +32,10 @@ export async function close() {
  * @return {type} The value associated with the given key.
  */
 export async function get(key) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    return localStorage.getItem(key);
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  return localStorage.getItem(key);
 }
 
 /**
@@ -50,36 +46,36 @@ export async function get(key) {
  * @return {Promise<void>} A promise that resolves when the value has been stored.
  */
 export async function set(key, value) {
-    if (!key) {
-        throw new Error("Key cannot be null");
-    }
-    if (typeof value === "object") {
-        value = JSON.stringify(value);
-    }
-    localStorage.setItem(key, value);
+  if (!key) {
+    throw new Error('Key cannot be null');
+  }
+  if (typeof value === 'object') {
+    value = JSON.stringify(value);
+  }
+  localStorage.setItem(key, value);
 }
 
 /**
  * Checks if the key exists
  */
 export async function exists(key) {
-    if (!key) {
-        throw new Error("key cannot be null");
-    }
-    const result = Object.keys(localStorage).includes(key);
-    return result;
+  if (!key) {
+    throw new Error('key cannot be null');
+  }
+  const result = Object.keys(localStorage).includes(key);
+  return result;
 }
 
-/**  
-  * Deletes a key from the storage.
-  * @param {string} key - the key to delete
-  * @return {Promise<void>} A promise that resolves when the key has been deleted
-  */
+/**
+ * Deletes a key from the storage.
+ * @param {string} key - the key to delete
+ * @return {Promise<void>} A promise that resolves when the key has been deleted
+ */
 export async function deleteKey(key) {
-    if (!key) {
-        throw new Error("Key cannot be null");
-    }
-    localStorage.removeItem(key);
+  if (!key) {
+    throw new Error('Key cannot be null');
+  }
+  localStorage.removeItem(key);
 }
 
 /**
@@ -88,7 +84,7 @@ export async function deleteKey(key) {
  * @return {Promise<type>} A promise that resolves with the list of keys
  */
 export async function keys() {
-    return Object.keys(localStorage);
+  return Object.keys(localStorage);
 }
 
 /**
@@ -96,6 +92,5 @@ export async function keys() {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset() {
-    localStorage.clear();
+  localStorage.clear();
 }
-

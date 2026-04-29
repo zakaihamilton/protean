@@ -1,20 +1,20 @@
-import { pathFileName, pathFolder, pathNormalize } from "src/Core/Util/Path";
+import { pathFileName, pathFolder, pathNormalize } from 'src/Core/Util/Path';
 
 function getFolderPath(path) {
-    return "folder://" + path;
+  return `folder://${path}`;
 }
 
 function getFilePath(path) {
-    return "file://" + path;
+  return `file://${path}`;
 }
 
 /**
  * Checks if the storage is supported.
  *
  * @return {boolean} Returns true if the storage is supported, false otherwise.
-*/
+ */
 export async function isSupported(listStorage) {
-    return await listStorage.isSupported();
+  return await listStorage.isSupported();
 }
 
 /**
@@ -22,17 +22,17 @@ export async function isSupported(listStorage) {
  *
  */
 export async function open(listStorage) {
-    await listStorage.open();
+  await listStorage.open();
 }
 
 /**
  * Closes the connection to the list storage.
  *
- * @param {} 
- * @return {} 
+ * @param {}
+ * @return {}
  */
 export async function close(listStorage) {
-    await listStorage.close();
+  await listStorage.close();
 }
 
 /**
@@ -42,17 +42,17 @@ export async function close(listStorage) {
  * @return {Promise} - A promise that resolves when the folder has been created.
  */
 export async function createFolder(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const folderPath = getFolderPath(path);
-    /* check if the folder already exists */
-    const folderItem = await listStorage.get(folderPath);
-    if (folderItem) {
-        throw new Error("Folder already exists: " + folderPath);
-    }
-    await listStorage.set(folderPath, { path });
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const folderPath = getFolderPath(path);
+  /* check if the folder already exists */
+  const folderItem = await listStorage.get(folderPath);
+  if (folderItem) {
+    throw new Error(`Folder already exists: ${folderPath}`);
+  }
+  await listStorage.set(folderPath, { path });
 }
 
 /**
@@ -62,26 +62,31 @@ export async function createFolder(listStorage, path) {
  * @return {Promise} - Returns a promise that resolves when the folder and its contents have been successfully deleted.
  */
 export async function deleteFolder(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const listing = await listFolder(listStorage, path);
+  for (const item of listing) {
+    try {
+      if (item.type === 'folder') {
+        await deleteFolder(listStorage, item.path);
+      } else if (item.type === 'file') {
+        await deleteFile(listStorage, item.path);
+      }
+    } catch (err) {
+      throw new Error(
+        'Error deleting item: ' +
+          item.path +
+          ' type:' +
+          item.type +
+          ' error: ' +
+          err,
+      );
     }
-    path = pathNormalize(path);
-    const listing = await listFolder(listStorage, path);
-    for (const item of listing) {
-        try {
-            if (item.type === "folder") {
-                await deleteFolder(listStorage, item.path);
-            }
-            else if (item.type === "file") {
-                await deleteFile(listStorage, item.path);
-            }
-        }
-        catch (err) {
-            throw new Error("Error deleting item: " + item.path + " type:" + item.type + " error: " + err);
-        }
-    }
-    const folderPath = getFolderPath(path);
-    await listStorage.deleteKey(folderPath);
+  }
+  const folderPath = getFolderPath(path);
+  await listStorage.deleteKey(folderPath);
 }
 
 /**
@@ -92,16 +97,16 @@ export async function deleteFolder(listStorage, path) {
  * @return {type} description of the return value (if any)
  */
 export async function moveFolder(listStorage, fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    await copyFolder(listStorage, fromPath, toPath);
-    await deleteFolder(listStorage, fromPath);
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  await copyFolder(listStorage, fromPath, toPath);
+  await deleteFolder(listStorage, fromPath);
 }
 
 /**
@@ -112,33 +117,38 @@ export async function moveFolder(listStorage, fromPath, toPath) {
  * @return {Promise} a promise that resolves when the folder and its contents have been successfully copied
  */
 export async function copyFolder(listStorage, fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  if (await folderExists(listStorage, toPath)) {
+    throw new Error(`Folder already exists: ${toPath}`);
+  }
+  await createFolder(listStorage, toPath);
+  const listing = await listFolder(listStorage, fromPath);
+  for (const item of listing) {
+    try {
+      const targetPath = getFolderPath(toPath + item.path);
+      if (item.type === 'folder') {
+        await copyFolder(listStorage, item.path, targetPath);
+      } else if (item.type === 'file') {
+        await copyFile(listStorage, item.path, targetPath);
+      }
+    } catch (err) {
+      throw new Error(
+        'Error deleting item: ' +
+          item.path +
+          ' type:' +
+          item.type +
+          ' error: ' +
+          err,
+      );
     }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    if (await folderExists(listStorage, toPath)) {
-        throw new Error("Folder already exists: " + toPath);
-    }
-    await createFolder(listStorage, toPath);
-    const listing = await listFolder(listStorage, fromPath);
-    for (const item of listing) {
-        try {
-            const targetPath = getFolderPath(toPath + item.path);
-            if (item.type === "folder") {
-                await copyFolder(listStorage, item.path, targetPath);
-            }
-            else if (item.type === "file") {
-                await copyFile(listStorage, item.path, targetPath);
-            }
-        }
-        catch (err) {
-            throw new Error("Error deleting item: " + item.path + " type:" + item.type + " error: " + err);
-        }
-    }
+  }
 }
 
 /**
@@ -148,29 +158,29 @@ export async function copyFolder(listStorage, fromPath, toPath) {
  * @return {type} - a description of the return value
  */
 export async function listFolder(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const folderPath = getFolderPath(path);
+  const folderItem = await listStorage.get(folderPath);
+  if (!folderItem) {
+    throw new Error(`Folder does not exist: ${path}`);
+  }
+  const keys = await listStorage.keys();
+  const listing = [];
+  for (const key of keys) {
+    const keyFolder = pathFolder(key);
+    const keyFile = pathFileName(key);
+    if (keyFolder !== folderPath) {
+      continue;
     }
-    path = pathNormalize(path);
-    const folderPath = getFolderPath(path);
-    const folderItem = await listStorage.get(folderPath);
-    if (!folderItem) {
-        throw new Error("Folder does not exist: " + path);
-    }
-    const keys = await listStorage.keys();
-    const listing = [];
-    for (const key of keys) {
-        const keyFolder = pathFolder(key);
-        const keyFile = pathFileName(key);
-        if (keyFolder !== folderPath) {
-            continue;
-        }
-        const keyPath = [path, keyFile].join("/");
-        const type = key.startsWith("file://") ? "file" : "folder";
-        listing.push({ path: keyPath, type });
-    }
+    const keyPath = [path, keyFile].join('/');
+    const type = key.startsWith('file://') ? 'file' : 'folder';
+    listing.push({ path: keyPath, type });
+  }
 
-    return listing;
+  return listing;
 }
 
 /**
@@ -178,13 +188,13 @@ export async function listFolder(listStorage, path) {
  * @param {string} path - the path of the folder
  */
 export async function folderExists(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const folderPath = getFolderPath(path);
-    const folderItem = await listStorage.get(folderPath);
-    return !!folderItem;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const folderPath = getFolderPath(path);
+  const folderItem = await listStorage.get(folderPath);
+  return !!folderItem;
 }
 
 /**
@@ -194,12 +204,12 @@ export async function folderExists(listStorage, path) {
  * @return {Promise} A Promise that resolves to the content of the file.
  */
 export async function readFile(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const filePath = getFilePath(path);
-    return await listStorage.get(filePath);
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const filePath = getFilePath(path);
+  return await listStorage.get(filePath);
 }
 
 /**
@@ -210,12 +220,12 @@ export async function readFile(listStorage, path) {
  * @return {Promise} - A promise that resolves when the file is successfully created or updated.
  */
 export async function writeFile(listStorage, path, content) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const filePath = getFilePath(path);
-    return await listStorage.set(filePath, content);
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const filePath = getFilePath(path);
+  return await listStorage.set(filePath, content);
 }
 
 /**
@@ -225,16 +235,16 @@ export async function writeFile(listStorage, path, content) {
  * @return {Promise} A promise that resolves when the file is successfully deleted.
  */
 export async function deleteFile(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const filePath = getFilePath(path);
-    const exists = await listStorage.exists(filePath);
-    if (!exists) {
-        throw new Error("File does not exist: " + path);
-    }
-    await listStorage.deleteKey(filePath);
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const filePath = getFilePath(path);
+  const exists = await listStorage.exists(filePath);
+  if (!exists) {
+    throw new Error(`File does not exist: ${path}`);
+  }
+  await listStorage.deleteKey(filePath);
 }
 
 /**
@@ -245,17 +255,17 @@ export async function deleteFile(listStorage, path) {
  * @return {type} description of return value
  */
 export async function moveFile(listStorage, fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    const content = await readFile(listStorage, fromPath);
-    await writeFile(listStorage, toPath, content);
-    await deleteFile(listStorage, fromPath);
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  const content = await readFile(listStorage, fromPath);
+  await writeFile(listStorage, toPath, content);
+  await deleteFile(listStorage, fromPath);
 }
 
 /**
@@ -266,18 +276,18 @@ export async function moveFile(listStorage, fromPath, toPath) {
  * @return {type} - a description of the return value
  */
 export async function copyFile(listStorage, fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    if (await fileExists(listStorage, toPath)) {
-        throw new Error("File already exists: " + toPath);
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    await writeFile(listStorage, toPath, await readFile(listStorage, fromPath));
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  if (await fileExists(listStorage, toPath)) {
+    throw new Error(`File already exists: ${toPath}`);
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  await writeFile(listStorage, toPath, await readFile(listStorage, fromPath));
 }
 
 /**
@@ -285,13 +295,13 @@ export async function copyFile(listStorage, fromPath, toPath) {
  * @param {string} path - the path of the file
  */
 export async function fileExists(listStorage, path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const filePath = getFilePath(path);
-    const fileItem = await listStorage.get(filePath);
-    return !!fileItem;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const filePath = getFilePath(path);
+  const fileItem = await listStorage.get(filePath);
+  return !!fileItem;
 }
 
 /**
@@ -299,5 +309,5 @@ export async function fileExists(listStorage, path) {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset(listStorage) {
-    await listStorage.reset();
+  await listStorage.reset();
 }

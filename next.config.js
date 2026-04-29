@@ -1,5 +1,5 @@
-const version = require("./package.json").version;
-const path = require('path');
+const version = require('./package.json').version;
+const _path = require('node:path');
 
 const nextConfig = {
   reactStrictMode: true,
@@ -7,11 +7,11 @@ const nextConfig = {
     root: __dirname,
   },
   env: {
-    NEXT_PUBLIC_APP_VERSION: version
+    NEXT_PUBLIC_APP_VERSION: version,
   },
   sassOptions: {
-    silenceDeprecations: ["legacy-js-api"]
-  }
-}
+    silenceDeprecations: ['legacy-js-api'],
+  },
+};
 
 module.exports = nextConfig;

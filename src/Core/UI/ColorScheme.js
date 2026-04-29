@@ -1,58 +1,63 @@
-import { useCallback, useEffect } from "react";
-import { createState } from "../Base/State";
-import { useEventListener } from "./EventListener";
-import { getClientWindow } from "../Util/Client";
-import { createConsole } from "../Util/Console";
+import { useCallback, useEffect } from 'react';
+import { createState } from '../Base/State';
+import { getClientWindow } from '../Util/Client';
+import { createConsole } from '../Util/Console';
+import { useEventListener } from './EventListener';
 
-const console = createConsole("ColorScheme");
+const console = createConsole('ColorScheme');
 
 function prefersColorScheme() {
-    const screen = getClientWindow();
-    return screen?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light";
+  const screen = getClientWindow();
+  return screen?.matchMedia('(prefers-color-scheme: dark)')?.matches
+    ? 'dark'
+    : 'light';
 }
 
 function ColorScheme() {
-    const screen = getClientWindow();
-    const defaultColorScheme = prefersColorScheme();
-    const colorScheme = ColorScheme.State.useState();
+  const screen = getClientWindow();
+  const defaultColorScheme = prefersColorScheme();
+  const colorScheme = ColorScheme.State.useState();
 
-    useEffect(() => {
-        colorScheme(state => {
-            state.theme = defaultColorScheme;
-        });
-    }, [colorScheme, defaultColorScheme]);
+  useEffect(() => {
+    colorScheme((state) => {
+      state.theme = defaultColorScheme;
+    });
+  }, [colorScheme, defaultColorScheme]);
 
-    useEffect(() => {
-        let root = document.querySelector(":root");
-        if (colorScheme.theme === "light") {
-            root.classList.remove('dark');
-        }
-        else if (colorScheme.theme === "dark") {
-            root.classList.add('dark');
-        }
-    }, [colorScheme.theme]);
+  useEffect(() => {
+    const root = document.querySelector(':root');
+    if (colorScheme.theme === 'light') {
+      root.classList.remove('dark');
+    } else if (colorScheme.theme === 'dark') {
+      root.classList.add('dark');
+    }
+  }, [colorScheme.theme]);
 
-    const onColorSchemeChange = useCallback(() => {
-        colorScheme(state => {
-            state.theme = prefersColorScheme();
-        });
-    }, [colorScheme]);
+  const onColorSchemeChange = useCallback(() => {
+    colorScheme((state) => {
+      state.theme = prefersColorScheme();
+    });
+  }, [colorScheme]);
 
-    useEventListener(screen?.matchMedia('(prefers-color-scheme: dark)'), "change", onColorSchemeChange);
+  useEventListener(
+    screen?.matchMedia('(prefers-color-scheme: dark)'),
+    'change',
+    onColorSchemeChange,
+  );
 
-    const toggle = useCallback(() => {
-        colorScheme(state => {
-            state.theme = state.theme === "light" ? "dark" : "light";
-        });
-    }, [colorScheme]);
+  const toggle = useCallback(() => {
+    colorScheme((state) => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
+    });
+  }, [colorScheme]);
 
-    useEffect(() => {
-        console.log("theme changed:", colorScheme.theme);
-    }, [colorScheme.theme]);
+  useEffect(() => {
+    console.log('theme changed:', colorScheme.theme);
+  }, [colorScheme.theme]);
 
-    return <ColorScheme.State toggle={toggle} />;
+  return <ColorScheme.State toggle={toggle} />;
 }
 
-ColorScheme.State = createState("ColorScheme.State");
+ColorScheme.State = createState('ColorScheme.State');
 
 export default ColorScheme;

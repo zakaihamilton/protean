@@ -14,36 +14,42 @@ const { TextDecoder, TextEncoder, ReadableStream } = require('node:util');
 const { MessageChannel } = require('worker-mock');
 
 class MessagePort {
-    postMessage() {
-        throw new Error('MessagePort.postMessage is not implemented in this polyfill.');
-    }
-    addEventListener() {
-        throw new Error('MessagePort.addEventListener is not implemented in this polyfill.');
-    }
-    removeEventListener() {
-        throw new Error('MessagePort.removeEventListener is not implemented in this polyfill.');
-    }
-    start() { }
-    close() { }
+  postMessage() {
+    throw new Error(
+      'MessagePort.postMessage is not implemented in this polyfill.',
+    );
+  }
+  addEventListener() {
+    throw new Error(
+      'MessagePort.addEventListener is not implemented in this polyfill.',
+    );
+  }
+  removeEventListener() {
+    throw new Error(
+      'MessagePort.removeEventListener is not implemented in this polyfill.',
+    );
+  }
+  start() {}
+  close() {}
 }
 
 Object.defineProperties(globalThis, {
-    TextDecoder: { value: TextDecoder },
-    TextEncoder: { value: TextEncoder },
-    ReadableStream: { value: ReadableStream },
-    MessageChannel: { value: MessageChannel },
-    MessagePort: { value: MessagePort }
+  TextDecoder: { value: TextDecoder },
+  TextEncoder: { value: TextEncoder },
+  ReadableStream: { value: ReadableStream },
+  MessageChannel: { value: MessageChannel },
+  MessagePort: { value: MessagePort },
 });
 
 const { Blob, File } = require('node:buffer');
 const { fetch, Headers, FormData, Request, Response } = require('undici');
 
 Object.defineProperties(globalThis, {
-    fetch: { value: fetch, writable: true },
-    Blob: { value: Blob },
-    File: { value: File },
-    Headers: { value: Headers },
-    FormData: { value: FormData },
-    Request: { value: Request },
-    Response: { value: Response },
+  fetch: { value: fetch, writable: true },
+  Blob: { value: Blob },
+  File: { value: File },
+  Headers: { value: Headers },
+  FormData: { value: FormData },
+  Request: { value: Request },
+  Response: { value: Response },
 });

@@ -1,30 +1,30 @@
-import { pathNormalize } from "src/Core/Util/Path";
 import {
-    S3Client,
-    PutObjectCommand,
-    GetObjectCommand,
-    CopyObjectCommand,
-    DeleteObjectCommand,
-    DeleteObjectsCommand,
-    HeadObjectCommand,
-    ListObjectsV2Command
-} from "@aws-sdk/client-s3";
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { pathNormalize } from 'src/Core/Util/Path';
 
 let client = null;
 
 const accessKeyId = process.env.S3_ID,
-    secretAccessKey = process.env.S3_SECRET,
-    endpointUrl = process.env.S3_ENDPOINT,
-    bucketName = process.env.S3_BUCKET,
-    region = process.env.S3_REGION;
+  secretAccessKey = process.env.S3_SECRET,
+  endpointUrl = process.env.S3_ENDPOINT,
+  bucketName = process.env.S3_BUCKET,
+  region = process.env.S3_REGION;
 
 /**
  * Checks if the storage is supported.
  *
  * @return {boolean} Returns true if the storage is supported, false otherwise.
-*/
+ */
 export async function isSupported() {
-    return true;
+  return true;
 }
 
 /**
@@ -32,41 +32,41 @@ export async function isSupported() {
  *
  */
 export async function open() {
-    if (client) {
-        throw new Error("Storage already opened");
-    }
+  if (client) {
+    throw new Error('Storage already opened');
+  }
 
-    if (!accessKeyId) {
-        throw "No Access ID";
-    }
-    if (!secretAccessKey) {
-        throw "No Secret Key";
-    }
-    if (!endpointUrl) {
-        throw "No End Point";
-    }
+  if (!accessKeyId) {
+    throw 'No Access ID';
+  }
+  if (!secretAccessKey) {
+    throw 'No Secret Key';
+  }
+  if (!endpointUrl) {
+    throw 'No End Point';
+  }
 
-    client = new S3Client({
-        region,
-        endpoint: endpointUrl,
-        credentials: {
-            accessKeyId,
-            secretAccessKey
-        }
-    });
+  client = new S3Client({
+    region,
+    endpoint: endpointUrl,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
 }
 
 /**
  * Closes the connection to the list storage.
  *
- * @param {} 
- * @return {} 
+ * @param {}
+ * @return {}
  */
 export async function close() {
-    if (client) {
-        await client.destroy();
-        client = null;
-    }
+  if (client) {
+    await client.destroy();
+    client = null;
+  }
 }
 
 /**
@@ -75,9 +75,7 @@ export async function close() {
  * @param {string} path - The path where the folder should be created.
  * @return {Promise} - A promise that resolves when the folder has been created.
  */
-export async function createFolder(/*path*/) {
-
-}
+export async function createFolder(/*path*/) {}
 
 /**
  * Deletes a folder along with its contents.
@@ -86,38 +84,40 @@ export async function createFolder(/*path*/) {
  * @return {Promise} - Returns a promise that resolves when the folder and its contents have been successfully deleted.
  */
 export async function deleteFolder(path) {
-    let count = 0;
-    if (!path) {
-        throw new Error("path is null");
+  let count = 0;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  const recursiveDelete = async (token) => {
+    // get the files
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: path,
+      ContinuationToken: token,
+    });
+    const list = await client.send(listCommand);
+    if (list.KeyCount) {
+      const deleteCommand = new DeleteObjectsCommand({
+        Bucket: bucketName,
+        Delete: {
+          Objects: list.Contents.map((item) => ({ Key: item.Key })),
+          Quiet: false,
+        },
+      });
+      const deleted = await client.send(deleteCommand);
+      count += deleted?.Deleted?.length;
+      if (deleted?.Errors) {
+        deleted.Errors.map((error) =>
+          console.log(`${error.Key} could not be deleted - ${error.Code}`),
+        );
+      }
     }
-    const recursiveDelete = async (token) => {
-        // get the files
-        const listCommand = new ListObjectsV2Command({
-            Bucket: bucketName,
-            Prefix: path,
-            ContinuationToken: token
-        });
-        let list = await client.send(listCommand);
-        if (list.KeyCount) {
-            const deleteCommand = new DeleteObjectsCommand({
-                Bucket: bucketName,
-                Delete: {
-                    Objects: list.Contents.map((item) => ({ Key: item.Key })),
-                    Quiet: false,
-                },
-            });
-            let deleted = await client.send(deleteCommand);
-            count += deleted?.Deleted?.length;
-            if (deleted?.Errors) {
-                deleted.Errors.map((error) => console.log(`${error.Key} could not be deleted - ${error.Code}`));
-            }
-        }
-        if (list.NextContinuationToken) {
-            recursiveDelete(list.NextContinuationToken);
-        }
-        return count;
-    };
-    return await recursiveDelete();
+    if (list.NextContinuationToken) {
+      recursiveDelete(list.NextContinuationToken);
+    }
+    return count;
+  };
+  return await recursiveDelete();
 }
 
 /**
@@ -128,18 +128,17 @@ export async function deleteFolder(path) {
  * @return {type} description of the return value (if any)
  */
 export async function moveFolder(fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    await copyFolder(fromPath, toPath);
-    await deleteFolder(fromPath);
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  await copyFolder(fromPath, toPath);
+  await deleteFolder(fromPath);
 }
-
 
 /**
  * Copies a folder and its contents to a different location.
@@ -149,45 +148,45 @@ export async function moveFolder(fromPath, toPath) {
  * @return {Promise} a promise that resolves when the folder and its contents have been successfully copied
  */
 export async function copyFolder(fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    if (await folderExists(toPath)) {
-        throw new Error("Folder already exists: " + toPath);
-    }
-    let count = 0;
-    const recursiveCopy = async token => {
-        const listCommand = new ListObjectsV2Command({
-            Bucket: bucketName,
-            Prefix: fromPath,
-            ContinuationToken: token
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  if (await folderExists(toPath)) {
+    throw new Error(`Folder already exists: ${toPath}`);
+  }
+  let count = 0;
+  const recursiveCopy = async (token) => {
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: fromPath,
+      ContinuationToken: token,
+    });
+    const list = await client.send(listCommand);
+    if (list.KeyCount) {
+      const fromObjectKeys = list.Contents.map((content) => content.Key);
+      for (const fromObjectKey of fromObjectKeys) {
+        const toObjectKey = fromObjectKey.replace(fromPath, toPath);
+        const copyCommand = new CopyObjectCommand({
+          ACL: 'public-read',
+          Bucket: bucketName,
+          CopySource: `${bucketName}/${fromObjectKey}`,
+          Key: toObjectKey,
         });
-        let list = await client.send(listCommand);
-        if (list.KeyCount) {
-            const fromObjectKeys = list.Contents.map(content => content.Key);
-            for (let fromObjectKey of fromObjectKeys) {
-                const toObjectKey = fromObjectKey.replace(fromPath, toPath);
-                const copyCommand = new CopyObjectCommand({
-                    ACL: 'public-read',
-                    Bucket: bucketName,
-                    CopySource: `${bucketName}/${fromObjectKey}`,
-                    Key: toObjectKey
-                });
-                await client.send(copyCommand);
-                count += 1;
-            }
-        }
-        if (list.NextContinuationToken) {
-            recursiveCopy(list.NextContinuationToken);
-        }
-        return count;
-    };
-    return await recursiveCopy();
+        await client.send(copyCommand);
+        count += 1;
+      }
+    }
+    if (list.NextContinuationToken) {
+      recursiveCopy(list.NextContinuationToken);
+    }
+    return count;
+  };
+  return await recursiveCopy();
 }
 
 /**
@@ -197,27 +196,27 @@ export async function copyFolder(fromPath, toPath) {
  * @return {type} - a description of the return value
  */
 export async function listFolder(path) {
-    if (!path) {
-        throw new Error("path is null");
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const listing = [];
+  const recursiveListing = async (token) => {
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: path,
+      ContinuationToken: token,
+    });
+    const list = await client.send(listCommand);
+    if (list.KeyCount) {
+      listing.push(...list.Contents.map((item) => ({ Key: item.Key })));
     }
-    path = pathNormalize(path);
-    const listing = [];
-    const recursiveListing = async token => {
-        const listCommand = new ListObjectsV2Command({
-            Bucket: bucketName,
-            Prefix: path,
-            ContinuationToken: token
-        });
-        let list = await client.send(listCommand);
-        if (list.KeyCount) {
-            listing.push(...list.Contents.map((item) => ({ Key: item.Key })));
-        }
-        if (list.NextContinuationToken) {
-            recursiveListing(list.NextContinuationToken);
-        }
-        return listing;
-    };
-    return await recursiveListing();
+    if (list.NextContinuationToken) {
+      recursiveListing(list.NextContinuationToken);
+    }
+    return listing;
+  };
+  return await recursiveListing();
 }
 
 /**
@@ -225,19 +224,19 @@ export async function listFolder(path) {
  * @param {string} path - the path of the folder
  */
 export async function folderExists(path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const listCommand = new ListObjectsV2Command({
-        Bucket: bucketName,
-        Prefix: path
-    });
-    let list = await client.send(listCommand);
-    return !!list.KeyCount;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const listCommand = new ListObjectsV2Command({
+    Bucket: bucketName,
+    Prefix: path,
+  });
+  const list = await client.send(listCommand);
+  return !!list.KeyCount;
 }
 
 /**
@@ -247,22 +246,22 @@ export async function folderExists(path) {
  * @return {Promise} A Promise that resolves to the content of the file.
  */
 export async function readFile(path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const downloadParams = {
-        Bucket: bucketName,
-        Key: path
-    };
-    const response = await client.send(new GetObjectCommand(downloadParams));
-    const data = await new Promise((resolve, reject) => {
-        const chunks = [];
-        response.Body.on("data", (chunk) => chunks.push(chunk));
-        response.Body.on("end", () => resolve(Buffer.concat(chunks)));
-        response.Body.on("error", reject);
-    });
-    return data;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const downloadParams = {
+    Bucket: bucketName,
+    Key: path,
+  };
+  const response = await client.send(new GetObjectCommand(downloadParams));
+  const data = await new Promise((resolve, reject) => {
+    const chunks = [];
+    response.Body.on('data', (chunk) => chunks.push(chunk));
+    response.Body.on('end', () => resolve(Buffer.concat(chunks)));
+    response.Body.on('error', reject);
+  });
+  return data;
 }
 
 /**
@@ -273,18 +272,18 @@ export async function readFile(path) {
  * @return {Promise} - A promise that resolves when the file is successfully created or updated.
  */
 export async function writeFile(path, content) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const uploadParams = {
-        Bucket: bucketName,
-        Key: path,
-        Body: content,
-        ACL: "public-read"
-    };
-    const response = await client.send(new PutObjectCommand(uploadParams));
-    return response;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const uploadParams = {
+    Bucket: bucketName,
+    Key: path,
+    Body: content,
+    ACL: 'public-read',
+  };
+  const response = await client.send(new PutObjectCommand(uploadParams));
+  return response;
 }
 
 /**
@@ -294,16 +293,16 @@ export async function writeFile(path, content) {
  * @return {Promise} A promise that resolves when the file is successfully deleted.
  */
 export async function deleteFile(path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const deleteParams = {
-        Bucket: bucketName,
-        Key: path
-    };
-    const response = await client.send(new DeleteObjectCommand(deleteParams));
-    return response;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const deleteParams = {
+    Bucket: bucketName,
+    Key: path,
+  };
+  const response = await client.send(new DeleteObjectCommand(deleteParams));
+  return response;
 }
 
 /**
@@ -314,14 +313,14 @@ export async function deleteFile(path) {
  * @return {type} description of return value
  */
 export async function moveFile(fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    await copyFile(fromPath, toPath);
-    await deleteFile(fromPath);
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  await copyFile(fromPath, toPath);
+  await deleteFile(fromPath);
 }
 
 /**
@@ -332,24 +331,24 @@ export async function moveFile(fromPath, toPath) {
  * @return {type} - a description of the return value
  */
 export async function copyFile(fromPath, toPath) {
-    if (!fromPath) {
-        throw new Error("fromPath is null");
-    }
-    if (!toPath) {
-        throw new Error("toPath is null");
-    }
-    if (await fileExists(toPath)) {
-        throw new Error("File already exists: " + toPath);
-    }
-    fromPath = pathNormalize(fromPath);
-    toPath = pathNormalize(toPath);
-    const copyParams = {
-        Bucket: bucketName,
-        CopySource: encodeURIComponent(`${bucketName}/${fromPath}`),
-        Key: toPath
-    };
-    const copyResponse = await client.send(new CopyObjectCommand(copyParams));
-    return copyResponse;
+  if (!fromPath) {
+    throw new Error('fromPath is null');
+  }
+  if (!toPath) {
+    throw new Error('toPath is null');
+  }
+  if (await fileExists(toPath)) {
+    throw new Error(`File already exists: ${toPath}`);
+  }
+  fromPath = pathNormalize(fromPath);
+  toPath = pathNormalize(toPath);
+  const copyParams = {
+    Bucket: bucketName,
+    CopySource: encodeURIComponent(`${bucketName}/${fromPath}`),
+    Key: toPath,
+  };
+  const copyResponse = await client.send(new CopyObjectCommand(copyParams));
+  return copyResponse;
 }
 
 /**
@@ -357,22 +356,22 @@ export async function copyFile(fromPath, toPath) {
  * @param {string} path - the path of the file
  */
 export async function fileExists(path) {
-    if (!path) {
-        throw new Error("path is null");
-    }
-    path = pathNormalize(path);
-    const params = {
-        Bucket: bucketName,
-        Key: path
-    }
-    let exists = false;
-    try {
-        await client.send(new HeadObjectCommand(params));
-        exists = true;
-    } catch {
-        exists = false;
-    }
-    return exists;
+  if (!path) {
+    throw new Error('path is null');
+  }
+  path = pathNormalize(path);
+  const params = {
+    Bucket: bucketName,
+    Key: path,
+  };
+  let exists = false;
+  try {
+    await client.send(new HeadObjectCommand(params));
+    exists = true;
+  } catch {
+    exists = false;
+  }
+  return exists;
 }
 
 /**
@@ -380,32 +379,36 @@ export async function fileExists(path) {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset() {
-    let count = 0;
-    const recursiveDelete = async token => {
-        // get the files
-        const listCommand = new ListObjectsV2Command({
-            Bucket: bucketName,
-            ContinuationToken: token
-        });
-        let list = await client.send(listCommand);
-        if (list.KeyCount) {
-            const deleteCommand = new DeleteObjectsCommand({
-                Bucket: bucketName,
-                Delete: {
-                    Objects: list.Contents.map((item) => ({ Key: item.Key })),
-                    Quiet: false,
-                },
-            });
-            let deleted = await client.send(deleteCommand);
-            count += deleted?.Deleted?.length;
-            if (deleted?.Errors) {
-                console.error(deleted.Errors.map((error) => console.log(`${error.Key} could not be deleted - ${error.Code}`)));
-            }
-        }
-        if (list.NextContinuationToken) {
-            recursiveDelete(list.NextContinuationToken);
-        }
-        return count;
-    };
-    return await recursiveDelete();
+  let count = 0;
+  const recursiveDelete = async (token) => {
+    // get the files
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      ContinuationToken: token,
+    });
+    const list = await client.send(listCommand);
+    if (list.KeyCount) {
+      const deleteCommand = new DeleteObjectsCommand({
+        Bucket: bucketName,
+        Delete: {
+          Objects: list.Contents.map((item) => ({ Key: item.Key })),
+          Quiet: false,
+        },
+      });
+      const deleted = await client.send(deleteCommand);
+      count += deleted?.Deleted?.length;
+      if (deleted?.Errors) {
+        console.error(
+          deleted.Errors.map((error) =>
+            console.log(`${error.Key} could not be deleted - ${error.Code}`),
+          ),
+        );
+      }
+    }
+    if (list.NextContinuationToken) {
+      recursiveDelete(list.NextContinuationToken);
+    }
+    return count;
+  };
+  return await recursiveDelete();
 }
