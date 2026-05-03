@@ -80,7 +80,7 @@ export function createState(displayName) {
       const unsubscribes = [];
       let search = startNode;
 
-      const handleEvent = (_, propId, newValue) => {
+      const handleEvent = (_changedNode, propId, newValue) => {
         if (propId !== State) return;
         foundObject.current = newValue;
         setObject(newValue);
@@ -91,10 +91,11 @@ export function createState(displayName) {
         search = search.parent;
       }
 
-      return () =>
-        unsubscribes.forEach((unsub) => {
+      return () => {
+        for (const unsub of unsubscribes) {
           unsub();
-        });
+        }
+      };
     }, [startNode, object]);
 
     const activeObject = object || foundObject.current;

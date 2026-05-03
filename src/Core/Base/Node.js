@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useRef } from 'react';
 
 const root = {
   id: 'root',
@@ -10,18 +10,21 @@ const Context = createContext(root);
 
 export default function Node({ id, children }) {
   const parent = Node.useNode();
+  const nodeRef = useRef(null);
 
-  const node = useMemo(
-    () => ({
+  if (!nodeRef.current) {
+    nodeRef.current = {
       id,
       parent,
       items: new Map(),
       listeners: new Set(),
-    }),
-    [id, parent],
-  );
+    };
+  } else {
+    nodeRef.current.id = id;
+    nodeRef.current.parent = parent;
+  }
 
-  return <Context value={node}>{children}</Context>;
+  return <Context value={nodeRef.current}>{children}</Context>;
 }
 
 Node.useNode = (propId) => {

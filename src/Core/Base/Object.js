@@ -1,10 +1,13 @@
-export function objectChangedKeys(a, b) {
-  a = a || {};
-  b = b || {};
-  const aKeys = Object.keys(a),
-    bKeys = Object.keys(b);
+export function objectChangedKeys(a = {}, b = {}) {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+
+  if (aKeys.length !== bKeys.length) {
+    return aKeys;
+  }
+
   return aKeys.filter(
-    (key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]),
+    (key) => !Object.hasOwn(b, key) || !Object.is(a[key], b[key]),
   );
 }
 
@@ -39,14 +42,14 @@ export function createObject(props, id) {
   const internalState = { ...props };
 
   const notify = (keys) => {
-    if (!Array.isArray(keys)) {
+    if (!Array.isArray(keys) || keys.length === 0) {
       return;
     }
     counter++;
     for (const [cb, item] of monitor.entries()) {
-      if ((!item.key || keys.includes(item.key)) && typeof cb === 'function') {
+      if (!item.key || keys.includes(item.key)) {
         item.counter++;
-        cb([item.key, ...keys].filter(Boolean));
+        cb(keys);
       }
     }
   };
@@ -83,29 +86,31 @@ export function createObject(props, id) {
     },
     apply(_, thisArg, argumentsList) {
       const cb = argumentsList[0];
-      if (typeof cb === 'function') {
-        const draft = { ...internalState };
-        cb.call(thisArg, draft);
+      if (typeof cb !== 'function') {
+        return;
+      }
 
-        const changedKeys = [];
+      const draft = { ...internalState };
+      cb.call(thisArg, draft);
 
-        for (const key in draft) {
-          if (internalState[key] !== draft[key]) {
-            internalState[key] = draft[key];
-            changedKeys.push(key);
-          }
+      const changedKeys = [];
+      const untouchedKeys = new Set(Object.keys(internalState));
+
+      for (const key in draft) {
+        untouchedKeys.delete(key);
+        if (internalState[key] !== draft[key]) {
+          internalState[key] = draft[key];
+          changedKeys.push(key);
         }
+      }
 
-        for (const key in internalState) {
-          if (!(key in draft)) {
-            delete internalState[key];
-            changedKeys.push(key);
-          }
-        }
+      for (const key of untouchedKeys) {
+        delete internalState[key];
+        changedKeys.push(key);
+      }
 
-        if (changedKeys.length > 0) {
-          notify(changedKeys);
-        }
+      if (changedKeys.length > 0) {
+        notify(changedKeys);
       }
     },
     ownKeys: (target) => {
