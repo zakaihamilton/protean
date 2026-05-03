@@ -41,16 +41,34 @@ export function createObject(props, id) {
   const unique = crypto.randomUUID();
   const internalState = { ...props };
 
+  const pendingKeys = new Set();
+  let isMicrotaskQueued = false;
+
   const notify = (keys) => {
     if (!Array.isArray(keys) || keys.length === 0) {
       return;
     }
-    counter++;
-    for (const [cb, item] of monitor.entries()) {
-      if (!item.key || keys.includes(item.key)) {
-        item.counter++;
-        cb(keys);
-      }
+
+    for (const key of keys) {
+      pendingKeys.add(key);
+    }
+
+    if (!isMicrotaskQueued) {
+      isMicrotaskQueued = true;
+      queueMicrotask(() => {
+        counter++;
+        const flushKeys = Array.from(pendingKeys);
+
+        for (const [cb, item] of monitor.entries()) {
+          if (!item.key || flushKeys.includes(item.key)) {
+            item.counter++;
+            cb(flushKeys);
+          }
+        }
+
+        pendingKeys.clear();
+        isMicrotaskQueued = false;
+      });
     }
   };
 

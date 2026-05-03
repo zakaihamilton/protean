@@ -75,6 +75,17 @@ export function createState(displayName) {
     const [object, setObject] = useState(foundObject.current);
 
     useEffect(() => {
+      let currentSearch = startNode;
+      while (currentSearch) {
+        const checkObj = nodeGetProperty(currentSearch, State);
+        if (checkObj) {
+          foundObject.current = checkObj;
+          setObject(checkObj);
+          return;
+        }
+        currentSearch = currentSearch.parent;
+      }
+
       if (object || foundObject.current) return;
 
       const unsubscribes = [];

@@ -14,7 +14,7 @@ Do not use standard selectors. Use the provided hooks.
 
 **For state guaranteed to exist in the current or ancestor nodes:**
 ```javascript
-import { State } from './Core/Base/State'; // Adjust path as needed
+import { State } from 'src/Core/Base/State'; 
 
 function MyComponent() {
   // Pass a string key to get a specific primitive
@@ -35,28 +35,38 @@ function MyDeepComponent() {
 }
 ```
 
-## 3. Mutating State (STRICT RULE)
+## 3. Mutating State (STRICT RULES)
 You must NEVER return a cloned object (e.g., `return { ...state, key: new_value }`). You must NEVER use a traditional setter tuple.
 
-State is mutated by passing a callback function to the store proxy. This callback receives a mutable `draft`. You must mutate this draft directly. The underlying Proxy will calculate the diff and trigger micro-task updates.
+State is mutated by passing a callback function to the store proxy. This callback receives a mutable `draft`. The underlying Proxy will calculate the diff and trigger micro-task updates.
 
-**Correct Mutation Pattern:**
+### Shallow Mutation Only
+The `draft` is a shallow clone. You **must not** mutate nested objects directly. If a property is an object or array, you must replace it entirely at the top level of the draft.
+
+**Correct Mutation Patterns:**
 ```javascript
 function InteractiveComponent() {
   const store = State.useState();
 
   const handleUpdate = () => {
-    // PASS A CALLBACK. MUTATE THE DRAFT.
     store((draft) => {
-      draft.position.x = 100;
-      draft.isActive = true;
+      // Correct: Mutating top-level primitives
+      draft.isActive = true; 
+      
+      // Correct: Shallow replacement of a nested object
+      draft.position = { ...draft.position, x: 100 }; 
+      
+      // Correct: Shallow replacement of an array
+      draft.items = [...draft.items, newItem]; 
     });
   };
 }
 ```
 
 **FORBIDDEN Patterns:**
-* ❌ `const [val, setVal] = useState(...)` for shared state.
+* ❌ `draft.position.x = 100;` (Fails proxy diffing)
+* ❌ `draft.items.push(newItem);` (Fails proxy diffing)
+* ❌ `const [val, setVal] = useState(...)` (For shared state)
 * ❌ `store.update({ position: 100 })`
 * ❌ `setStore(prev => ({ ...prev, isActive: true }))`
 
