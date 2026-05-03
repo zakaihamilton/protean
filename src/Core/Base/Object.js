@@ -12,10 +12,10 @@ export function getCircularReplacer(object) {
   if (typeof object !== 'object' || object === null) {
     return object;
   }
-  const keys = Object.keys(object);
+  const keysSet = new Set(Object.keys(object));
   const seen = new WeakSet();
   return (key, value) => {
-    if (key && !keys.includes(key)) {
+    if (key && !keysSet.has(key)) {
       return;
     }
     if (typeof value === 'function') {
@@ -32,7 +32,7 @@ export function getCircularReplacer(object) {
 }
 
 export function createObject(props, id) {
-  const monitor = [];
+  const monitor = new Map();
   let counter = 0;
   let node;
   const unique = crypto.randomUUID();
@@ -43,13 +43,10 @@ export function createObject(props, id) {
       return;
     }
     counter++;
-    for (const item of monitor) {
-      if (
-        (!item.key || keys.includes(item.key)) &&
-        typeof item.cb === 'function'
-      ) {
+    for (const [cb, item] of monitor.entries()) {
+      if ((!item.key || keys.includes(item.key)) && typeof cb === 'function') {
         item.counter++;
-        item.cb([item.key, ...keys].filter(Boolean));
+        cb([item.key, ...keys].filter(Boolean));
       }
     }
   };
@@ -90,19 +87,17 @@ export function createObject(props, id) {
         const draft = { ...internalState };
         cb.call(thisArg, draft);
 
-        const oldKeys = new Set(Object.keys(internalState));
-        const newKeys = new Set(Object.keys(draft));
         const changedKeys = [];
 
-        for (const key of newKeys) {
-          if (!oldKeys.has(key) || internalState[key] !== draft[key]) {
+        for (const key in draft) {
+          if (internalState[key] !== draft[key]) {
             internalState[key] = draft[key];
             changedKeys.push(key);
           }
         }
 
-        for (const key of oldKeys) {
-          if (!newKeys.has(key)) {
+        for (const key in internalState) {
+          if (!(key in draft)) {
             delete internalState[key];
             changedKeys.push(key);
           }
@@ -135,27 +130,22 @@ export function createObject(props, id) {
 
   Object.defineProperty(proxy, '__monitor', {
     value: (key, cb, id) => {
-      monitor.push({ key, cb, id, counter: 0 });
+      monitor.set(cb, { key, cb, id, counter: 0 });
     },
     writable: false,
     enumerable: false,
   });
 
   Object.defineProperty(proxy, '__unmonitor', {
-    value: (key, cb, id) => {
-      const index = monitor.findIndex(
-        (item) => item.key === key && item.cb === cb && item.id === id,
-      );
-      if (index !== -1) {
-        monitor.splice(index, 1);
-      }
+    value: (_, cb) => {
+      monitor.delete(cb);
     },
     writable: false,
     enumerable: false,
   });
 
   Object.defineProperty(proxy, '__monitored', {
-    get: () => monitor,
+    get: () => Array.from(monitor.values()),
     enumerable: false,
   });
 

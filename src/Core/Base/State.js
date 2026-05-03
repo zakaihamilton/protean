@@ -69,39 +69,32 @@ export function createState(displayName) {
 
   State.useFutureState = (selector, id) => {
     const startNode = Node.useNode();
-    const foundObject = useRef(null);
+    const existingNode = Node.useNode(State);
+    const foundObject = useRef(nodeGetProperty(existingNode, State));
 
-    const [object, setObject] = useState(() => {
-      let search = startNode;
-      while (search) {
-        const found = nodeGetProperty(search, State);
-        if (found) {
-          foundObject.current = found;
-          return found;
-        }
-        search = search.parent;
-      }
-      return null;
-    });
+    const [object, setObject] = useState(foundObject.current);
 
     useEffect(() => {
       if (object || foundObject.current) return;
 
-      const unsubscribe = subscribeToNode((changedNode, propId, newValue) => {
+      const unsubscribes = [];
+      let search = startNode;
+
+      const handleEvent = (_, propId, newValue) => {
         if (propId !== State) return;
+        foundObject.current = newValue;
+        setObject(newValue);
+      };
 
-        let search = startNode;
-        while (search) {
-          if (search === changedNode) {
-            foundObject.current = newValue;
-            setObject(newValue);
-            return;
-          }
-          search = search.parent;
-        }
-      });
+      while (search) {
+        unsubscribes.push(subscribeToNode(search, handleEvent));
+        search = search.parent;
+      }
 
-      return unsubscribe;
+      return () =>
+        unsubscribes.forEach((unsub) => {
+          unsub();
+        });
     }, [startNode, object]);
 
     const activeObject = object || foundObject.current;
