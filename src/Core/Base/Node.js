@@ -6,6 +6,12 @@ const root = {
   items: new Map(),
   listeners: new Set(),
 };
+
+Node.resetRoot = () => {
+  root.items.clear();
+  root.listeners.clear();
+};
+
 const Context = createContext(root);
 
 export default function Node({ id, children }) {
