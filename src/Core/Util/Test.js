@@ -35,12 +35,23 @@ export function testPermutations(components, params = {}) {
 
 export async function testMethod(instances, method, ...params) {
   const result = [];
+  const errors = [];
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
     if (typeof instance[method] !== 'function') {
-      throw new Error(`instance does not have method: ${method}`);
+      errors.push(new Error(`instance does not have method: ${method}`));
+      result.push(undefined);
+      continue;
     }
-    result.push(await instance[method](...params));
+    try {
+      result.push(await instance[method](...params));
+    } catch (e) {
+      errors.push(e);
+      result.push(undefined);
+    }
+  }
+  if (errors.length) {
+    throw errors[0];
   }
   return result;
 }

@@ -1,19 +1,22 @@
 import { useEffect, useRef } from 'react';
-import Node from 'src/Core/Base/Node';
-import { createState } from 'src/Core/Base/State';
+import Node from '@/Core/Base/Node';
+import { createState } from '@/Core/Base/State';
 
 export const TaskStore = createState('TaskStore');
 
 export function TaskManager({ children }) {
+  const executing = useRef(new Set());
+  const abortControllers = useRef(new Map());
+
   const store = TaskStore.useState(null, {
     tasks: {},
+    activeIds: [],
     run: (targetId) => {
-      // 1. Wrap the execution in a Promise so it can be awaited
       return new Promise((resolve, reject) => {
         let notFound = false;
 
         store((draft) => {
-          const tasks = draft.tasks;
+          const tasks = { ...draft.tasks };
           if (!tasks[targetId]) {
             notFound = true;
             return;
@@ -35,17 +38,26 @@ export function TaskManager({ children }) {
             return false;
           };
 
-          Object.values(tasks).forEach((t) => {
+          for (const id of Object.keys(tasks)) {
+            const t = { ...tasks[id] };
             if (targetPath.has(t.id) || isDescendant(t.id, targetId)) {
               t.status = 'idle';
               t.progress = 0;
               t.error = null;
+              if (!draft.activeIds.includes(t.id)) {
+                draft.activeIds = [...draft.activeIds, t.id];
+              }
             } else {
               if (t.status !== 'success') {
                 t.status = 'skipped';
+                if (!draft.activeIds.includes(t.id)) {
+                  draft.activeIds = [...draft.activeIds, t.id];
+                }
               }
             }
-          });
+            tasks[id] = t;
+          }
+          draft.tasks = tasks;
         });
 
         if (notFound) {
@@ -55,7 +67,6 @@ export function TaskManager({ children }) {
           return;
         }
 
-        // 2. Subscribe to the Proxy store to listen for the task's completion
         const handlerId = `run_${targetId}_${Math.random().toString(36).slice(2)}`;
 
         const checkStatus = () => {
@@ -67,29 +78,70 @@ export function TaskManager({ children }) {
             resolve();
           } else if (task.status === 'error') {
             store.__unmonitor(null, checkStatus, handlerId);
-            // Throw the explicit error that bubbled up
             reject(new Error(task.error || `Task "${targetId}" failed.`));
           }
         };
 
-        // Attach the listener. It will evaluate every time the proxy updates.
         store.__monitor(null, checkStatus, handlerId);
+      });
+    },
+
+    cancel: (targetId) => {
+      store((draft) => {
+        const tasks = { ...draft.tasks };
+        if (!tasks) return;
+
+        const idsToCancel = new Set([targetId]);
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (const t of Object.values(tasks)) {
+            if (
+              t.parentId &&
+              idsToCancel.has(t.parentId) &&
+              !idsToCancel.has(t.id)
+            ) {
+              idsToCancel.add(t.id);
+              changed = true;
+            }
+          }
+        }
+
+        for (const id of idsToCancel) {
+          if (abortControllers.current.has(id)) {
+            abortControllers.current.get(id).abort();
+            abortControllers.current.delete(id);
+          }
+          delete tasks[id];
+        }
+
+        draft.tasks = tasks;
+        if (draft.activeIds) {
+          draft.activeIds = draft.activeIds.filter(
+            (aId) => !idsToCancel.has(aId),
+          );
+        }
       });
     },
   });
 
-  const executing = useRef(new Set());
+  // Biome Fix: Alias store properties to prevent exhaustive-deps dot notation warnings
+  const tasks = store.tasks;
+  const activeIds = store.activeIds;
 
   useEffect(() => {
-    if (!store.tasks) return;
-    const tasks = Object.values(store.tasks);
+    if (!tasks || !activeIds) return;
+
+    const idsToRemove = new Set();
 
     const setTaskState = (id, updates) => {
       store((draft) => {
-        draft.tasks = {
-          ...draft.tasks,
-          [id]: { ...draft.tasks[id], ...updates },
-        };
+        if (draft.tasks[id]) {
+          draft.tasks = {
+            ...draft.tasks,
+            [id]: { ...draft.tasks[id], ...updates },
+          };
+        }
       });
     };
 
@@ -104,25 +156,38 @@ export function TaskManager({ children }) {
       }
     };
 
-    for (const task of tasks) {
+    for (const taskId of activeIds) {
+      const task = tasks[taskId];
+
+      if (!task) {
+        idsToRemove.add(taskId);
+        continue;
+      }
+
+      if (['success', 'error', 'skipped'].includes(task.status)) {
+        idsToRemove.add(taskId);
+        continue;
+      }
+
+      // PHASE 1: IDLE -> RUNNING_BEFORE
       if (
         task.status === 'idle' &&
         !executing.current.has(`${task.id}_before`)
       ) {
         const depsMet = task.dependencies.every((depId) =>
-          ['success', 'skipped'].includes(store.tasks[depId]?.status),
+          ['success', 'skipped'].includes(tasks[depId]?.status),
         );
 
         const parentStatus = task.parentId
-          ? store.tasks[task.parentId]?.status
+          ? tasks[task.parentId]?.status
           : null;
         const parentMet =
           !parentStatus ||
           ['waiting_children', 'success', 'skipped'].includes(parentStatus);
 
         let sequentialMet = true;
-        if (task.parentId && store.tasks[task.parentId]?.parallel === false) {
-          const olderSiblings = tasks.filter(
+        if (task.parentId && tasks[task.parentId]?.parallel === false) {
+          const olderSiblings = Object.values(tasks).filter(
             (t) => t.parentId === task.parentId && t.index < task.index,
           );
           sequentialMet = olderSiblings.every((t) =>
@@ -136,18 +201,32 @@ export function TaskManager({ children }) {
 
           const report = (progress) => setTaskState(task.id, { progress });
 
-          Promise.resolve(task.before ? task.before(report) : null)
+          const controller = new AbortController();
+          abortControllers.current.set(task.id, controller);
+
+          Promise.resolve(
+            task.before ? task.before(report, controller.signal) : null,
+          )
             .then(() => setTaskState(task.id, { status: 'waiting_children' }))
-            .catch((err) => triggerError(task, err.message))
-            .finally(() => executing.current.delete(`${task.id}_before`));
+            .catch((err) => {
+              if (err.name === 'AbortError') return;
+              triggerError(task, err.message);
+            })
+            .finally(() => {
+              abortControllers.current.delete(task.id);
+              executing.current.delete(`${task.id}_before`);
+            });
         }
       }
 
+      // PHASE 2: WAITING_CHILDREN -> RUNNING_AFTER
       if (
         task.status === 'waiting_children' &&
         !executing.current.has(`${task.id}_after`)
       ) {
-        const children = tasks.filter((t) => t.parentId === task.id);
+        const children = Object.values(tasks).filter(
+          (t) => t.parentId === task.id,
+        );
         const childError = children.find((t) => t.status === 'error');
 
         if (childError) {
@@ -171,16 +250,33 @@ export function TaskManager({ children }) {
 
           const report = (progress) => setTaskState(task.id, { progress });
 
-          Promise.resolve(task.after ? task.after(report) : null)
+          const controller = new AbortController();
+          abortControllers.current.set(task.id, controller);
+
+          Promise.resolve(
+            task.after ? task.after(report, controller.signal) : null,
+          )
             .then(() =>
               setTaskState(task.id, { status: 'success', progress: 100 }),
             )
-            .catch((err) => triggerError(task, err.message))
-            .finally(() => executing.current.delete(`${task.id}_after`));
+            .catch((err) => {
+              if (err.name === 'AbortError') return;
+              triggerError(task, err.message);
+            })
+            .finally(() => {
+              abortControllers.current.delete(task.id);
+              executing.current.delete(`${task.id}_after`);
+            });
         }
       }
     }
-  }, [store, store.tasks]);
+
+    if (idsToRemove.size > 0) {
+      store((draft) => {
+        draft.activeIds = draft.activeIds.filter((id) => !idsToRemove.has(id));
+      });
+    }
+  }, [store, tasks, activeIds]); // Biome Fix: Clean dependencies utilizing scoped consts
 
   return children;
 }
@@ -202,52 +298,86 @@ export function Task({
   const parentNode = Node.useNode();
   const parentNodeId = parentNode?.id;
   const implicitParentId =
-    parentNodeId && parentNodeId !== 'root' ? parentNodeId : null;
+    parentNodeId && parentNodeId !== 'root' && parentNodeId !== 'TaskEngineRoot'
+      ? parentNodeId
+      : null;
   const absoluteId = implicitParentId ? `${implicitParentId}/${id}` : id;
 
+  // 1. Maintain latest callbacks without triggering unmount/re-registration
+  useEffect(() => {
+    store((draft) => {
+      if (draft.tasks?.[absoluteId]) {
+        draft.tasks = {
+          ...draft.tasks,
+          [absoluteId]: {
+            ...draft.tasks[absoluteId],
+            before,
+            after,
+            onError,
+          },
+        };
+      }
+    });
+  }, [before, after, onError, absoluteId, store]);
+
+  // 2. Register task structure and handle unmount garbage collection
+  const depsString = JSON.stringify(dependencies);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Callbacks are kept fresh via the above effect to prevent unmount loops
   useEffect(() => {
     store((draft) => {
       if (!draft.tasks) draft.tasks = {};
+      if (!draft.activeIds) draft.activeIds = [];
 
       const siblingsCount = Object.values(draft.tasks).filter(
         (t) => t.parentId === implicitParentId,
       ).length;
 
-      const resolvedDependencies = dependencies.map((dep) =>
+      const resolvedDependencies = JSON.parse(depsString).map((dep) =>
         !dep.includes('/') && implicitParentId
           ? `${implicitParentId}/${dep}`
           : dep,
       );
 
-      draft.tasks = {
-        ...draft.tasks,
-        [absoluteId]: {
-          id: absoluteId,
-          parentId: implicitParentId,
-          before,
-          after,
-          onError,
-          dependencies: resolvedDependencies,
-          parallel,
-          index: draft.tasks[absoluteId]?.index ?? siblingsCount,
-          status:
-            draft.tasks[absoluteId]?.status || (autoStart ? 'idle' : 'dormant'),
-          progress: draft.tasks[absoluteId]?.progress || 0,
-          error: draft.tasks[absoluteId]?.error || null,
-        },
-      };
+      if (!draft.tasks[absoluteId]) {
+        // Initial Registration
+        draft.tasks = {
+          ...draft.tasks,
+          [absoluteId]: {
+            id: absoluteId,
+            parentId: implicitParentId,
+            before,
+            after,
+            onError,
+            dependencies: resolvedDependencies,
+            parallel,
+            index: siblingsCount,
+            status: autoStart ? 'idle' : 'dormant',
+            progress: 0,
+            error: null,
+          },
+        };
+      } else {
+        // Safe update for dependencies and config
+        draft.tasks = {
+          ...draft.tasks,
+          [absoluteId]: {
+            ...draft.tasks[absoluteId],
+            dependencies: resolvedDependencies,
+            parallel,
+          },
+        };
+      }
+
+      if (!draft.activeIds.includes(absoluteId)) {
+        draft.activeIds = [...draft.activeIds, absoluteId];
+      }
     });
-  }, [
-    absoluteId,
-    implicitParentId,
-    before,
-    after,
-    onError,
-    dependencies,
-    parallel,
-    autoStart,
-    store,
-  ]);
+
+    return () => {
+      store.cancel(absoluteId);
+    };
+  }, [absoluteId, implicitParentId, depsString, parallel, autoStart, store]);
 
   return <Node id={absoluteId}>{children}</Node>;
 }

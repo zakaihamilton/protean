@@ -11,12 +11,7 @@ import {
 import { pathNormalize } from 'src/Core/Util/Path';
 
 let client = null;
-
-const accessKeyId = process.env.S3_ID,
-  secretAccessKey = process.env.S3_SECRET,
-  endpointUrl = process.env.S3_ENDPOINT,
-  bucketName = process.env.S3_BUCKET,
-  region = process.env.S3_REGION;
+let accessKeyId, secretAccessKey, endpointUrl, bucketName, region;
 
 /**
  * Checks if the storage is supported.
@@ -35,6 +30,12 @@ export async function open() {
   if (client) {
     throw new Error('Storage already opened');
   }
+
+  accessKeyId = process.env.S3_ID;
+  secretAccessKey = process.env.S3_SECRET;
+  endpointUrl = process.env.S3_ENDPOINT;
+  bucketName = process.env.S3_BUCKET;
+  region = process.env.S3_REGION;
 
   if (!accessKeyId) {
     throw 'No Access ID';

@@ -1,7 +1,3 @@
-const nextJest = require('next/jest');
-const createJestConfig = nextJest({
-  dir: './',
-});
 const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testMatch: ['<rootDir>/src/**/*.test.js'],
@@ -10,6 +6,17 @@ const customJestConfig = {
   moduleNameMapper: {
     // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
     uuid: require.resolve('uuid'),
+    mongodb: require.resolve('mongodb'),
+    bson: require.resolve('bson'),
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      {
+        presets: [['next/babel', { 'preset-react': { runtime: 'automatic' } }]],
+      },
+    ],
   },
 };
-module.exports = createJestConfig(customJestConfig);
+module.exports = customJestConfig;
