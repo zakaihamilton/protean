@@ -133,20 +133,36 @@ export function getOffsetRect(element) {
 }
 
 export function createRegion(displayName) {
-  function Region({ target, delay = 50 }) {
+  function Region({ target, delay = 50, counter }) {
     const [region, setRegion] = useState({});
+    // biome-ignore lint/correctness/useExhaustiveDependencies: the counter and target are the primary triggers for manual and automated region updates
     const updateRegion = useCallback(() => {
       if (!target) {
         return;
       }
       const rect = target.getBoundingClientRect();
-      setRegion({
-        left: Math.floor(rect.left),
-        top: Math.floor(rect.top),
-        width: Math.floor(rect.width),
-        height: Math.floor(rect.height),
+      const left = Math.floor(rect.left);
+      const top = Math.floor(rect.top);
+      const width = Math.floor(rect.width);
+      const height = Math.floor(rect.height);
+
+      setRegion((prev) => {
+        if (
+          prev.left === left &&
+          prev.top === top &&
+          prev.width === width &&
+          prev.height === height
+        ) {
+          return prev;
+        }
+        return {
+          left,
+          top,
+          width,
+          height,
+        };
       });
-    }, [target]);
+    }, [target, counter]);
     useEffect(() => {
       const timerHandle = setTimeout(updateRegion, delay);
       return () => {
@@ -159,8 +175,12 @@ export function createRegion(displayName) {
           updateRegion();
         });
         resizeObserver.observe(target);
+        window.addEventListener('scroll', updateRegion, true);
+        window.addEventListener('resize', updateRegion);
         return () => {
           resizeObserver.unobserve(target);
+          window.removeEventListener('scroll', updateRegion, true);
+          window.removeEventListener('resize', updateRegion);
         };
       }
     }, [target, updateRegion]);
