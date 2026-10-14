@@ -23,7 +23,7 @@
     "js-cookie": "^3.0.5",
     "jsdom": "^27.2.0",
     "mongodb": "6",
-    "next": "^16.2.4",
+    "next": "^16.4.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-icons": "^5.5.0",
@@ -55,5 +55,8 @@
   "packageManager": "yarn@4.14.1",
   "resolutions": {
     "baseline-browser-mapping": "latest"
+  },
+  "engines": {
+    "node": ">=24.22.0 <25"
   }
 }
