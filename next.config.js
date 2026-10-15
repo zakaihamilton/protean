@@ -2,6 +2,7 @@ const version = require('./package.json').version;
 const _path = require('node:path');
 
 const nextConfig = {
+  experimental: { useTypeScriptCli: true },
   reactStrictMode: true,
   turbopack: {
     root: __dirname,
