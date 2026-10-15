@@ -1,6 +1,6 @@
 # Project Architecture & State Management Rules
 
-**CRITICAL INSTRUCTION FOR AI ASSISTANTS:** This project DOES NOT use standard React global state management. Do NOT use Redux, Zustand, Recoil, or React's standard Context API + `useState` for sharing state between components. 
+**CRITICAL INSTRUCTION FOR AI ASSISTANTS:** This project DOES NOT use standard React global state management. Do NOT use Redux, Zustand, Recoil, or React's standard Context API + `useState` for sharing state between components.
 
 We use a bespoke Hierarchical Context + Proxy architecture optimized for high-frequency, granular mutations. You must adhere to the following rules when generating or modifying React components.
 
@@ -14,15 +14,15 @@ Do not use standard selectors. Use the provided hooks.
 
 **For state guaranteed to exist in the current or ancestor nodes:**
 ```javascript
-import { State } from 'src/Core/Base/State'; 
+import { State } from 'src/Core/Base/State';
 
 function MyComponent() {
   // Pass a string key to get a specific primitive
-  const value = State.useState('myKey'); 
-  
+  const value = State.useState('myKey');
+
   // Or pass no selector to get the whole proxy object
   const store = State.useState();
-  
+
   return <div>{value}</div>;
 }
 ```
@@ -51,13 +51,13 @@ function InteractiveComponent() {
   const handleUpdate = () => {
     store((draft) => {
       // Correct: Mutating top-level primitives
-      draft.isActive = true; 
-      
+      draft.isActive = true;
+
       // Correct: Shallow replacement of a nested object
-      draft.position = { ...draft.position, x: 100 }; 
-      
+      draft.position = { ...draft.position, x: 100 };
+
       // Correct: Shallow replacement of an array
-      draft.items = [...draft.items, newItem]; 
+      draft.items = [...draft.items, newItem];
     });
   };
 }

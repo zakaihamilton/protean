@@ -52,7 +52,7 @@
     "yarn": "^1.22.22",
     "yarn-upgrade-all": "^0.7.5"
   },
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "pnpm@10.33.0",
   "resolutions": {
     "baseline-browser-mapping": "latest"
   },
