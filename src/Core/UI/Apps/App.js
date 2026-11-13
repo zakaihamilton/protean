@@ -1,9 +1,9 @@
-import { createState } from "src/Core/Base/State";
+import { createState } from 'src/Core/Base/State';
 
 function App({ children }) {
-    return children;
+  return children;
 }
 
-App.State = createState("App.State");
+App.State = createState('App.State');
 
 export default App;

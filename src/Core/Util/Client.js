@@ -3,10 +3,10 @@
  * @returns {Screen|null}
  */
 export function getClientWindow() {
-    if (typeof window !== "undefined") {
-        return window;
-    }
-    return null;
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  return null;
 }
 
 /**
@@ -14,8 +14,8 @@ export function getClientWindow() {
  * @returns {Document|null}
  */
 export function getClientDocument() {
-    if (typeof document !== "undefined") {
-        return document;
-    }
-    return null;
+  if (typeof document !== 'undefined') {
+    return document;
+  }
+  return null;
 }

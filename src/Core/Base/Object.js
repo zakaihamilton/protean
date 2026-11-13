@@ -1,201 +1,229 @@
-export function objectChangedKeys(a, b) {
-    a = a || {};
-    b = b || {};
-    const aKeys = Object.keys(a), bKeys = Object.keys(b);
-    return aKeys.filter((key, idx) => bKeys[idx] !== aKeys[idx] || !Object.is(a[key], b[key]));
+export function objectChangedKeys(a = {}, b = {}) {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+
+  if (aKeys.length !== bKeys.length) {
+    return aKeys;
+  }
+
+  return aKeys.filter(
+    (key) => !Object.hasOwn(b, key) || !Object.is(a[key], b[key]),
+  );
 }
 
 export function getCircularReplacer(object) {
-    if (typeof object !== "object" || object === null) {
-        return object;
+  if (typeof object !== 'object' || object === null) {
+    return object;
+  }
+  const keysSet = new Set(Object.keys(object));
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (key && !keysSet.has(key)) {
+      return;
     }
-    const keys = Object.keys(object);
-    const seen = new WeakSet();
-    return (key, value) => {
-        if (key && !keys.includes(key)) {
-            return;
-        }
-        if (typeof value === "function") {
-            return;
-        }
-        if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-    };
+    if (typeof value === 'function') {
+      return;
+    }
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
 }
 
 export function createObject(props, id) {
-    const monitor = [];
-    let counter = 0;
-    let node = undefined;
-    const unique = crypto.randomUUID();
-    const internalState = { ...props };
-    const notify = (keys) => {
-        if (!Array.isArray(keys)) {
-            return;
-        }
+  const monitor = new Map();
+  let counter = 0;
+  let node;
+  const unique = crypto.randomUUID();
+  const internalState = { ...props };
+
+  const pendingKeys = new Set();
+  let isMicrotaskQueued = false;
+
+  const notify = (keys) => {
+    if (!Array.isArray(keys) || keys.length === 0) {
+      return;
+    }
+
+    for (const key of keys) {
+      pendingKeys.add(key);
+    }
+
+    if (!isMicrotaskQueued) {
+      isMicrotaskQueued = true;
+      queueMicrotask(() => {
         counter++;
-        for (const item of monitor) {
-            if ((!item.key || keys.includes(item.key)) && typeof item.cb === "function") {
-                item.counter++;
-                item.cb(item.key);
-            }
+        const flushKeys = Array.from(pendingKeys);
+
+        for (const [cb, item] of monitor.entries()) {
+          if (!item.key || flushKeys.includes(item.key)) {
+            item.counter++;
+            cb(flushKeys);
+          }
         }
-    };
-    const target = () => { };
-    const proxy = new Proxy(target, {
-        get: function (target, propertyKey, receiver) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
-                return internalState[propertyKey];
-            }
-            return Reflect.get(target, propertyKey, receiver);
-        },
-        set: function (target, propertyKey, value, receiver) {
-            if (typeof propertyKey === 'string' && propertyKey.startsWith('__')) {
-                return Reflect.set(target, propertyKey, value, receiver);
-            }
 
-            if (internalState[propertyKey] === value) {
-                return true;
-            }
-            internalState[propertyKey] = value;
-            notify([propertyKey]);
-            return true;
-        },
-        deleteProperty: function (_, propertyKey) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
-                delete internalState[propertyKey];
-                notify([propertyKey]);
-                return true;
-            }
-            return false;
-        },
-        apply(_, thisArg, argumentsList) {
-            const cb = argumentsList[0];
-            if (typeof cb === "function") {
-                const draft = { ...internalState };
-                cb.call(thisArg, draft);
+        pendingKeys.clear();
+        isMicrotaskQueued = false;
+      });
+    }
+  };
 
-                const oldKeys = new Set(Object.keys(internalState));
-                const newKeys = new Set(Object.keys(draft));
-                const changedKeys = [];
+  const target = () => {};
 
-                for (const key of newKeys) {
-                    if (!oldKeys.has(key) || internalState[key] !== draft[key]) {
-                        internalState[key] = draft[key];
-                        changedKeys.push(key);
-                    }
-                }
+  const proxy = new Proxy(target, {
+    get: (target, propertyKey, receiver) => {
+      if (Object.hasOwn(internalState, propertyKey)) {
+        return internalState[propertyKey];
+      }
+      return Reflect.get(target, propertyKey, receiver);
+    },
+    set: (target, propertyKey, value, receiver) => {
+      if (typeof propertyKey === 'string' && propertyKey.startsWith('__')) {
+        return Reflect.set(target, propertyKey, value, receiver);
+      }
 
-                for (const key of oldKeys) {
-                    if (!newKeys.has(key)) {
-                        delete internalState[key];
-                        changedKeys.push(key);
-                    }
-                }
+      if (internalState[propertyKey] === value) {
+        return true;
+      }
 
-                if (changedKeys.length > 0) {
-                    notify(changedKeys);
-                }
-            }
-        },
-        ownKeys: function (target) {
-            const stateKeys = Reflect.ownKeys(internalState);
-            const targetKeys = Reflect.ownKeys(target);
-            return Array.from(new Set([...stateKeys, ...targetKeys]));
-        },
-        has: function (target, propertyKey) {
-            return propertyKey in internalState || Reflect.has(target, propertyKey);
-        },
-        getOwnPropertyDescriptor(target, propertyKey) {
-            if (Object.prototype.hasOwnProperty.call(internalState, propertyKey)) {
-                return {
-                    value: internalState[propertyKey],
-                    writable: true,
-                    enumerable: true,
-                    configurable: true,
-                };
-            }
-            return Reflect.getOwnPropertyDescriptor(target, propertyKey);
+      internalState[propertyKey] = value;
+      notify([propertyKey]);
+      return true;
+    },
+    deleteProperty: (_, propertyKey) => {
+      if (Object.hasOwn(internalState, propertyKey)) {
+        delete internalState[propertyKey];
+        notify([propertyKey]);
+        return true;
+      }
+      return false;
+    },
+    apply(_, thisArg, argumentsList) {
+      const cb = argumentsList[0];
+      if (typeof cb !== 'function') {
+        return;
+      }
+
+      const draft = { ...internalState };
+      cb.call(thisArg, draft);
+
+      const changedKeys = [];
+      const untouchedKeys = new Set(Object.keys(internalState));
+
+      for (const key in draft) {
+        untouchedKeys.delete(key);
+        if (internalState[key] !== draft[key]) {
+          internalState[key] = draft[key];
+          changedKeys.push(key);
         }
-    });
+      }
 
-    Object.defineProperty(proxy, "__monitor", {
-        value: (key, cb, id) => {
-            monitor.push({ key, cb, id, counter: 0 });
-        },
-        writable: false,
-        enumerable: false
-    });
+      for (const key of untouchedKeys) {
+        delete internalState[key];
+        changedKeys.push(key);
+      }
 
-    Object.defineProperty(proxy, "__unmonitor", {
-        value: (key, cb, id) => {
-            const index = monitor.findIndex(item => item.key === key && item.cb === cb && item.id === id);
-            if (index !== -1) {
-                monitor.splice(index, 1);
-            }
-        },
-        writable: false,
-        enumerable: false
-    });
+      if (changedKeys.length > 0) {
+        notify(changedKeys);
+      }
+    },
+    ownKeys: (target) => {
+      const stateKeys = Reflect.ownKeys(internalState);
+      const targetKeys = Reflect.ownKeys(target);
+      return Array.from(new Set([...stateKeys, ...targetKeys]));
+    },
+    has: (target, propertyKey) =>
+      propertyKey in internalState || Reflect.has(target, propertyKey),
+    getOwnPropertyDescriptor(target, propertyKey) {
+      if (Object.hasOwn(internalState, propertyKey)) {
+        return {
+          value: internalState[propertyKey],
+          writable: true,
+          enumerable: true,
+          configurable: true,
+        };
+      }
+      return Reflect.getOwnPropertyDescriptor(target, propertyKey);
+    },
+  });
 
-    Object.defineProperty(proxy, "__monitored", {
-        get: () => monitor,
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__monitor', {
+    value: (key, cb, id) => {
+      monitor.set(cb, { key, cb, id, counter: 0 });
+    },
+    writable: false,
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__unique", {
-        get: () => unique,
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__unmonitor', {
+    value: (_, cb) => {
+      monitor.delete(cb);
+    },
+    writable: false,
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__id", {
-        get: () => id,
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__monitored', {
+    get: () => Array.from(monitor.values()),
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__object", {
-        get: () => internalState,
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__unique', {
+    get: () => unique,
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__counter", {
-        get: () => counter,
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__id', {
+    get: () => id,
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__string", {
-        get: () => {
-            return JSON.stringify(internalState, getCircularReplacer(internalState), 2);
-        },
-        enumerable: false
-    });
+  Object.defineProperty(proxy, '__object', {
+    get: () => internalState,
+    enumerable: false,
+  });
 
-    Object.defineProperty(proxy, "__node", {
-        get: () => node,
-        set: (value) => {
-            node = value;
-        },
-        enumerable: false,
-        configurable: true
-    });
+  Object.defineProperty(proxy, '__counter', {
+    get: () => counter,
+    enumerable: false,
+  });
 
-    return proxy;
+  Object.defineProperty(proxy, '__string', {
+    get: () => {
+      return JSON.stringify(
+        internalState,
+        getCircularReplacer(internalState),
+        2,
+      );
+    },
+    enumerable: false,
+  });
+
+  Object.defineProperty(proxy, '__node', {
+    get: () => node,
+    set: (value) => {
+      node = value;
+    },
+    enumerable: false,
+    configurable: true,
+  });
+
+  return proxy;
 }
 
 export function filterObjectByKeys(obj, keysToFilter) {
-    const filtered = {};
-    const leftover = {};
-    const keysSet = new Set(keysToFilter);
+  const filtered = {};
+  const leftover = {};
+  const keysSet = new Set(keysToFilter);
 
-    Object.entries(obj).forEach(([key, value]) => {
-        const target = keysSet.has(key) ? filtered : leftover;
-        target[key] = value;
-    });
+  Object.entries(obj).forEach(([key, value]) => {
+    const target = keysSet.has(key) ? filtered : leftover;
+    target[key] = value;
+  });
 
-    return [filtered, leftover];
+  return [filtered, leftover];
 }

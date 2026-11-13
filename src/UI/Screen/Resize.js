@@ -1,30 +1,30 @@
-import { useClasses } from "src/Core/Util/Styles";
-import styles from "./Resize.module.scss";
-import Drag from "src/Core/UI/Drag";
-import { useResizeDrag } from "src/Core/UI/Drag/Resize";
-import Screen from "../Screen";
-import Lang from "src/Core/UI/Lang";
+import Drag from 'src/Core/UI/Drag';
+import { useResizeDrag } from 'src/Core/UI/Drag/Resize';
+import Lang from 'src/Core/UI/Lang';
+import { useClasses } from 'src/Core/Util/Styles';
+import Screen from '../Screen';
+import styles from './Resize.module.scss';
 
 function Resize() {
-    const classes = useClasses(styles);
-    const drag = Drag.useState();
-    const screen = Screen.State.useState();
-    const lang = Lang.State.useState();
-    const disabled = screen.center || screen.maximize;
-    const [,element] = useResizeDrag(!disabled, lang.direction);
-    const className = classes({
-        root: true,
-        resizing: drag.resizing,
-        dock: screen.dock,
-        fullscreen: screen.fullscreen,
-        maximize: screen.maximize,
-        fixed: screen.fixed || screen.center
-    });
-    return (
-        <div ref={element} className={className}>
-            <div className={styles.glyph} />
-        </div>
-    )
+  const classes = useClasses(styles);
+  const drag = Drag.useState();
+  const screen = Screen.State.useState();
+  const lang = Lang.State.useState();
+  const disabled = screen.center || screen.maximize;
+  const [, element] = useResizeDrag(!disabled, lang.direction);
+  const className = classes({
+    root: true,
+    resizing: drag.resizing,
+    dock: screen.dock,
+    fullscreen: screen.fullscreen,
+    maximize: screen.maximize,
+    fixed: screen.fixed || screen.center,
+  });
+  return (
+    <div ref={element} className={className}>
+      <div className={styles.glyph} />
+    </div>
+  );
 }
 
 export default Resize;

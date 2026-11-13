@@ -1,18 +1,17 @@
- 
 /**
  * Checks if the storage is supported.
  *
  * @return {boolean} Returns true if the storage is supported, false otherwise.
-*/
+ */
 export async function isSupported() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
  * Opens the storage asynchronously.
  */
 export async function open() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -21,7 +20,7 @@ export async function open() {
  * @return {Promise<void>} A promise that resolves when the connection is closed.
  */
 export async function close() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -30,8 +29,8 @@ export async function close() {
  * @param {string} path - The path where the folder should be created.
  * @return {Promise<void>} A promise that resolves when the folder has been created.
  */
-export async function createFolder(path) {
-    // Implement your logic here
+export async function createFolder(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -40,8 +39,8 @@ export async function createFolder(path) {
  * @param {string} path - The path of the folder to be deleted.
  * @return {Promise<void>} A promise that resolves when the folder and its contents have been deleted.
  */
-export async function deleteFolder(path) {
-    // Implement your logic here
+export async function deleteFolder(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -51,8 +50,8 @@ export async function deleteFolder(path) {
  * @param {string} toPath - The path where the folder should be moved to.
  * @return {Promise<void>} A promise that resolves when the folder has been moved.
  */
-export async function moveFolder(fromPath, toPath) {
-    // Implement your logic here
+export async function moveFolder(_fromPath, _toPath) {
+  // Implement your logic here
 }
 
 /**
@@ -62,8 +61,8 @@ export async function moveFolder(fromPath, toPath) {
  * @param {string} toPath - The destination path where the folder will be copied to.
  * @return {Promise<void>} A promise that resolves when the folder and its contents have been copied.
  */
-export async function copyFolder(fromPath, toPath) {
-    // Implement your logic here
+export async function copyFolder(_fromPath, _toPath) {
+  // Implement your logic here
 }
 
 /**
@@ -72,8 +71,8 @@ export async function copyFolder(fromPath, toPath) {
  * @param {string} path - the path of the folder
  * @return {Promise<type>} - a promise that resolves to an array of files or folders
  */
-export async function listFolder(path) {
-    // Implement your logic here
+export async function listFolder(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -81,8 +80,8 @@ export async function listFolder(path) {
  * @param {string} path - the path of the folder
  * @return {Promise<boolean>} - a promise that resolves to true if the folder exists, false otherwise
  */
-export async function folderExists(path) {
-    // Implement your logic here
+export async function folderExists(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -91,8 +90,8 @@ export async function folderExists(path) {
  * @param {String} path - The path of the file to be read.
  * @return {Promise<string>} A promise that resolves to the content of the file as a string.
  */
-export async function readFile(path) {
-    // Implement your logic here
+export async function readFile(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -102,8 +101,8 @@ export async function readFile(path) {
  * @param {string} content - The content to be written to the file.
  * @return {Promise<void>} A promise that resolves when the file is successfully created or updated.
  */
-export async function writeFile(path, content) {
-    // Implement your logic here
+export async function writeFile(_path, _content) {
+  // Implement your logic here
 }
 
 /**
@@ -112,8 +111,8 @@ export async function writeFile(path, content) {
  * @param {string} path - The path of the file to be deleted.
  * @return {Promise<void>} A promise that resolves when the file is successfully deleted.
  */
-export async function deleteFile(path) {
-    // Implement your logic here
+export async function deleteFile(_path) {
+  // Implement your logic here
 }
 
 /**
@@ -123,8 +122,8 @@ export async function deleteFile(path) {
  * @param {string} toPath - The new path where the file should be moved.
  * @return {Promise<void>} A promise that resolves when the file has been moved.
  */
-export async function moveFile(fromPath, toPath) {
-    // Implement your logic here
+export async function moveFile(_fromPath, _toPath) {
+  // Implement your logic here
 }
 
 /**
@@ -134,22 +133,18 @@ export async function moveFile(fromPath, toPath) {
  * @param {string} toPath - The path of the destination location.
  * @return {Promise<void>} A promise that resolves when the file has been copied.
  */
-export async function copyFile(fromPath, toPath) {
-    // Implement your logic here
+export async function copyFile(_fromPath, _toPath) {
+  // Implement your logic here
 }
 
 /**
  * Check if a file exists
  * @param {string} path - the path of the file
  */
-export async function fileExists(path) {
-
-}
+export async function fileExists(_path) {}
 
 /**
  * Removes all folders and files from the storage.
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
-export async function reset() {
-
-}
+export async function reset() {}

@@ -1,22 +1,22 @@
-const nextJest = require("next/jest");
-const createJestConfig = nextJest({
-    dir: "./",
-});
 const customJestConfig = {
-    moduleDirectories: ["node_modules", "<rootDir>/"],
-    testMatch: ["<rootDir>/src/**/*.test.js"],
-    testEnvironment: "jest-environment-jsdom",
-    setupFiles: [
-        "./jest.polyfills.js",
-        "./test-setup.js",
-        "dotenv/config"
+  moduleDirectories: ['node_modules', '<rootDir>/'],
+  testMatch: ['<rootDir>/src/**/*.test.js'],
+  testEnvironment: 'jest-environment-jsdom',
+  setupFiles: ['./jest.polyfills.js', 'dotenv/config'],
+  moduleNameMapper: {
+    // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
+    uuid: require.resolve('uuid'),
+    mongodb: require.resolve('mongodb'),
+    bson: require.resolve('bson'),
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      {
+        presets: [['next/babel', { 'preset-react': { runtime: 'automatic' } }]],
+      },
     ],
-    moduleNameMapper: {
-        "^bson$": require.resolve("bson"),
-        "^sinon$": require.resolve("sinon"),
-    },
-    transformIgnorePatterns: [
-        "/node_modules/(?!(mongodb|bson)/)"
-    ],
+  },
 };
-module.exports = createJestConfig(customJestConfig);
+module.exports = customJestConfig;

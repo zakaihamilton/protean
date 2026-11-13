@@ -1,11 +1,10 @@
- 
 /**
  * Checks if the functionality is supported.
  *
  * @return {boolean} Returns true if the functionality is supported, false otherwise.
-*/
+ */
 export async function isSupported() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -14,7 +13,7 @@ export async function isSupported() {
  * @return {Promise<void>} A promise that resolves when the storage is opened.
  */
 export async function open() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -23,7 +22,7 @@ export async function open() {
  * @return {Promise<void>} A promise that resolves when the storage is closed.
  */
 export async function close() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -32,8 +31,8 @@ export async function close() {
  * @param {string} key - The key to retrieve the value for.
  * @return {type} The value associated with the given key.
  */
-export async function get(key) {
-    // Implement your logic here
+export async function get(_key) {
+  // Implement your logic here
 }
 
 /**
@@ -43,24 +42,24 @@ export async function get(key) {
  * @param {type} value - the value to set
  * @return {Promise<type>} A promise that resolves with the previous value assigned to the key
  */
-export async function set(key, value) {
-    // Implement your logic here
+export async function set(_key, _value) {
+  // Implement your logic here
 }
 
 /**
  * Checks if the key exists
  */
-export async function exists(key) {
-    // Implement your logic here
+export async function exists(_key) {
+  // Implement your logic here
 }
 
-/**  
+/**
  * Deletes a key from the storage.
  * @param {string} key - the key to delete
  * @return {Promise<void>} A promise that resolves when the key has been deleted
  */
-export async function deleteKey(key) {
-    // Implement your logic here
+export async function deleteKey(_key) {
+  // Implement your logic here
 }
 
 /**
@@ -69,7 +68,7 @@ export async function deleteKey(key) {
  * @return {Promise<type>} A promise that resolves with the list of keys
  */
 export async function keys() {
-    // Implement your logic here
+  // Implement your logic here
 }
 
 /**
@@ -77,5 +76,5 @@ export async function keys() {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset() {
-    // Implement your logic here
+  // Implement your logic here
 }

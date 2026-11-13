@@ -1,9 +1,9 @@
-import { createState } from "../Base/State";
+import { createState } from '../Base/State';
 
 export default function Storage({ State }) {
-    const state = State.useState();
+  const state = State.useState();
 
-    return state;
+  return state;
 }
 
-Storage.State = createState("Storage.State");
+Storage.State = createState('Storage.State');

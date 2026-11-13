@@ -1,23 +1,23 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export function useMonitor(objects, key, handler) {
-    useEffect(() => {
-        if (!objects || !handler) {
-            return;
+  useEffect(() => {
+    if (!objects || !handler) {
+      return;
+    }
+    for (const object of objects) {
+      if (!object) {
+        continue;
+      }
+      object.__monitor(key, handler);
+    }
+    return () => {
+      for (const object of objects) {
+        if (!object) {
+          continue;
         }
-        for (const object of objects) {
-            if (!object) {
-                continue;
-            }
-            object.__monitor(key, handler);
-        }
-        return () => {
-            for (const object of objects) {
-                if (!object) {
-                    continue;
-                }
-                object.__unmonitor(key, handler);
-            }
-        };
-    }, [objects, key, handler]);
+        object.__unmonitor(key, handler);
+      }
+    };
+  }, [objects, key, handler]);
 }

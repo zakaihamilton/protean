@@ -3,19 +3,19 @@
  *
  * @param {string} path - The path to extract the folder path from.
  * @return {string} The parent folder path or null if no parent folder exists.
-*/
+ */
 export function pathFolder(path) {
-    if (!path) {
-        return null;
-    }
-    const lastSlashIndex = path.lastIndexOf("/");
-    if (lastSlashIndex === -1) {
-        // No slash found, which means it's a file in the root directory.
-        return null;
-    }
+  if (!path) {
+    return null;
+  }
+  const lastSlashIndex = path.lastIndexOf('/');
+  if (lastSlashIndex === -1) {
+    // No slash found, which means it's a file in the root directory.
+    return null;
+  }
 
-    path = path.substring(0, lastSlashIndex);
-    return path;
+  path = path.substring(0, lastSlashIndex);
+  return path;
 }
 
 /**
@@ -25,14 +25,14 @@ export function pathFolder(path) {
  * @return {string} The extracted file name.
  */
 export function pathFileName(path) {
-    if (!path) {
-        return null;
-    }
-    const lastSlashIndex = path.lastIndexOf("/");
-    if (lastSlashIndex === -1) {
-        return path;
-    }
-    return path.substring(lastSlashIndex + 1);
+  if (!path) {
+    return null;
+  }
+  const lastSlashIndex = path.lastIndexOf('/');
+  if (lastSlashIndex === -1) {
+    return path;
+  }
+  return path.substring(lastSlashIndex + 1);
 }
 
 /**
@@ -42,5 +42,5 @@ export function pathFileName(path) {
  * @return {string} The normalized file path.
  */
 export function pathNormalize(filePath) {
-    return filePath.replace(/\\/g, "/").replace(/\/$/, "");
+  return filePath.replace(/\\/g, '/').replace(/\/$/, '');
 }

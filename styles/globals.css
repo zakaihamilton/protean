@@ -1,40 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 :root {
-    color-scheme: light;
+  color-scheme: light;
 }
 
 :root.dark {
-    color-scheme: dark;
+  color-scheme: dark;
 }
 
 body {
-    border: none;
-    background-color: black;
-    font-family: 'Roboto', sans-serif;
+  border: none;
+  background-color: black;
+  font-family: "Roboto", sans-serif;
 }
 
 body,
 html {
-    margin: 0;
-    padding: 0;
-    touch-action: none;
-    overflow: hidden;
+  margin: 0;
+  padding: 0;
+  touch-action: none;
+  overflow: hidden;
 }
 
 #__next {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 *,
 *::after,
 *::before {
-    user-select: none;
-    -webkit-user-drag: none;
-    -webkit-app-region: no-drag;
-    box-sizing: border-box;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  box-sizing: border-box;
 }
