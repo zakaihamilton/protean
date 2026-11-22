@@ -70,6 +70,59 @@ export async function close() {
   }
 }
 
+const DELETE_BATCH_SIZE = 1000;
+
+/**
+ * Lists all object keys matching an optional prefix across all S3 pagination pages.
+ *
+ * @param {string} [prefix] - Optional key prefix to filter listed objects.
+ * @return {Promise<string[]>} All matching object keys.
+ */
+async function listAllKeys(prefix) {
+  const keys = [];
+  let continuationToken;
+  do {
+    const listCommand = new ListObjectsV2Command({
+      Bucket: bucketName,
+      ...(prefix !== undefined ? { Prefix: prefix } : {}),
+      ContinuationToken: continuationToken,
+    });
+    const list = await client.send(listCommand);
+    if (list.Contents?.length) {
+      keys.push(...list.Contents.map((item) => item.Key));
+    }
+    continuationToken = list.NextContinuationToken;
+  } while (continuationToken);
+  return keys;
+}
+
+/**
+ * Deletes the given S3 object keys in batches of up to 1000.
+ *
+ * @param {string[]} keys - Object keys to delete.
+ * @return {Promise<number>} Number of deleted objects.
+ */
+async function deleteKeys(keys) {
+  let count = 0;
+  for (let i = 0; i < keys.length; i += DELETE_BATCH_SIZE) {
+    const deleteCommand = new DeleteObjectsCommand({
+      Bucket: bucketName,
+      Delete: {
+        Objects: keys.slice(i, i + DELETE_BATCH_SIZE).map((Key) => ({ Key })),
+        Quiet: false,
+      },
+    });
+    const deleted = await client.send(deleteCommand);
+    count += deleted?.Deleted?.length ?? 0;
+    if (deleted?.Errors) {
+      for (const error of deleted.Errors) {
+        console.log(`${error.Key} could not be deleted - ${error.Code}`);
+      }
+    }
+  }
+  return count;
+}
+
 /**
  * Creates a folder.
  *
@@ -85,40 +138,11 @@ export async function createFolder(/*path*/) {}
  * @return {Promise} - Returns a promise that resolves when the folder and its contents have been successfully deleted.
  */
 export async function deleteFolder(path) {
-  let count = 0;
   if (!path) {
     throw new Error('path is null');
   }
-  const recursiveDelete = async (token) => {
-    // get the files
-    const listCommand = new ListObjectsV2Command({
-      Bucket: bucketName,
-      Prefix: path,
-      ContinuationToken: token,
-    });
-    const list = await client.send(listCommand);
-    if (list.KeyCount) {
-      const deleteCommand = new DeleteObjectsCommand({
-        Bucket: bucketName,
-        Delete: {
-          Objects: list.Contents.map((item) => ({ Key: item.Key })),
-          Quiet: false,
-        },
-      });
-      const deleted = await client.send(deleteCommand);
-      count += deleted?.Deleted?.length;
-      if (deleted?.Errors) {
-        deleted.Errors.map((error) =>
-          console.log(`${error.Key} could not be deleted - ${error.Code}`),
-        );
-      }
-    }
-    if (list.NextContinuationToken) {
-      recursiveDelete(list.NextContinuationToken);
-    }
-    return count;
-  };
-  return await recursiveDelete();
+  const keys = await listAllKeys(path);
+  return await deleteKeys(keys);
 }
 
 /**
@@ -160,34 +184,20 @@ export async function copyFolder(fromPath, toPath) {
   if (await folderExists(toPath)) {
     throw new Error(`Folder already exists: ${toPath}`);
   }
+  const fromObjectKeys = await listAllKeys(fromPath);
   let count = 0;
-  const recursiveCopy = async (token) => {
-    const listCommand = new ListObjectsV2Command({
+  for (const fromObjectKey of fromObjectKeys) {
+    const toObjectKey = fromObjectKey.replace(fromPath, toPath);
+    const copyCommand = new CopyObjectCommand({
+      ACL: 'public-read',
       Bucket: bucketName,
-      Prefix: fromPath,
-      ContinuationToken: token,
+      CopySource: `${bucketName}/${fromObjectKey}`,
+      Key: toObjectKey,
     });
-    const list = await client.send(listCommand);
-    if (list.KeyCount) {
-      const fromObjectKeys = list.Contents.map((content) => content.Key);
-      for (const fromObjectKey of fromObjectKeys) {
-        const toObjectKey = fromObjectKey.replace(fromPath, toPath);
-        const copyCommand = new CopyObjectCommand({
-          ACL: 'public-read',
-          Bucket: bucketName,
-          CopySource: `${bucketName}/${fromObjectKey}`,
-          Key: toObjectKey,
-        });
-        await client.send(copyCommand);
-        count += 1;
-      }
-    }
-    if (list.NextContinuationToken) {
-      recursiveCopy(list.NextContinuationToken);
-    }
-    return count;
-  };
-  return await recursiveCopy();
+    await client.send(copyCommand);
+    count += 1;
+  }
+  return count;
 }
 
 /**
@@ -201,23 +211,8 @@ export async function listFolder(path) {
     throw new Error('path is null');
   }
   path = pathNormalize(path);
-  const listing = [];
-  const recursiveListing = async (token) => {
-    const listCommand = new ListObjectsV2Command({
-      Bucket: bucketName,
-      Prefix: path,
-      ContinuationToken: token,
-    });
-    const list = await client.send(listCommand);
-    if (list.KeyCount) {
-      listing.push(...list.Contents.map((item) => ({ Key: item.Key })));
-    }
-    if (list.NextContinuationToken) {
-      recursiveListing(list.NextContinuationToken);
-    }
-    return listing;
-  };
-  return await recursiveListing();
+  const keys = await listAllKeys(path);
+  return keys.map((Key) => ({ Key }));
 }
 
 /**
@@ -225,9 +220,6 @@ export async function listFolder(path) {
  * @param {string} path - the path of the folder
  */
 export async function folderExists(path) {
-  if (!path) {
-    throw new Error('path is null');
-  }
   if (!path) {
     throw new Error('path is null');
   }
@@ -380,36 +372,6 @@ export async function fileExists(path) {
  * @return {Promise<void>} A promise that resolves when the storage is cleared
  */
 export async function reset() {
-  let count = 0;
-  const recursiveDelete = async (token) => {
-    // get the files
-    const listCommand = new ListObjectsV2Command({
-      Bucket: bucketName,
-      ContinuationToken: token,
-    });
-    const list = await client.send(listCommand);
-    if (list.KeyCount) {
-      const deleteCommand = new DeleteObjectsCommand({
-        Bucket: bucketName,
-        Delete: {
-          Objects: list.Contents.map((item) => ({ Key: item.Key })),
-          Quiet: false,
-        },
-      });
-      const deleted = await client.send(deleteCommand);
-      count += deleted?.Deleted?.length;
-      if (deleted?.Errors) {
-        console.error(
-          deleted.Errors.map((error) =>
-            console.log(`${error.Key} could not be deleted - ${error.Code}`),
-          ),
-        );
-      }
-    }
-    if (list.NextContinuationToken) {
-      recursiveDelete(list.NextContinuationToken);
-    }
-    return count;
-  };
-  return await recursiveDelete();
+  const keys = await listAllKeys();
+  return await deleteKeys(keys);
 }
