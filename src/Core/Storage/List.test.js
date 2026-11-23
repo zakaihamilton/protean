@@ -195,45 +195,46 @@ const permutations = testPermutations(implementations);
 
 const timeout = 10000;
 
-describe.each(
-  permutations,
-)('List - %s vs %s', (_source, _target, components) => {
-  let instances;
+describe.each(permutations)(
+  'List - %s vs %s',
+  (_source, _target, components) => {
+    let instances;
 
-  beforeEach(async () => {
-    instances = testInstance(components);
-    await testMethod(instances, 'isSupported');
-    await testMethod(instances, 'open');
-  }, timeout);
+    beforeEach(async () => {
+      instances = testInstance(components);
+      await testMethod(instances, 'isSupported');
+      await testMethod(instances, 'open');
+    }, timeout);
 
-  afterEach(async () => {
-    try {
-      await testMethod(instances, 'reset');
-    } finally {
-      await testMethod(instances, 'close');
-      jest.clearAllMocks();
-    }
-  }, timeout);
+    afterEach(async () => {
+      try {
+        await testMethod(instances, 'reset');
+      } finally {
+        await testMethod(instances, 'close');
+        jest.clearAllMocks();
+      }
+    }, timeout);
 
-  it(
-    'set and get',
-    async () => {
-      await testMethod(instances, 'set', 'key', 'value');
-      testCompare(await testMethod(instances, 'get', 'key'));
-      await testMethod(instances, 'exists', 'key');
-      await testMethod(instances, 'deleteKey', 'key');
-      testCompare(await testMethod(instances, 'get', 'key'));
-    },
-    timeout,
-  );
+    it(
+      'set and get',
+      async () => {
+        await testMethod(instances, 'set', 'key', 'value');
+        testCompare(await testMethod(instances, 'get', 'key'));
+        await testMethod(instances, 'exists', 'key');
+        await testMethod(instances, 'deleteKey', 'key');
+        testCompare(await testMethod(instances, 'get', 'key'));
+      },
+      timeout,
+    );
 
-  it(
-    'list',
-    async () => {
-      await testMethod(instances, 'set', 'key1', 'value1');
-      await testMethod(instances, 'set', 'key2', 'value2');
-      testCompare(await testMethod(instances, 'keys'));
-    },
-    timeout,
-  );
-});
+    it(
+      'list',
+      async () => {
+        await testMethod(instances, 'set', 'key1', 'value1');
+        await testMethod(instances, 'set', 'key2', 'value2');
+        testCompare(await testMethod(instances, 'keys'));
+      },
+      timeout,
+    );
+  },
+);

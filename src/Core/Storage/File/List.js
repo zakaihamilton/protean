@@ -140,7 +140,7 @@ export async function copyFolder(listStorage, fromPath, toPath) {
       }
     } catch (err) {
       throw new Error(
-        'Error deleting item: ' +
+        'Error copying item: ' +
           item.path +
           ' type:' +
           item.type +
